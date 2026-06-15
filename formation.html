@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ORIA — Support de Formation Praticien</title>
+<style>
+:root{
+  --gold:#C4A44A;--gold-d:#8B6B20;--gold-l:rgba(196,164,74,.1);--gold-ll:rgba(196,164,74,.05);
+  --brown:#3C2415;--brn:#6B4D2F;--brn-l:#8B5E30;
+  --ivory:#FAF6EE;--ivory-d:#F0E8D8;--white:#FFFFFF;
+  --border:#E0D5C0;--muted:#9A7860;
+  --sidebar:280px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Georgia',serif;background:var(--ivory);color:var(--brown);line-height:1.8}
+
+/* ── SIDEBAR ── */
+#sidebar{position:fixed;top:0;left:0;width:var(--sidebar);height:100vh;background:var(--brown);overflow-y:auto;z-index:100;display:flex;flex-direction:column}
+#sidebar::-webkit-scrollbar{width:4px}
+#sidebar::-webkit-scrollbar-thumb{background:rgba(196,164,74,.3);border-radius:2px}
+.sb-logo{padding:28px 24px 20px;border-bottom:1px solid rgba(196,164,74,.2)}
+.sb-logo-name{font-size:22px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:var(--ivory)}
+.sb-logo-sub{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-top:4px}
+.sb-section{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(196,164,74,.6);padding:20px 24px 6px}
+.sb-link{display:flex;align-items:center;gap:10px;padding:8px 24px;font-size:12px;color:rgba(250,246,238,.7);cursor:pointer;transition:all .2s;text-decoration:none;font-family:-apple-system,sans-serif;border-left:2px solid transparent}
+.sb-link:hover{color:var(--ivory);background:rgba(255,255,255,.06)}
+.sb-link.on{color:var(--gold);border-left-color:var(--gold);background:rgba(196,164,74,.08)}
+.sb-num{font-size:10px;opacity:.5;min-width:18px}
+.sb-footer{margin-top:auto;padding:20px 24px;border-top:1px solid rgba(196,164,74,.15);font-size:11px;color:rgba(250,246,238,.4);line-height:1.6;font-family:-apple-system,sans-serif}
+
+/* ── MAIN ── */
+#main{margin-left:var(--sidebar);min-height:100vh}
+
+/* ── COVER ── */
+#cover{min-height:100vh;background:var(--brown);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 60px;position:relative;overflow:hidden}
+.cover-ring{position:absolute;border-radius:50%;border:1px solid rgba(196,164,74,.12)}
+.cover-title{font-size:56px;font-weight:400;letter-spacing:.22em;text-transform:uppercase;color:var(--ivory);margin-bottom:6px;position:relative;z-index:1}
+.cover-sub{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:40px;position:relative;z-index:1}
+.cover-line{width:60px;height:1px;background:var(--gold);margin:0 auto 40px;position:relative;z-index:1}
+.cover-quote{font-size:18px;color:rgba(250,246,238,.8);font-style:italic;max-width:560px;line-height:1.9;position:relative;z-index:1}
+.cover-quote-attr{font-size:12px;color:var(--gold);margin-top:16px;letter-spacing:.08em;text-transform:uppercase;font-style:normal;font-family:-apple-system,sans-serif;position:relative;z-index:1}
+.cover-badges{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:48px;position:relative;z-index:1}
+.cover-badge{background:rgba(196,164,74,.12);border:1px solid rgba(196,164,74,.3);border-radius:4px;padding:8px 18px;font-size:11px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;font-family:-apple-system,sans-serif}
+.cover-scroll{position:absolute;bottom:32px;color:rgba(250,246,238,.4);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-family:-apple-system,sans-serif;z-index:1}
+
+/* ── SECTIONS ── */
+.section{padding:64px 72px;border-bottom:1px solid var(--border)}
+.section:nth-child(even){background:var(--white)}
+.section-num{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);font-family:-apple-system,sans-serif;margin-bottom:10px}
+.section-title{font-size:32px;font-weight:400;color:var(--brown);margin-bottom:8px;line-height:1.3}
+.section-lead{font-size:16px;color:var(--brn);line-height:1.9;max-width:720px;margin-bottom:36px;font-style:italic}
+h3{font-size:19px;font-weight:400;color:var(--brown);margin:32px 0 12px}
+h4{font-size:15px;font-weight:700;color:var(--brn-l);margin:24px 0 8px;font-family:-apple-system,sans-serif;text-transform:uppercase;letter-spacing:.07em}
+p{font-size:15px;color:var(--brn);line-height:1.85;margin-bottom:14px;max-width:720px}
+ul,ol{padding-left:24px;margin-bottom:16px;max-width:700px}
+li{font-size:15px;color:var(--brn);line-height:1.8;margin-bottom:4px}
+
+/* ── ORNAMENT ── */
+.ornament{display:flex;align-items:center;gap:16px;margin:28px 0}
+.ornament-line{flex:1;height:1px;background:var(--border);max-width:80px}
+.ornament-icon{color:var(--gold);font-size:16px}
+
+/* ── PULL QUOTE ── */
+.pq{border-left:3px solid var(--gold);padding:16px 24px;margin:28px 0;max-width:680px;background:var(--gold-ll);border-radius:0 8px 8px 0}
+.pq p{font-size:16px;font-style:italic;color:var(--brown);margin:0;max-width:none}
+.pq-attr{font-size:11px;color:var(--muted);margin-top:8px;font-style:normal;font-family:-apple-system,sans-serif;text-transform:uppercase;letter-spacing:.07em}
+
+/* ── BOXES ── */
+.box{border-radius:10px;padding:20px 24px;margin:20px 0;max-width:720px}
+.box-gold{background:var(--gold-l);border:1px solid rgba(196,164,74,.3)}
+.box-brown{background:rgba(60,36,21,.04);border:1px solid rgba(60,36,21,.12)}
+.box-dashed{background:var(--ivory);border:2px dashed var(--border)}
+.box-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gold-d);margin-bottom:10px;font-family:-apple-system,sans-serif}
+.box-title.dark{color:var(--brown)}
+.box-title.warn{color:#8B4513}
+.box p{max-width:none;margin-bottom:8px}
+.box p:last-child{margin-bottom:0}
+.box ul,ol{margin-bottom:0}
+
+/* ── PHASE CARDS ── */
+.phase-card{border-radius:14px;border:1px solid var(--border);overflow:hidden;margin:24px 0;max-width:760px}
+.phase-card-hdr{padding:24px 28px;display:flex;align-items:center;gap:20px}
+.phase-num-big{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;flex-shrink:0;font-family:-apple-system,sans-serif}
+.phase-card-body{padding:0 28px 24px}
+.phase-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;font-family:-apple-system,sans-serif}
+.phase-name-big{font-size:20px;font-weight:400;margin-top:3px}
+
+/* Phase colors */
+.ph0{background:rgba(107,77,47,.08)}.ph0 .phase-num-big{background:rgba(107,77,47,.15);color:#6B4D2F}
+.ph1{background:rgba(139,94,48,.08)}.ph1 .phase-num-big{background:rgba(139,94,48,.15);color:#8B5E30}
+.ph2{background:rgba(196,164,74,.1)}.ph2 .phase-num-big{background:rgba(196,164,74,.2);color:var(--gold-d)}
+.ph25{background:rgba(90,70,50,.07)}.ph25 .phase-num-big{background:rgba(90,70,50,.14);color:#5A4632}
+.ph3{background:rgba(184,148,58,.1)}.ph3 .phase-num-big{background:rgba(184,148,58,.2);color:#B8943A}
+.ph4{background:rgba(154,114,40,.1)}.ph4 .phase-num-big{background:rgba(154,114,40,.2);color:#9A7228}
+.ph5{background:rgba(123,82,32,.1)}.ph5 .phase-num-big{background:rgba(123,82,32,.2);color:#7B5220}
+.ph6{background:rgba(100,65,24,.1)}.ph6 .phase-num-big{background:rgba(100,65,24,.2);color:#644118}
+.ph7{background:rgba(60,36,21,.08)}.ph7 .phase-num-big{background:rgba(60,36,21,.18);color:var(--brown)}
+
+/* ── GRID ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:740px;margin:20px 0}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;max-width:740px;margin:20px 0}
+.grid-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:18px}
+.gc-icon{font-size:24px;margin-bottom:10px}
+.gc-title{font-size:14px;font-weight:700;color:var(--brown);margin-bottom:6px;font-family:-apple-system,sans-serif}
+.gc-text{font-size:13px;color:var(--brn);line-height:1.6}
+
+/* ── ARCHETYPE ── */
+.arch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;max-width:760px;margin:20px 0}
+.arch-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px}
+.arch-ico{font-size:30px;margin-bottom:10px}
+.arch-name{font-size:15px;font-weight:700;color:var(--brown);margin-bottom:4px;font-family:-apple-system,sans-serif}
+.arch-essence{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--gold-d);font-family:-apple-system,sans-serif;margin-bottom:10px}
+.arch-desc{font-size:13px;color:var(--brn);line-height:1.6;margin-bottom:10px}
+.arch-shadow{font-size:12px;color:var(--muted);font-style:italic;border-top:1px solid var(--border);padding-top:10px;margin-top:8px}
+
+/* ── LAWS ── */
+.laws{display:flex;flex-direction:column;gap:16px;max-width:720px;margin:20px 0}
+.law{display:flex;gap:20px;align-items:flex-start;background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px 24px}
+.law-num{font-size:28px;font-weight:300;color:var(--gold);font-family:-apple-system,sans-serif;min-width:32px;margin-top:-2px}
+.law-title{font-size:15px;font-weight:700;color:var(--brown);margin-bottom:6px;font-family:-apple-system,sans-serif}
+.law-text{font-size:14px;color:var(--brn);line-height:1.7}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;max-width:720px;margin:20px 0;font-family:-apple-system,sans-serif}
+.tbl th{background:var(--brown);color:var(--ivory);padding:10px 14px;font-size:11px;text-transform:uppercase;letter-spacing:.07em;text-align:left;font-weight:600}
+.tbl td{padding:10px 14px;font-size:13px;color:var(--brn);border-bottom:1px solid var(--border);vertical-align:top}
+.tbl tr:nth-child(even) td{background:var(--ivory)}
+
+/* ── DIVIDER ── */
+.divider{display:flex;align-items:center;gap:16px;margin:32px 0;max-width:720px}
+.div-line{flex:1;height:1px;background:var(--border)}
+.div-icon{color:var(--gold);font-size:18px;flex-shrink:0}
+
+/* ── MANDALA SVG ── */
+.mandala-section{display:flex;gap:48px;align-items:flex-start;flex-wrap:wrap;margin:28px 0}
+
+/* ── PRINT ── */
+@media print{
+  #sidebar{display:none}
+  #main{margin-left:0}
+  .section{padding:40px 48px;page-break-inside:avoid}
+  #cover{page-break-after:always;min-height:auto;padding:80px}
+}
+@media(max-width:900px){
+  #sidebar{transform:translateX(-100%)}
+  #main{margin-left:0}
+  .section{padding:40px 24px}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  #cover{padding:60px 32px}
+  .cover-title{font-size:38px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ SIDEBAR ══════════════ -->
+<nav id="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-name">ORIA</div>
+    <div class="sb-logo-sub">Support de formation praticien</div>
+  </div>
+
+  <div class="sb-section">Introduction</div>
+  <a class="sb-link on" onclick="scrollTo('cover')"><span class="sb-num">—</span>Couverture & intention</a>
+  <a class="sb-link" onclick="scrollTo('fondements')"><span class="sb-num">—</span>Avant de commencer</a>
+
+  <div class="sb-section">Partie I — Fondements</div>
+  <a class="sb-link" onclick="scrollTo('postulat')"><span class="sb-num">1.1</span>Le Postulat Central</a>
+  <a class="sb-link" onclick="scrollTo('lois')"><span class="sb-num">1.2</span>Les 4 Lois Fondatrices</a>
+  <a class="sb-link" onclick="scrollTo('spirale')"><span class="sb-num">1.3</span>La Spirale ORIA</a>
+  <a class="sb-link" onclick="scrollTo('noyau')"><span class="sb-num">1.4</span>Le Noyau & les 9 Voiles</a>
+  <a class="sb-link" onclick="scrollTo('forces')"><span class="sb-num">1.5</span>Les 7 Forces ORIA</a>
+
+  <div class="sb-section">Partie II — Les 8 Phases</div>
+  <a class="sb-link" onclick="scrollTo('ph0')"><span class="sb-num">Ph.0</span>Le Témoin</a>
+  <a class="sb-link" onclick="scrollTo('ph1')"><span class="sb-num">Ph.1</span>L'Origine</a>
+  <a class="sb-link" onclick="scrollTo('ph2')"><span class="sb-num">Ph.2</span>La Reconnaissance</a>
+  <a class="sb-link" onclick="scrollTo('ph25')"><span class="sb-num">Ph.2.5</span>Le Désert Identitaire</a>
+  <a class="sb-link" onclick="scrollTo('ph3')"><span class="sb-num">Ph.3</span>L'Intégration</a>
+  <a class="sb-link" onclick="scrollTo('ph4')"><span class="sb-num">Ph.4</span>Le Projet d'Âme</a>
+  <a class="sb-link" onclick="scrollTo('ph5')"><span class="sb-num">Ph.5</span>L'Archétype</a>
+  <a class="sb-link" onclick="scrollTo('ph6')"><span class="sb-num">Ph.6</span>Le Mythe Personnel</a>
+  <a class="sb-link" onclick="scrollTo('ph7')"><span class="sb-num">Ph.7</span>L'Alignement</a>
+
+  <div class="sb-section">Partie III — Outils</div>
+  <a class="sb-link" onclick="scrollTo('mandala')"><span class="sb-num">3.1</span>Le Mandala Vivant</a>
+  <a class="sb-link" onclick="scrollTo('journal')"><span class="sb-num">3.2</span>Le Journal ORIA</a>
+  <a class="sb-link" onclick="scrollTo('genosocio')"><span class="sb-num">3.3</span>Le Génosociogramme</a>
+
+  <div class="sb-section">Partie IV — Archétypes</div>
+  <a class="sb-link" onclick="scrollTo('archetypes')"><span class="sb-num">4.1</span>Les 12 Archétypes ORIA</a>
+  <a class="sb-link" onclick="scrollTo('attribution')"><span class="sb-num">4.2</span>Lire & attribuer</a>
+
+  <div class="sb-section">Partie V — Posture</div>
+  <a class="sb-link" onclick="scrollTo('posture')"><span class="sb-num">5.1</span>Posture du praticien</a>
+  <a class="sb-link" onclick="scrollTo('ethique')"><span class="sb-num">5.2</span>Éthique ORIA</a>
+  <a class="sb-link" onclick="scrollTo('erreurs')"><span class="sb-num">5.3</span>Erreurs communes</a>
+
+  <div class="sb-section">Partie VI — Documents</div>
+  <a class="sb-link" onclick="scrollTo('dossier')"><span class="sb-num">6.1</span>Le Dossier d'Âme</a>
+  <a class="sb-link" onclick="scrollTo('certif')"><span class="sb-num">6.2</span>La certification</a>
+
+  <div class="sb-footer">
+    ORIA · Document propriétaire<br>
+    Formation Praticien Certifié<br>
+    Version 1.0 · 2026
+  </div>
+</nav>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<div id="main">
+
+<!-- ── COVER ── -->
+<div id="cover">
+  <div class="cover-ring" style="width:700px;height:700px;top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+  <div class="cover-ring" style="width:560px;height:560px;top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+  <div class="cover-ring" style="width:420px;height:420px;top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+  <div class="cover-ring" style="width:300px;height:300px;top:50%;left:50%;transform:translate(-50%,-50%);border-color:rgba(196,164,74,.2)"></div>
+  <div class="cover-ring" style="width:190px;height:190px;top:50%;left:50%;transform:translate(-50%,-50%);border-color:rgba(196,164,74,.25)"></div>
+
+  <div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(196,164,74,.7);margin-bottom:24px;font-family:-apple-system,sans-serif">Formation Praticien Certifié</div>
+  <div class="cover-title">ORIA</div>
+  <div class="cover-sub">Méthode de Transformation par l'Héritage</div>
+  <div class="cover-line"></div>
+  <div class="cover-quote">
+    Tu n'es pas venu guérir ton histoire.<br>
+    Tu es venu révéler ce que ton histoire tentait de protéger.
+  </div>
+  <div class="cover-quote-attr">Le Postulat Vivant — ORIA</div>
+  <div class="cover-badges">
+    <div class="cover-badge">8 phases</div>
+    <div class="cover-badge">12 archétypes</div>
+    <div class="cover-badge">Le Mandala Vivant</div>
+    <div class="cover-badge">Le Dossier d'Âme</div>
+    <div class="cover-badge">Méthode propriétaire</div>
+  </div>
+  <div class="cover-scroll">Défiler pour commencer ↓</div>
+</div>
+
+<!-- ── AVANT DE COMMENCER ── -->
+<div class="section" id="fondements">
+  <div class="section-num">Introduction</div>
+  <div class="section-title">Avant de commencer</div>
+  <div class="section-lead">Ce document est votre compagnon de formation. Il ne remplace pas l'expérience vécue — il la prépare et la prolonge.</div>
+
+  <p>La méthode ORIA ne s'apprend pas comme on apprend une technique. Elle se pratique d'abord sur soi, avant d'être transmise à l'autre. Ce support de formation a été conçu pour accompagner les trois niveaux de certification — Associé, Certifié, Superviseur — tout au long du parcours.</p>
+
+  <div class="pq"><p>Le praticien est le guide. Le participant est l'explorateur. L'application est la carte. Mais c'est le territoire intérieur qui compte — et lui seul.</p></div>
+
+  <h3>Comment utiliser ce document</h3>
+  <p>Ce support est structuré en six parties progressives. Nous vous conseillons de le lire dans l'ordre lors de votre première rencontre avec la méthode, puis de revenir à chaque section comme référence lors de votre pratique.</p>
+
+  <div class="grid-3">
+    <div class="grid-card"><div class="gc-icon">📖</div><div class="gc-title">Lire</div><div class="gc-text">Lisez chaque section avant votre prochaine séance avec un participant à cette phase.</div></div>
+    <div class="grid-card"><div class="gc-icon">✍</div><div class="gc-title">Pratiquer</div><div class="gc-text">Faites vous-même chaque exercice avant de le proposer. Vous ne pouvez pas guider là où vous n'êtes pas allé.</div></div>
+    <div class="grid-card"><div class="gc-icon">◎</div><div class="gc-title">Superviser</div><div class="gc-text">Apportez vos questions et cas pratiques à vos sessions de supervision régulières.</div></div>
+  </div>
+
+  <div class="box box-gold">
+    <div class="box-title">Ce que ORIA n'est pas</div>
+    <p>ORIA n'est pas un outil de diagnostic psychologique. ORIA n'est pas une thérapie. ORIA n'est pas une méthode d'interprétation. Le praticien ne diagnostique pas, n'interprète pas, ne prédit pas. Il accompagne un mouvement qui appartient entièrement au participant.</p>
+  </div>
+</div>
+
+<!-- ══════════ PARTIE I — FONDEMENTS ══════════ -->
+
+<!-- POSTULAT -->
+<div class="section" id="postulat">
+  <div class="section-num">Partie I · 1.1</div>
+  <div class="section-title">Le Postulat Central</div>
+  <div class="section-lead">Toute la méthode repose sur une conviction fondatrice, posée comme un acte de foi et une hypothèse de travail.</div>
+
+  <div class="pq">
+    <p>L'être humain naît dans une histoire, mais n'est pas destiné à la répéter. Sa vocation est de transformer l'héritage reçu en contribution consciente.</p>
+  </div>
+
+  <p>Ce postulat n'est pas une affirmation psychologique. C'est une orientation. Il dit quelque chose de fondamental sur la nature humaine : nous ne sommes pas déterminés par ce qui nous a précédés — nous sommes <em>invités</em> à le transformer.</p>
+
+  <h3>Les trois affirmations du Postulat</h3>
+  <div class="grid-3">
+    <div class="grid-card"><div class="gc-icon">🌱</div><div class="gc-title">Naître dans une histoire</div><div class="gc-text">Chaque être humain arrive dans un système familial avec ses loyautés, ses blessures et ses ressources non transmises.</div></div>
+    <div class="grid-card"><div class="gc-icon">🔄</div><div class="gc-title">Ne pas être destiné à la répéter</div><div class="gc-text">La répétition n'est pas un destin. C'est un signal — celui d'une loyauté non reconnue qui cherche à être vue.</div></div>
+    <div class="grid-card"><div class="gc-icon">✦</div><div class="gc-title">Transformer en contribution</div><div class="gc-text">Ce qui a été souffrance dans la lignée peut devenir force, sens, et don au monde — si on lui donne une forme consciente.</div></div>
+  </div>
+
+  <h3>Ce que le Postulat demande au praticien</h3>
+  <p>Croire en ce postulat, c'est croire que chaque participant porte en lui les ressources nécessaires à sa transformation. Le praticien ne guérit pas — il tient l'espace dans lequel la guérison devient possible. Cette croyance n'est pas naïve : elle est rigoureuse. Elle demande de ne jamais projeter sur le participant l'idée de ce qu'il devrait découvrir.</p>
+
+  <div class="box box-brown">
+    <div class="box-title dark">Question de supervision</div>
+    <p>En quoi croyez-vous réellement, quand vous vous asseyez en face d'un participant ? Prenez le temps d'écrire votre propre version du Postulat — avec vos mots, votre histoire.</p>
+  </div>
+</div>
+
+<!-- LOIS -->
+<div class="section" id="lois">
+  <div class="section-num">Partie I · 1.2</div>
+  <div class="section-title">Les 4 Lois Fondatrices</div>
+  <div class="section-lead">Les Lois ORIA ne sont pas des règles à appliquer — ce sont des observations sur la nature de l'héritage humain. Le praticien les porte comme une boussole intérieure.</div>
+
+  <div class="laws">
+    <div class="law">
+      <div class="law-num">1</div>
+      <div>
+        <div class="law-title">Tout héritage cherche à se poursuivre</div>
+        <div class="law-text">Ce qui a été vécu, ressenti, porté dans une lignée cherche à se transmettre — qu'on le veuille ou non. Les silences, les douleurs non dites, les forces non reconnues continuent de vivre dans les générations suivantes. Ce n'est pas de la mystique : c'est l'observation de milliers d'histoires humaines.</div>
+      </div>
+    </div>
+    <div class="law">
+      <div class="law-num">2</div>
+      <div>
+        <div class="law-title">Ce qui n'est pas reconnu se répète</div>
+        <div class="law-text">La répétition est le signal d'une loyauté invisible. Quand un élément de l'histoire familiale n'a pas été vu, nommé, honoré — il cherche une expression dans la génération suivante. La répétition n'est pas un échec : c'est une invitation.</div>
+      </div>
+    </div>
+    <div class="law">
+      <div class="law-num">3</div>
+      <div>
+        <div class="law-title">Ce qui est reconnu peut être transformé</div>
+        <div class="law-text">Le simple acte de voir — vraiment voir — crée un espace de transformation. Nommer la répétition avec bienveillance, sans jugement, sans urgence de la faire cesser, ouvre une possibilité qui n'existait pas avant. La reconnaissance précède toujours la libération.</div>
+      </div>
+    </div>
+    <div class="law">
+      <div class="law-num">4</div>
+      <div>
+        <div class="law-title">Toute transformation appelle une contribution</div>
+        <div class="law-text">La transformation n'est pas la finalité — la contribution l'est. Ce qui a été transformé doit être mis au service de quelque chose de plus grand que soi. C'est ce passage — de la guérison à l'offrande — qui donne à la méthode ORIA sa dimension vocationnelle.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="box box-gold">
+    <div class="box-title">Comment utiliser les 4 Lois en séance</div>
+    <p>Les Lois ne s'expliquent pas didactiquement au participant. Elles guident silencieusement le praticien dans son écoute. Quand le praticien entend une répétition, il entend la Loi 2. Quand le participant commence à nommer ce qu'il voit, le praticien reconnaît la Loi 3 à l'œuvre. Ce cadre intérieur oriente sans contraindre.</p>
+  </div>
+</div>
+
+<!-- SPIRALE -->
+<div class="section" id="spirale">
+  <div class="section-num">Partie I · 1.3</div>
+  <div class="section-title">La Spirale ORIA</div>
+  <div class="section-lead">Le parcours ORIA n'est pas linéaire. Il suit le mouvement naturel de toute transformation profonde : la spirale.</div>
+
+  <p>Une spirale ne revient jamais exactement au même point. Elle repasse sur les mêmes thèmes — la famille, la loyauté, l'identité — mais à chaque passage, elle les rencontre depuis un niveau de conscience différent, plus élevé, plus intégré.</p>
+
+  <div class="mandala-section">
+    <svg width="220" height="220" viewBox="0 0 220 220" style="flex-shrink:0">
+      <g transform="translate(110,110)">
+        <circle cx="0" cy="0" r="100" fill="none" stroke="#E0D5C0" stroke-width="1" stroke-dasharray="3 3"/>
+        <circle cx="0" cy="0" r="82" fill="none" stroke="#D4C4A8" stroke-width="1"/>
+        <circle cx="0" cy="0" r="65" fill="none" stroke="#C8B490" stroke-width="1.5"/>
+        <circle cx="0" cy="0" r="49" fill="none" stroke="#C4A44A" stroke-width="1.5"/>
+        <circle cx="0" cy="0" r="34" fill="none" stroke="#B8943A" stroke-width="2"/>
+        <circle cx="0" cy="0" r="21" fill="none" stroke="#9A7228" stroke-width="2"/>
+        <circle cx="0" cy="0" r="10" fill="none" stroke="#7B5220" stroke-width="2"/>
+        <circle cx="0" cy="0" r="4" fill="#3C2415"/>
+        <text x="0" y="2" text-anchor="middle" font-size="5" fill="#C4A44A" font-family="serif">✦</text>
+        <!-- Phase labels -->
+        <text x="0" y="-89" text-anchor="middle" font-size="7" fill="#9A7860" font-family="-apple-system,sans-serif">7</text>
+        <text x="0" y="-71" text-anchor="middle" font-size="7" fill="#9A7860" font-family="-apple-system,sans-serif">5-6</text>
+        <text x="0" y="-54" text-anchor="middle" font-size="7" fill="#9A7860" font-family="-apple-system,sans-serif">4</text>
+        <text x="0" y="-38" text-anchor="middle" font-size="7" fill="#9A7860" font-family="-apple-system,sans-serif">3</text>
+        <text x="0" y="-23" text-anchor="middle" font-size="7" fill="#9A7860" font-family="-apple-system,sans-serif">2</text>
+        <text x="0" y="-10" text-anchor="middle" font-size="6" fill="#9A7860" font-family="-apple-system,sans-serif">0-1</text>
+      </g>
+    </svg>
+    <div style="flex:1;min-width:240px">
+      <h3 style="margin-top:0">La spirale vs le chemin linéaire</h3>
+      <p>Un chemin linéaire supposerait que chaque phase est définitivement fermée une fois franchie. La réalité de la transformation est différente : les thèmes reviennent. Un participant en Phase 4 peut rencontrer à nouveau des éléments de Phase 1 — mais avec une capacité de les recevoir radicalement différente.</p>
+      <div class="box box-gold" style="margin-top:16px">
+        <div class="box-title">Pour le praticien</div>
+        <p>Quand un participant "revient en arrière", ce n'est pas un échec. C'est la spirale qui s'approfondit. Votre rôle est de l'accompagner dans ce mouvement sans le juger ni le presser.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NOYAU -->
+<div class="section" id="noyau">
+  <div class="section-num">Partie I · 1.4</div>
+  <div class="section-title">Le Noyau & les 9 Voiles</div>
+  <div class="section-lead">Au centre de chaque être humain se trouve le Noyau — l'identité essentielle, intacte, qui précède tous les conditionnements. Les 9 Voiles sont les couches qui l'obscurcissent.</div>
+
+  <h3>Le Noyau</h3>
+  <p>Le Noyau n'est pas une chose que l'on crée ou que l'on découvre grâce à un travail. Il est là depuis le début — il a simplement été recouvert. La méthode ORIA ne cherche pas à construire une nouvelle identité : elle dégage ce qui a toujours été là sous les couches d'adaptation, de loyauté et de survie.</p>
+
+  <div class="pq"><p>On ne construit pas le Noyau. On l'atteint. Par le retrait patient de ce qui l'a recouvert.</p></div>
+
+  <h3>Les 9 Voiles</h3>
+  <p>Les Voiles ne sont pas des défauts — ce sont des protections qui ont eu leur raison d'être. Ils se sont formés pour permettre à l'être de survivre dans son histoire. Le travail ORIA ne cherche pas à les éliminer brutalement, mais à les reconnaître avec compassion.</p>
+
+  <div class="grid-3">
+    <div class="grid-card"><div class="gc-title">1. Le Voile de l'Adaptation</div><div class="gc-text">Ce que j'ai dû devenir pour être aimé dans ma famille</div></div>
+    <div class="grid-card"><div class="gc-title">2. Le Voile de la Loyauté</div><div class="gc-text">Ce que je répète pour rester fidèle à ceux qui m'ont précédé</div></div>
+    <div class="grid-card"><div class="gc-title">3. Le Voile du Secret</div><div class="gc-text">Ce qui n'a jamais pu être dit et qui continue de peser</div></div>
+    <div class="grid-card"><div class="gc-title">4. Le Voile de la Honte</div><div class="gc-text">Ce que la famille a dû cacher pour survivre socialement</div></div>
+    <div class="grid-card"><div class="gc-title">5. Le Voile du Deuil Non Fait</div><div class="gc-text">Les pertes non pleurées qui traversent les générations</div></div>
+    <div class="grid-card"><div class="gc-title">6. Le Voile de la Mission</div><div class="gc-text">Le rôle que j'ai cru devoir jouer pour sauver ma famille</div></div>
+    <div class="grid-card"><div class="gc-title">7. Le Voile du Destin</div><div class="gc-text">La croyance que mon histoire est inévitable</div></div>
+    <div class="grid-card"><div class="gc-title">8. Le Voile de la Force</div><div class="gc-text">Les ressources non transmises de la lignée, en attente d'être reçues</div></div>
+    <div class="grid-card"><div class="gc-title">9. Le Voile de la Vocation</div><div class="gc-text">Le don propre à l'âme, encore non exprimé</div></div>
+  </div>
+</div>
+
+<!-- FORCES -->
+<div class="section" id="forces">
+  <div class="section-num">Partie I · 1.5</div>
+  <div class="section-title">Les 7 Forces ORIA</div>
+  <div class="section-lead">Les 7 Forces sont les ressources transformatrices qui s'activent progressivement au fil du parcours. Elles ne sont pas acquises de l'extérieur — elles sont révélées de l'intérieur.</div>
+
+  <div class="grid-2">
+    <div class="grid-card"><div class="gc-icon">👁</div><div class="gc-title">1. La Force du Regard</div><div class="gc-text">Capacité à observer sans juger — soi, sa famille, son histoire. S'active dès la Phase 0.</div></div>
+    <div class="grid-card"><div class="gc-icon">🌳</div><div class="gc-title">2. La Force des Racines</div><div class="gc-text">Connexion à l'héritage familial comme source, non comme prison. S'active en Phase 1.</div></div>
+    <div class="grid-card"><div class="gc-icon">🔍</div><div class="gc-title">3. La Force de la Reconnaissance</div><div class="gc-text">Capacité à nommer les répétitions sans les alimenter. S'active en Phase 2.</div></div>
+    <div class="grid-card"><div class="gc-icon">🤝</div><div class="gc-title">4. La Force de la Réconciliation</div><div class="gc-text">Mouvement intérieur d'accueil de ce qui était rejeté. S'active en Phase 3.</div></div>
+    <div class="grid-card"><div class="gc-icon">🔥</div><div class="gc-title">5. La Force du Feu Propre</div><div class="gc-text">Connexion à sa vocation et son désir authentique. S'active en Phase 4.</div></div>
+    <div class="grid-card"><div class="gc-icon">⭕</div><div class="gc-title">6. La Force de la Forme</div><div class="gc-text">Capacité à incarner son archétype, à lui donner corps. S'active en Phase 5-6.</div></div>
+    <div class="grid-card" style="grid-column:1/-1;max-width:360px"><div class="gc-icon">✦</div><div class="gc-title">7. La Force de la Transmission</div><div class="gc-text">Capacité à offrir sa transformation comme contribution. S'active en Phase 7.</div></div>
+  </div>
+</div>
+
+<!-- ══════════════ PARTIE II — LES 8 PHASES ══════════════ -->
+
+<!-- PH0 -->
+<div class="section" id="ph0">
+  <div class="section-num">Partie II · Phase 0</div>
+  <div class="section-title">Le Témoin</div>
+  <div class="section-lead">La première phase n'est pas un travail — c'est une posture. Avant de comprendre, avant de changer, avant de guérir : apprendre à voir.</div>
+
+  <div class="phase-card">
+    <div class="phase-card-hdr ph0">
+      <div class="phase-num-big">0</div>
+      <div>
+        <div class="phase-tag" style="color:#6B4D2F">Phase d'entrée</div>
+        <div class="phase-name-big" style="color:var(--brown)">Le Témoin — Observer sans juger</div>
+      </div>
+    </div>
+    <div class="phase-card-body">
+      <div class="grid-2">
+        <div><h4>Intention de la phase</h4><p style="font-size:14px">Installer la posture d'observation bienveillante. Créer la sécurité intérieure nécessaire pour que le reste du parcours puisse se déployer.</p></div>
+        <div><h4>Durée indicative</h4><p style="font-size:14px">2 à 4 séances. On ne brusque pas la Phase 0 — elle conditionne la qualité de tout ce qui suit.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Ce qui se passe en Phase 0</h3>
+  <p>Le participant apprend à distinguer l'expérience de l'interprétation. Il remarque ses pensées, ses sensations, ses émotions — sans immédiatement chercher à les comprendre, les changer ou les fuir. C'est un travail de présence radicale, souvent déroutant pour des personnes habituées à l'action ou à l'analyse.</p>
+
+  <div class="box box-dashed">
+    <div class="box-title">Exercice fondateur — Le regard du témoin</div>
+    <p><strong>Durée :</strong> 10 minutes d'observation, 20 minutes d'écriture.</p>
+    <p><strong>Instruction :</strong> Fermez les yeux. Observez ce qui se passe en vous — pensées, sensations physiques, émotions, images — sans rien changer ni juger. Vous êtes simplement là, à regarder passer. Après 10 minutes, ouvrez les yeux et décrivez ce que vous avez observé, comme si vous étiez un journaliste qui rapporte des faits.</p>
+    <p><strong>Question guide :</strong> <em>Qu'est-ce que j'ai vu, sans interpréter ?</em></p>
+  </div>
+
+  <h3>Ce que le praticien fait en Phase 0</h3>
+  <ul>
+    <li>Il installe la sécurité relationnelle — le participant doit sentir qu'il peut dire tout ce qu'il voit, sans crainte de jugement</li>
+    <li>Il modélise lui-même la posture du Témoin dans la séance : écoute totale, reformulation neutre, absence de conseil ou d'interprétation</li>
+    <li>Il introduit le Journal ORIA et explique comment il sera utilisé</li>
+    <li>Il présente la structure du parcours sans imposer de destination</li>
+  </ul>
+
+  <h3>Signes de validation pour passer à la Phase 1</h3>
+  <div class="box box-gold">
+    <ul>
+      <li>Le participant peut décrire son état intérieur sans immédiatement l'analyser ou le juger</li>
+      <li>Il commence à distinguer ce qu'il ressent de ce qu'il pense de ce qu'il ressent</li>
+      <li>Il a écrit au moins 3 entrées de journal</li>
+      <li>Il exprime une curiosité — non une peur — vis-à-vis de la suite</li>
+    </ul>
+  </div>
+
+  <div class="box box-brown">
+    <div class="box-title warn">Erreur fréquente du praticien en Phase 0</div>
+    <p>Vouloir aller trop vite vers le "travail de fond". La Phase 0 n'est pas un couloir — c'est la première pièce. Un participant qui n'a pas installé la posture du Témoin ne pourra pas recevoir ce que les phases suivantes lui proposeront.</p>
+  </div>
+</div>
+
+<!-- PH1 -->
+<div class="section" id="ph1">
+  <div class="section-num">Partie II · Phase 1</div>
+  <div class="section-title">L'Origine</div>
+  <div class="section-lead">Cartographier l'héritage. Voir d'où l'on vient, avant de comprendre où l'on est.</div>
+
+  <div class="phase-card">
+    <div class="phase-card-hdr ph1">
+      <div class="phase-num-big">1</div>
+      <div>
+        <div class="phase-tag" style="color:#8B5E30">Phase d'exploration</div>
+        <div class="phase-name-big" style="color:var(--brown)">L'Origine — Cartographier la lignée</div>
+      </div>
+    </div>
+    <div class="phase-card-body">
+      <div class="grid-2">
+        <div><h4>Intention</h4><p style="font-size:14px">Dresser la carte vivante de l'héritage familial. Identifier les grandes figures, les événements marquants, les répétitions visibles.</p></div>
+        <div><h4>Durée indicative</h4><p style="font-size:14px">3 à 6 séances. Le génosociogramme se construit progressivement, par couches.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Ce qui se passe en Phase 1</h3>
+  <p>Le participant construit son génosociogramme — une carte vivante de son histoire familiale sur au moins deux générations. Il identifie les métiers, les lieux, les événements, les pertes, les secrets. Il commence à voir, sans encore interpréter, les motifs qui se répètent.</p>
+
+  <div class="box box-dashed">
+    <div class="box-title">Exercice — La carte de l'héritage</div>
+    <p><strong>Instruction :</strong> Dessinez votre arbre familial sur au moins deux générations (parents, grands-parents). Pour chaque figure, notez : prénom, métier ou rôle, événement majeur, ce qu'on dit de lui/elle dans la famille. Entourez les éléments qui se répètent.</p>
+    <p><strong>Questions guides :</strong></p>
+    <ul>
+      <li><em>Quels métiers ou rôles se répètent dans ma lignée ?</em></li>
+      <li><em>Quelles pertes ou deuils n'ont pas pu être pleurés ?</em></li>
+      <li><em>Quelle figure de ma lignée me ressemble le plus — et que ressens-je à cette idée ?</em></li>
+    </ul>
+  </div>
+
+  <h3>Signes de validation</h3>
+  <div class="box box-gold">
+    <ul>
+      <li>Le génosociogramme couvre au moins deux générations avec des informations concrètes</li>
+      <li>Le participant peut nommer au moins une répétition visible dans sa lignée</li>
+      <li>Il peut observer cette répétition avec curiosité plutôt qu'avec honte ou peur</li>
+      <li>Il ressent une connexion — même ambivalente — à son héritage</li>
+    </ul>
+  </div>
+</div>
+
+<!-- PH2 -->
+<div class="section" id="ph2">
+  <div class="section-num">Partie II · Phase 2</div>
+  <div class="section-title">La Reconnaissance</div>
+  <div class="section-lead">Voir les loyautés invisibles. Nommer les répétitions. Ce qui n'est pas reconnu se répète — cette loi est au cœur de la Phase 2.</div>
+
+  <div class="phase-card">
+    <div class="phase-card-hdr ph2">
+      <div class="phase-num-big">2</div>
+      <div>
+        <div class="phase-tag" style="color:var(--gold-d)">Phase de révélation</div>
+        <div class="phase-name-big" style="color:var(--brown)">La Reconnaissance — Voir les répétitions</div>
+      </div>
+    </div>
+    <div class="phase-card-body">
+      <div class="grid-2">
+        <div><h4>Intention</h4><p style="font-size:14px">Identifier les loyautés systémiques et les répétitions actives dans la vie du participant. Créer le lien entre son histoire présente et l'histoire familiale.</p></div>
+        <div><h4>Durée indicative</h4><p style="font-size:14px">4 à 8 séances. C'est souvent la phase la plus longue — et la plus chargée émotionnellement.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Le concept de loyauté invisible</h3>
+  <p>Une loyauté invisible est un acte d'amour inconscient. Répéter la souffrance de son père, ne pas réussir là où sa mère a échoué, reproduire le schéma relationnel de ses grands-parents : tout cela est une forme de fidélité. "Je reste avec toi dans ta souffrance. Je ne te dépasse pas." La Phase 2 n'est pas là pour condamner cette loyauté — mais pour la rendre consciente, afin qu'elle puisse être honorée autrement.</p>
+
+  <div class="box box-dashed">
+    <div class="box-title">Exercice — La loyauté invisible</div>
+    <p><strong>Instruction :</strong> Choisissez une situation dans votre vie qui se répète malgré vous (un type de relation, un schéma professionnel, une manière de réagir face au conflit...). Maintenant regardez votre arbre : qui dans votre famille a vécu quelque chose de similaire ? Que se passerait-il symboliquement si vous rompiez cette répétition ?</p>
+    <p><strong>Question guide :</strong> <em>À qui serais-je infidèle si je changeais cela ?</em></p>
+  </div>
+
+  <h3>Signes de validation</h3>
+  <div class="box box-gold">
+    <ul>
+      <li>Le participant peut nommer une ou plusieurs loyautés invisibles à l'œuvre dans sa vie</li>
+      <li>Il ressent de la compassion — non de la honte — pour cette loyauté</li>
+      <li>Il commence à percevoir la différence entre sa propre histoire et celle qu'il a héritée</li>
+      <li>Il n'est pas encore dans l'urgence de "guérir" — il est dans la reconnaissance</li>
+    </ul>
+  </div>
+</div>
+
+<!-- PH25 -->
+<div class="section" id="ph25">
+  <div class="section-num">Partie II · Phase 2.5</div>
+  <div class="section-title">Le Désert Identitaire</div>
+  <div class="section-lead">Entre ce qu'on était et ce qu'on devient, il y a parfois un désert. Cette phase n'est pas une régression — c'est le seuil de la transformation.</div>
+
+  <div class="phase-card">
+    <div class="phase-card-hdr ph25">
+      <div class="phase-num-big" style="font-size:15px">2.5</div>
+      <div>
+        <div class="phase-tag" style="color:#5A4632">Phase de transition — non systématique</div>
+        <div class="phase-name-big" style="color:var(--brown)">Le Désert Identitaire — Le vide fécond</div>
+      </div>
+    </div>
+  </div>
+
+  <p>La Phase 2.5 n'est pas traversée par tous les participants. Elle survient lorsque la reconnaissance des répétitions crée un vide temporaire d'identité : "Si je ne suis plus ce schéma, qui suis-je ?" C'est une phase de désorientation, souvent vécue comme une régression, et qui demande un accompagnement particulièrement attentif.</p>
+
+  <div class="pq"><p>Le Désert Identitaire est la preuve que la transformation est réelle. On ne vit le désert que parce qu'on a quitté quelque chose.</p></div>
+
+  <div class="box box-brown">
+    <div class="box-title warn">Points de vigilance pour le praticien</div>
+    <ul>
+      <li>Ne pas tenter de sortir prématurément le participant du désert — c'est une étape nécessaire</li>
+      <li>Ne pas confondre le Désert Identitaire avec un épisode dépressif clinique — rester vigilant et orienter vers un professionnel de santé si nécessaire</li>
+      <li>Tenir la présence sans chercher à "sauver" le participant</li>
+      <li>Rappeler régulièrement que ce vide est temporaire et fécond</li>
+    </ul>
+  </div>
+
+  <h3>Ce que le praticien dit (et ne dit pas)</h3>
+  <table class="tbl">
+    <tr><th>À dire</th><th>À éviter</th></tr>
+    <tr><td>"Ce que vous traversez a un nom et une place dans votre parcours."</td><td>"Vous allez voir, ça va aller mieux."</td></tr>
+    <tr><td>"Rester dans ce vide demande du courage."</td><td>"Il faut passer à autre chose maintenant."</td></tr>
+    <tr><td>"Qu'est-ce qui est encore vrai pour vous, même maintenant ?"</td><td>"Je pense que vous devriez..."</td></tr>
+  </table>
+</div>
+
+<!-- PH3 -->
+<div class="section" id="ph3">
+  <div class="section-num">Partie II · Phase 3</div>
+  <div class="section-title">L'Intégration</div>
+  <div class="section-lead">Reconnaître ne suffit pas. L'intégration est le mouvement actif qui suit la reconnaissance — accueillir l'héritage, même douloureux, comme une partie de son histoire.</div>
+
+  <div class="phase-card">
+    <div class="phase-card-hdr ph3">
+      <div class="phase-num-big">3</div>
+      <div>
+        <div class="phase-tag" style="color:#B8943A">Phase de réconciliation</div>
+        <div class="phase-name-big" style="color:var(--brown)">L'Intégration — Accueillir sans merger</div>
+      </div>
+    </div>
+  </div>
+
+  <p>L'intégration n'est pas la réconciliation sentimentale avec sa famille. C'est l'acte intérieur par lequel on dit : "Ceci fait partie de mon histoire. Je ne suis pas obligé de le répéter, mais je peux l'accueillir avec compassion." Cette distinction est fondamentale : intégrer ne signifie pas approuver.</p>
+
+  <div class="box box-dashed">
+    <div class="box-title">Exercice — La lettre d'intégration</div>
+    <p><strong>Instruction :</strong> Choisissez un élément de votre héritage que vous avez longtemps rejeté ou tenté d'ignorer. Écrivez une lettre à cette partie de votre histoire, non pour la justifier, mais pour lui dire : "Je vois ce que tu as traversé. Je comprends pourquoi tu t'es transmis ainsi. Je t'accueille dans mon histoire."</p>
+    <p><strong>Question guide :</strong> <em>Que se passerait-il si vous cessiez de combattre cette partie de votre héritage ?</em></p>
+  </div>
+</div>
+
+<!-- PH4 -->
+<div class="section" id="ph4">
+  <div class="section-num">Partie II · Phase 4</div>
+  <div class="section-title">Le Projet d'Âme</div>
+  <div class="section-lead">Après l'exploration de l'héritage et sa réconciliation, une question émerge naturellement : pour quoi tout cela ? La Phase 4 est la découverte de la vocation profonde.</div>
+
+  <div class="phase-card">
+    <div class="phase-card-hdr ph4">
+      <div class="phase-num-big">4</div>
+      <div>
+        <div class="phase-tag" style="color:#9A7228">Phase de révélation</div>
+        <div class="phase-name-big" style="color:var(--brown)">Le Projet d'Âme — La vocation profonde</div>
+      </div>
+    </div>
+  </div>
+
+  <p>Le Projet d'Âme n'est pas un plan de carrière ni un objectif de développement personnel. C'est la réponse à la question : <em>"Si mon histoire entière — avec ses répétitions, ses blessures, ses forces cachées — cherchait à me préparer à quelque chose, à quoi me préparait-elle ?"</em></p>
+
+  <div class="pq"><p>Le Projet d'Âme n'est jamais entièrement nouveau. Il était là depuis le début — attendant d'être dégagé.</p></div>
+
+  <h3>Les 7 axes du Projet d'Âme</h3>
+  <p>Le Projet d'Âme se découvre à l'intersection de sept axes. Le praticien explore ces axes progressivement avec le participant :</p>
+  <table class="tbl">
+    <tr><th>#</th><th>Axe</th><th>Question guide</th></tr>
+    <tr><td>1</td><td>La Blessure transformée</td><td>Quelle souffrance de votre lignée pourrait devenir une force transmissible ?</td></tr>
+    <tr><td>2</td><td>Le Don naturel</td><td>Qu'est-ce qui vous est naturel là où les autres peinent ?</td></tr>
+    <tr><td>3</td><td>L'Indignation juste</td><td>Qu'est-ce qui, dans le monde, vous est insupportable et que vous pourriez contribuer à transformer ?</td></tr>
+    <tr><td>4</td><td>La Joie profonde</td><td>Dans quels moments vous sentez-vous pleinement vous-même ?</td></tr>
+    <tr><td>5</td><td>La Transmission</td><td>Qu'est-ce que vous souhaitez le plus transmettre aux générations qui viennent ?</td></tr>
+    <tr><td>6</td><td>La Résonance</td><td>Quels êtres ou histoires résonnent profondément en vous, et pourquoi ?</td></tr>
+    <tr><td>7</td><td>L'Évidence</td><td>Si vous étiez complètement libre, qu'est-ce que vous feriez de votre vie ?</td></tr>
+  </table>
+</div>
+
+<!-- PH5 -->
+<div class="section" id="ph5">
+  <div class="section-num">Partie II · Phase 5</div>
+  <div class="section-title">L'Archétype</div>
+  <div class="section-lead">À ce stade du parcours, une forme émerge. L'archétype n'est pas un rôle imposé — c'est la reconnaissance d'une structure profonde qui a toujours été là.</div>
+
+  <div class="phase-card">
+    <div class="phase-card-hdr ph5">
+      <div class="phase-num-big">5</div>
+      <div>
+        <div class="phase-tag" style="color:#7B5220">Phase d'attribution — Rôle exclusif du praticien</div>
+        <div class="phase-name-big" style="color:var(--brown)">L'Archétype — La forme profonde</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="box box-brown" style="margin-top:0">
+    <div class="box-title warn">Règle absolue</div>
+    <p>L'archétype est toujours attribué par le praticien, après discernement en séance, en supervision et avec le consentement éclairé du participant. Il n'est jamais auto-attribué, calculé par un algorithme, ou proposé à choix parmi une liste. L'archétype émerge de la totalité du parcours — il ne peut pas être choisi avant.</p>
+  </div>
+
+  <h3>Le processus d'attribution</h3>
+  <ol>
+    <li>Le praticien observe l'ensemble du parcours du participant depuis la Phase 0</li>
+    <li>Il apporte le cas en supervision avant d'attribuer</li>
+    <li>Il formule une intuition — "Je sens que l'archétype de X pourrait être..."</li>
+    <li>Il présente l'archétype au participant, non comme une vérité, mais comme une proposition à tester</li>
+    <li>Le participant est invité à vivre avec cet archétype pendant une séance avant de l'accepter</li>
+    <li>L'attribution est confirmée uniquement si le participant ressent une reconnaissance profonde</li>
+  </ol>
+</div>
+
+<!-- PH6 -->
+<div class="section" id="ph6">
+  <div class="section-num">Partie II · Phase 6</div>
+  <div class="section-title">Le Mythe Personnel</div>
+  <div class="section-lead">Chaque être humain est un mythe en train de s'écrire. La Phase 6 donne une forme narrative à la totalité du parcours — une histoire qui porte un sens.</div>
+
+  <div class="phase-card">
+    <div class="phase-card-hdr ph6">
+      <div class="phase-num-big">6</div>
+      <div>
+        <div class="phase-tag" style="color:#644118">Phase de création</div>
+        <div class="phase-name-big" style="color:var(--brown)">Le Mythe Personnel — L'histoire transformée</div>
+      </div>
+    </div>
+  </div>
+
+  <p>Le Mythe Personnel n'est pas une fiction. C'est la mise en récit de la vérité la plus profonde du parcours : "Voilà d'où je viens, voilà ce que j'ai traversé, voilà ce que je suis en train de devenir, voilà ce que je viens offrir." C'est un acte de création et de souveraineté.</p>
+
+  <div class="box box-dashed">
+    <div class="box-title">Exercice — L'écriture du mythe</div>
+    <p><strong>Instruction :</strong> Écrivez votre histoire à la troisième personne, en commençant par "Il était une fois un être qui est né dans une famille où..." Racontez votre parcours comme un voyage initiatique — avec ses épreuves, ses rencontres, ses révélations et sa vocation émergente. L'archétype qui vous a été attribué doit être visible dans la manière dont vous traversez les épreuves.</p>
+    <p><strong>Durée :</strong> Plusieurs séances d'écriture. Le mythe se peaufine et s'approfondit.</p>
+  </div>
+</div>
+
+<!-- PH7 -->
+<div class="section" id="ph7">
+  <div class="section-num">Partie II · Phase 7</div>
+  <div class="section-title">L'Alignement</div>
+  <div class="section-lead">La dernière phase est un engagement. Non pas un contrat légal — un contrat avec soi-même, avec sa lignée, avec la vie. L'alignement entre ce qu'on est et ce qu'on fait dans le monde.</div>
+
+  <div class="phase-card">
+    <div class="phase-card-hdr ph7">
+      <div class="phase-num-big">7</div>
+      <div>
+        <div class="phase-tag" style="color:var(--brown)">Phase d'engagement</div>
+        <div class="phase-name-big" style="color:var(--brown)">L'Alignement — L'engagement dans la contribution</div>
+      </div>
+    </div>
+  </div>
+
+  <p>La Phase 7 n'est pas une fin — c'est un commencement. Le participant sort du parcours ORIA avec une clarté nouvelle sur qui il est, d'où il vient, et ce qu'il vient offrir. L'Alignement est l'acte par lequel il s'engage à vivre depuis ce centre.</p>
+
+  <div class="pq"><p>On ne quitte pas le parcours ORIA pour aller mieux. On le quitte pour aller plus loin — pour soi, pour les siens, et pour le monde.</p></div>
+
+  <h3>Le Contrat d'Âme</h3>
+  <p>En Phase 7, le praticien guide le participant dans l'écriture de son Contrat d'Âme : un document personnel, en quelques lignes, qui exprime l'engagement pris à l'issue du parcours. Ce n'est pas un plan d'action — c'est une déclaration d'orientation.</p>
+
+  <div class="box box-gold">
+    <div class="box-title">Structure du Contrat d'Âme</div>
+    <ul>
+      <li><strong>D'où je viens :</strong> une phrase sur l'héritage reconnu et intégré</li>
+      <li><strong>Ce que j'ai traversé :</strong> une phrase sur la transformation accomplie</li>
+      <li><strong>Ce que je suis :</strong> l'archétype, vivant et incarné</li>
+      <li><strong>Ce que j'offre :</strong> la contribution, concrète et vocation</li>
+      <li><strong>Mon engagement :</strong> une phrase d'intention pour la suite</li>
+    </ul>
+  </div>
+
+  <h3>La génération du Dossier d'Âme</h3>
+  <p>À la validation de la Phase 7, le praticien génère le Dossier d'Âme — la synthèse documentée de l'intégralité du parcours. Ce document appartient au participant. Il contient le génosociogramme final, les répétitions identifiées, les ressources révélées, l'archétype attribué, le Mythe Personnel, et le Contrat d'Âme.</p>
+</div>
+
+<!-- ══════════════ PARTIE III — OUTILS ══════════════ -->
+
+<div class="section" id="mandala">
+  <div class="section-num">Partie III · 3.1</div>
+  <div class="section-title">Le Mandala Vivant</div>
+  <div class="section-lead">Le Mandala Vivant est la représentation visuelle du parcours ORIA — une carte du territoire intérieur qui s'illumine au fil des phases validées.</div>
+
+  <div class="mandala-section">
+    <div style="flex-shrink:0">
+      <svg width="240" height="240" viewBox="0 0 240 240">
+        <g transform="translate(120,120)">
+          <line x1="0" y1="-112" x2="0" y2="-20" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4"/>
+          <line x1="0" y1="-112" x2="0" y2="-20" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(45)"/>
+          <line x1="0" y1="-112" x2="0" y2="-20" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(90)"/>
+          <line x1="0" y1="-112" x2="0" y2="-20" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(135)"/>
+          <line x1="0" y1="-112" x2="0" y2="-20" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(180)"/>
+          <line x1="0" y1="-112" x2="0" y2="-20" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(225)"/>
+          <line x1="0" y1="-112" x2="0" y2="-20" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(270)"/>
+          <line x1="0" y1="-112" x2="0" y2="-20" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(315)"/>
+          <!-- All rings illuminated to show full mandala -->
+          <circle cx="0" cy="0" r="112" fill="rgba(196,164,74,0.04)" stroke="#C4A44A" stroke-width="1.5"/>
+          <circle cx="0" cy="0" r="93" fill="rgba(196,164,74,0.06)" stroke="#C4A44A" stroke-width="1.5"/>
+          <circle cx="0" cy="0" r="75" fill="rgba(196,164,74,0.08)" stroke="#B8943A" stroke-width="2"/>
+          <circle cx="0" cy="0" r="58" fill="rgba(196,164,74,0.10)" stroke="#B8943A" stroke-width="2"/>
+          <circle cx="0" cy="0" r="42" fill="rgba(196,164,74,0.14)" stroke="#9A7228" stroke-width="2.5"/>
+          <circle cx="0" cy="0" r="28" fill="rgba(196,164,74,0.20)" stroke="#7B5220" stroke-width="3"/>
+          <circle cx="0" cy="0" r="14" fill="#3C2415"/>
+          <text x="0" y="5" text-anchor="middle" font-size="10" fill="#C4A44A" font-family="serif">✦</text>
+        </g>
+      </svg>
+      <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:8px;font-family:-apple-system,sans-serif">Mandala complet — Phase 7 accomplie</div>
+    </div>
+    <div style="flex:1;min-width:260px">
+      <h3 style="margin-top:0">Structure du Mandala</h3>
+      <table class="tbl">
+        <tr><th>Anneau</th><th>Phase(s)</th><th>Correspondance</th></tr>
+        <tr><td>Centre</td><td>—</td><td>Le Noyau — identité essentielle</td></tr>
+        <tr><td>Anneau 1</td><td>0 & 1</td><td>Le Témoin & L'Origine</td></tr>
+        <tr><td>Anneau 2</td><td>2</td><td>La Reconnaissance</td></tr>
+        <tr><td>Anneau 3</td><td>3</td><td>L'Intégration</td></tr>
+        <tr><td>Anneau 4</td><td>4</td><td>Le Projet d'Âme</td></tr>
+        <tr><td>Anneau 5</td><td>5 & 6</td><td>L'Archétype & Le Mythe</td></tr>
+        <tr><td>Anneau 6</td><td>7</td><td>L'Alignement</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <h3>Règles d'évolution du Mandala</h3>
+  <ul>
+    <li>Les anneaux s'illuminent de l'intérieur vers l'extérieur — jamais l'inverse</li>
+    <li>Un anneau ne s'illumine que sur validation explicite du praticien</li>
+    <li>L'anneau en cours apparaît pulsant — signifiant le travail en cours</li>
+    <li>Les anneaux non encore atteints restent en pointillé — présents mais voilés</li>
+    <li>Le Mandala n'est jamais "incomplet" — il est toujours juste là où il doit être</li>
+  </ul>
+</div>
+
+<div class="section" id="journal">
+  <div class="section-num">Partie III · 3.2</div>
+  <div class="section-title">Le Journal ORIA</div>
+  <div class="section-lead">Le journal n'est pas un journal intime. C'est un espace de témoignage — un lieu où le participant pratique l'art d'observer son propre intérieur.</div>
+
+  <p>Le Journal ORIA est introduit dès la Phase 0 et tenu tout au long du parcours. Il contient des entrées libres, des réponses aux exercices, et des réflexions après séance. Il est visible par le praticien — ce n'est pas un secret, c'est un outil de travail commun.</p>
+
+  <div class="grid-2">
+    <div class="box box-gold">
+      <div class="box-title">Ce que le participant écrit</div>
+      <ul>
+        <li>Des observations — ce qu'il voit, ressent, remarque</li>
+        <li>Des réponses aux exercices de chaque phase</li>
+        <li>Des réflexions après séance</li>
+        <li>Des images, rêves, souvenirs qui émergent</li>
+        <li>Des questions ouvertes, sans réponse</li>
+      </ul>
+    </div>
+    <div class="box box-brown">
+      <div class="box-title dark">Ce que le praticien lit</div>
+      <ul>
+        <li>Les thèmes récurrents et les répétitions dans l'écriture</li>
+        <li>L'évolution du vocabulaire émotionnel</li>
+        <li>Les résistances : ce qui n'est jamais écrit</li>
+        <li>Les signaux de progression ou de blocage</li>
+        <li>Les matériaux pour les exercices suivants</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="box box-dashed">
+    <div class="box-title">Consigne du journal — À remettre au participant en Phase 0</div>
+    <p>"Votre journal n'a pas besoin d'être beau. Il n'a pas besoin d'être vrai au sens littéral. Il a besoin d'être honnête. Écrivez ce que vous observez — non ce que vous pensez devoir observer. Trois lignes valent autant qu'une page. L'important, c'est le regard que vous portez, non ce qu'il voit."</p>
+  </div>
+</div>
+
+<div class="section" id="genosocio">
+  <div class="section-num">Partie III · 3.3</div>
+  <div class="section-title">Le Génosociogramme ORIA</div>
+  <div class="section-lead">Le génosociogramme est la carte vivante de l'héritage familial. Il ne cherche pas à expliquer — il cherche à rendre visible.</div>
+
+  <p>Le génosociogramme ORIA est construit progressivement pendant la Phase 1. Il diffère d'un arbre généalogique classique en ce qu'il intègre non seulement les liens biologiques, mais aussi les événements marquants, les émotions associées, les professions répétées, les deuils non faits, et les secrets de famille.</p>
+
+  <h3>Comment construire le génosociogramme</h3>
+  <ol>
+    <li><strong>Commencer par le participant</strong> — lui, ses frères et sœurs</li>
+    <li><strong>Monter vers les parents</strong> — prénom, métier, événement majeur, rôle dans la famille</li>
+    <li><strong>Monter vers les grands-parents</strong> — mêmes informations, plus : guerres, migrations, pertes</li>
+    <li><strong>Marquer les répétitions</strong> — encercler ce qui revient (métiers, prénoms, dates, accidents)</li>
+    <li><strong>Noter les blancs</strong> — ce qu'on ne sait pas est souvent aussi parlant que ce qu'on sait</li>
+    <li><strong>Identifier les figures de ressource</strong> — ceux dans la lignée qui ont su transformer</li>
+  </ol>
+
+  <div class="box box-gold">
+    <div class="box-title">Ce que le praticien cherche dans le génosociogramme</div>
+    <ul>
+      <li>Les répétitions de schémas relationnels (abandon, rupture, fusion)</li>
+      <li>Les transmissions professionnelles ou vocationnelles</li>
+      <li>Les deuils non faits et les morts non parlées</li>
+      <li>Les accidents, maladies ou événements qui reviennent aux mêmes âges</li>
+      <li>Les figures de ressource non reconnues dans la lignée</li>
+      <li>Les secrets — visibles par les blancs dans le récit familial</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════ PARTIE IV — ARCHÉTYPES ══════════════ -->
+
+<div class="section" id="archetypes">
+  <div class="section-num">Partie IV · 4.1</div>
+  <div class="section-title">Les 12 Archétypes ORIA</div>
+  <div class="section-lead">Les 12 archétypes ORIA ne sont pas des types de personnalité. Ce sont des formes de contribution — des rôles mythiques que l'être humain peut incarner lorsqu'il a transformé son héritage.</div>
+
+  <div class="arch-grid">
+
+    <div class="arch-card">
+      <div class="arch-ico">🜂</div>
+      <div class="arch-name">Le Passeur</div>
+      <div class="arch-essence">Archétype du seuil</div>
+      <div class="arch-desc">Traverse les mondes et les seuils. Guide les autres entre deux états — avant et après, deuil et renaissance, hier et demain. Sa force est de tenir le passage sans forcer la traversée.</div>
+      <div class="arch-shadow">Ombre : peut rester au seuil, n'entrant jamais lui-même dans le nouveau territoire.</div>
+    </div>
+
+    <div class="arch-card">
+      <div class="arch-ico">🜁</div>
+      <div class="arch-name">Le Gardien</div>
+      <div class="arch-essence">Archétype de la mémoire</div>
+      <div class="arch-desc">Protège la mémoire des origines. Maintient la cohérence du groupe, de la lignée, de la communauté. Sa contribution est de garder vivant ce qui risque d'être oublié.</div>
+      <div class="arch-shadow">Ombre : peut devenir le gardien du musée — protéger ce qui devrait être transformé.</div>
+    </div>
+
+    <div class="arch-card">
+      <div class="arch-ico">🜃</div>
+      <div class="arch-name">Le Bâtisseur</div>
+      <div class="arch-essence">Archétype de la fondation</div>
+      <div class="arch-desc">Transforme l'héritage reçu en fondation solide pour les générations futures. Sa force est dans la durée et dans la capacité à construire ce qu'il ne verra pas aboutir.</div>
+      <div class="arch-shadow">Ombre : peut sacrifier le présent sur l'autel du futur, oubliant de vivre maintenant.</div>
+    </div>
+
+    <div class="arch-card">
+      <div class="arch-ico">🜄</div>
+      <div class="arch-name">Le Nomade</div>
+      <div class="arch-essence">Archétype de l'exploration</div>
+      <div class="arch-desc">Défriche les territoires inconnus de l'âme individuelle et collective. Apporte ce qui manque depuis l'extérieur du système. Sa force est le courage d'aller là où personne n'est encore allé.</div>
+      <div class="arch-shadow">Ombre : peut fuir sous couvert d'explorer. Peut ne jamais s'appartenir.</div>
+    </div>
+
+    <div class="arch-card">
+      <div class="arch-ico">☽</div>
+      <div class="arch-name">La Tisseuse</div>
+      <div class="arch-essence">Archétype du lien</div>
+      <div class="arch-desc">Répare les liens rompus et recrée la cohérence du tissu familial ou communautaire. Sa contribution est invisible — elle agit dans les interstices et les espaces entre les gens.</div>
+      <div class="arch-shadow">Ombre : peut s'oublier elle-même à force de tisser les liens des autres.</div>
+    </div>
+
+    <div class="arch-card">
+      <div class="arch-ico">☀</div>
+      <div class="arch-name">Le Révélateur</div>
+      <div class="arch-essence">Archétype de la vérité</div>
+      <div class="arch-desc">Nomme ce qui n'ose pas être dit. Voit ce qui reste dans l'ombre du système. Sa force est dans le courage de nommer sans cruauté ce que les autres pressentent sans pouvoir l'articuler.</div>
+      <div class="arch-shadow">Ombre : peut confondre la vérité et la brutalité. Peut révéler sans prendre soin.</div>
+    </div>
+
+    <div class="arch-card">
+      <div class="arch-ico">✦</div>
+      <div class="arch-name">L'Oracle</div>
+      <div class="arch-essence">Archétype de la vision</div>
+      <div class="arch-desc">Porte la sagesse transgénérationnelle. Voit dans le temps long. Sa contribution est d'orienter le groupe vers ce qui sert la vie sur plusieurs générations — pas seulement le présent immédiat.</div>
+      <div class="arch-shadow">Ombre : peut être incompris, trop en avance, et se sentir seul dans sa vision.</div>
+    </div>
+
+    <div class="arch-card">
+      <div class="arch-ico">⚡</div>
+      <div class="arch-name">Le Héraut</div>
+      <div class="arch-essence">Archétype de l'annonce</div>
+      <div class="arch-desc">Annonce et initie les transformations nécessaires dans son système. Sa force est de nommer le changement avant que les autres ne le voient venir — et de tenir le cap face à la résistance.</div>
+      <div class="arch-shadow">Ombre : peut annoncer sans jamais accompagner. Peut partir une fois le signal donné.</div>
+    </div>
+
+    <div class="arch-card">
+      <div class="arch-ico">🌱</div>
+      <div class="arch-name">Le Semeur</div>
+      <div class="arch-essence">Archétype du futur</div>
+      <div class="arch-desc">Plante pour des générations qu'il ne verra pas. Sa contribution est fondamentalement altruiste et temporellement décalée. Il travaille avec confiance dans le temps, sans avoir besoin de voir les résultats.</div>
+      <div class="arch-shadow">Ombre : peut négliger le présent et les besoins immédiats. Peut se perdre dans le futur.</div>
+    </div>
+
+    <div class="arch-card">
+      <div class="arch-ico">🌊</div>
+      <div class="arch-name">La Guérisseuse</div>
+      <div class="arch-essence">Archétype de la transformation</div>
+      <div class="arch-desc">Transforme les blessures en ressources et la souffrance en sens. Sa force est de rester présente dans la douleur des autres sans en être submergée — de tenir l'espace de la transformation.</div>
+      <div class="arch-shadow">Ombre : peut croire qu'elle doit souffrir pour guérir. Peut soigner sans se soigner.</div>
+    </div>
+
+    <div class="arch-card">
+      <div class="arch-ico">⚖</div>
+      <div class="arch-name">L'Architecte</div>
+      <div class="arch-essence">Archétype de la structure</div>
+      <div class="arch-desc">Construit les ponts entre les mondes, crée les structures qui permettent aux transformations de tenir dans le temps. Sa contribution est l'organisation du sens — donner une forme durable à ce qui était diffus.</div>
+      <div class="arch-shadow">Ombre : peut sacrifier la vie à la structure. Peut construire des ponts que personne ne traverse.</div>
+    </div>
+
+    <div class="arch-card">
+      <div class="arch-ico">🕯</div>
+      <div class="arch-name">Le Veilleur</div>
+      <div class="arch-essence">Archétype de la présence</div>
+      <div class="arch-desc">Maintient la conscience et la flamme dans l'obscurité. Reste présent quand les autres abandonnent. Sa contribution est d'être là — simplement, profondément, sans agenda — quand la nuit est la plus longue.</div>
+      <div class="arch-shadow">Ombre : peut veiller pour les autres au point d'oublier sa propre lumière.</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section" id="attribution">
+  <div class="section-num">Partie IV · 4.2</div>
+  <div class="section-title">Lire & attribuer les archétypes</div>
+  <div class="section-lead">Attribuer un archétype est l'acte le plus délicat de la méthode ORIA. Il demande du temps, de la supervision, et une écoute qui dépasse le récit explicite du participant.</div>
+
+  <h3>Comment reconnaître l'archétype d'un participant</h3>
+  <p>L'archétype ne se lit pas dans ce que le participant dit de lui-même — il se lit dans la manière dont il traverse les épreuves, dans ses répétitions, dans ses forces naturelles et dans ses zones d'ombre les plus tenaces.</p>
+
+  <div class="grid-2">
+    <div class="grid-card"><div class="gc-icon">👁</div><div class="gc-title">Observer le mouvement</div><div class="gc-text">Comment traverse-t-il les difficultés ? Fuit-il ? Tient-il ? Construit-il ? Guide-t-il ? Le mouvement révèle plus que les mots.</div></div>
+    <div class="grid-card"><div class="gc-icon">🔄</div><div class="gc-title">Lire les répétitions</div><div class="gc-text">Quelle forme revient dans sa vie, malgré lui ? Une répétition est souvent l'ombre de l'archétype — l'envers non intégré de sa force.</div></div>
+    <div class="grid-card"><div class="gc-icon">✦</div><div class="gc-title">Repérer les forces naturelles</div><div class="gc-text">Qu'est-ce qui lui est facile là où d'autres peinent ? Ces dons naturels pointent vers l'archétype.</div></div>
+    <div class="grid-card"><div class="gc-icon">🌊</div><div class="gc-title">Identifier l'ombre</div><div class="gc-text">L'ombre de chaque archétype est spécifique. En reconnaissant l'ombre, on reconnaît l'archétype.</div></div>
+  </div>
+
+  <div class="box box-brown">
+    <div class="box-title warn">Erreurs d'attribution à éviter</div>
+    <ul>
+      <li>Attribuer l'archétype que le participant souhaite avoir — non celui qu'il est</li>
+      <li>Confondre la profession du participant avec son archétype</li>
+      <li>Attribuer trop tôt, avant que la Phase 4 soit complète</li>
+      <li>Présenter l'archétype comme une certitude plutôt que comme une hypothèse à tester</li>
+      <li>Changer l'archétype parce que le participant résiste — la résistance fait partie de l'intégration</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════ PARTIE V — POSTURE ══════════════ -->
+
+<div class="section" id="posture">
+  <div class="section-num">Partie V · 5.1</div>
+  <div class="section-title">La Posture du Praticien ORIA</div>
+  <div class="section-lead">La posture du praticien n'est pas une technique — c'est une façon d'être en relation. Elle se cultive, s'affine et se supervise en permanence.</div>
+
+  <div class="pq"><p>Le praticien est le guide. Le participant est l'explorateur. L'application est la carte. Mais c'est le territoire intérieur qui compte — et lui seul.</p></div>
+
+  <h3>Ce que fait le praticien ORIA</h3>
+  <div class="grid-2">
+    <div class="grid-card"><div class="gc-icon">◎</div><div class="gc-title">Tient l'espace</div><div class="gc-text">Crée les conditions de sécurité dans lesquelles la transformation devient possible. Sa présence est le premier outil.</div></div>
+    <div class="grid-card"><div class="gc-icon">👂</div><div class="gc-title">Écoute au-delà des mots</div><div class="gc-text">Entend les répétitions, les thèmes, les évitements. Écoute le corps, le rythme, les silences.</div></div>
+    <div class="grid-card"><div class="gc-icon">❓</div><div class="gc-title">Pose des questions ouvertes</div><div class="gc-text">Des questions qui ouvrent, jamais qui ferment. Des questions qui appartiennent au participant, pas au praticien.</div></div>
+    <div class="grid-card"><div class="gc-icon">✓</div><div class="gc-title">Valide les phases</div><div class="gc-text">Décide quand un participant est prêt à passer à la phase suivante — avec discernement, jamais avec précipitation.</div></div>
+  </div>
+
+  <h3>Ce que le praticien ORIA ne fait pas</h3>
+  <table class="tbl">
+    <tr><th>Le praticien ne fait pas</th><th>Pourquoi</th></tr>
+    <tr><td>Diagnostiquer</td><td>ORIA n'est pas un outil thérapeutique clinique</td></tr>
+    <tr><td>Interpréter à la place du participant</td><td>L'interprétation appartient à celui qui vit l'expérience</td></tr>
+    <tr><td>Attribuer des archétypes automatiquement</td><td>L'archétype émerge du parcours — il n'est pas calculé</td></tr>
+    <tr><td>Conseiller sur les décisions de vie</td><td>Le praticien éclaire — le participant décide</td></tr>
+    <tr><td>Précipiter les transitions entre phases</td><td>Chaque phase a son propre temps</td></tr>
+    <tr><td>Partager sa propre histoire en séance</td><td>Le récit du praticien prend la place de celui du participant</td></tr>
+    <tr><td>Travailler sans supervision</td><td>La supervision n'est pas optionnelle en ORIA</td></tr>
+  </table>
+</div>
+
+<div class="section" id="ethique">
+  <div class="section-num">Partie V · 5.2</div>
+  <div class="section-title">L'Éthique ORIA</div>
+  <div class="section-lead">L'éthique ORIA n'est pas un règlement intérieur — c'est un art de la relation, fondé sur le respect de la souveraineté du participant.</div>
+
+  <h3>Les 5 engagements éthiques du praticien ORIA</h3>
+  <div class="laws">
+    <div class="law">
+      <div class="law-num">1</div>
+      <div>
+        <div class="law-title">La souveraineté du participant</div>
+        <div class="law-text">Le participant est toujours l'expert de sa propre expérience. Le praticien n'est jamais l'autorité sur ce que vit ou ressent le participant. Aucune interprétation ne doit être imposée.</div>
+      </div>
+    </div>
+    <div class="law">
+      <div class="law-num">2</div>
+      <div>
+        <div class="law-title">La confidentialité absolue</div>
+        <div class="law-text">Ce qui est partagé en séance reste entre le praticien et le participant. Les données du parcours ORIA sont des données sensibles. Toute évocation d'un cas en supervision se fait dans le cadre de la supervision — jamais ailleurs.</div>
+      </div>
+    </div>
+    <div class="law">
+      <div class="law-num">3</div>
+      <div>
+        <div class="law-title">L'orientation vers les professionnels de santé</div>
+        <div class="law-text">Dès qu'un état clinique est suspecté (dépression, dissociation, trauma sévère), le praticien oriente vers un professionnel de santé qualifié. ORIA ne traite pas la maladie.</div>
+      </div>
+    </div>
+    <div class="law">
+      <div class="law-num">4</div>
+      <div>
+        <div class="law-title">La supervision comme discipline</div>
+        <div class="law-text">Le praticien ORIA s'engage à une supervision régulière — au minimum mensuelle. La supervision n'est pas un aveu de faiblesse : c'est la condition de l'excellence.</div>
+      </div>
+    </div>
+    <div class="law">
+      <div class="law-num">5</div>
+      <div>
+        <div class="law-title">Le soin de soi</div>
+        <div class="law-text">Un praticien qui ne prend pas soin de lui-même ne peut pas prendre soin des autres. Le praticien continue son propre travail intérieur — il n'est jamais "arrivé".</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="erreurs">
+  <div class="section-num">Partie V · 5.3</div>
+  <div class="section-title">Erreurs communes et comment les traverser</div>
+  <div class="section-lead">Tout praticien commet des erreurs. Ce qui distingue un bon praticien n'est pas l'absence d'erreurs, mais la capacité à les reconnaître, les nommer et les réparer.</div>
+
+  <table class="tbl">
+    <tr><th>Erreur</th><th>Signal</th><th>Correction</th></tr>
+    <tr><td>Projection sur le participant</td><td>On pense avoir compris avant que le participant ait fini de parler</td><td>Revenir à l'écoute. "Qu'est-ce que vous vouliez dire exactement ?"</td></tr>
+    <tr><td>Précipitation entre phases</td><td>Le participant semble "coincé" depuis trop longtemps</td><td>Apporter le cas en supervision. La lenteur est souvent de la sagesse.</td></tr>
+    <tr><td>Sur-identification à l'histoire</td><td>On ressent une forte émotion pendant la séance</td><td>Note en supervision. Cette émotion vous appartient — explorez-la hors séance.</td></tr>
+    <tr><td>Conseil intempestif</td><td>On dit "vous devriez..." ou "à votre place..."</td><td>Reformuler en question : "Qu'est-ce qui vous semblerait juste, là ?"</td></tr>
+    <tr><td>Attribution prématurée d'archétype</td><td>On a une "forte intuition" après 2 séances</td><td>Attendre. Les intuitions précoces sont souvent des projections.</td></tr>
+    <tr><td>Travailler sans supervision</td><td>On n'a pas été en supervision depuis plus d'un mois</td><td>Reprendre immédiatement. Sans supervision, la dérive est inévitable.</td></tr>
+  </table>
+</div>
+
+<!-- ══════════════ PARTIE VI — DOCUMENTS ══════════════ -->
+
+<div class="section" id="dossier">
+  <div class="section-num">Partie VI · 6.1</div>
+  <div class="section-title">Le Dossier d'Âme</div>
+  <div class="section-lead">Le Dossier d'Âme est la mémoire vivante du parcours ORIA. Il appartient au participant — il est généré par le praticien à la validation de la Phase 7.</div>
+
+  <div class="pq"><p>Le Dossier d'Âme n'est pas un rapport. C'est un portrait — une œuvre co-créée par le participant et le praticien au fil du parcours.</p></div>
+
+  <h3>Structure du Dossier d'Âme</h3>
+  <table class="tbl">
+    <tr><th>Section</th><th>Contenu</th><th>Auteur</th></tr>
+    <tr><td>Page de garde</td><td>Nom, dates du parcours, praticien, photo du Mandala final</td><td>Application</td></tr>
+    <tr><td>Le Postulat Vivant</td><td>La version personnelle du postulat ORIA, rédigée par le participant</td><td>Participant</td></tr>
+    <tr><td>L'Héritage reconnu</td><td>Synthèse du génosociogramme et des répétitions identifiées</td><td>Praticien</td></tr>
+    <tr><td>Les Voiles levés</td><td>Les voiles traversés et les ressources révélées</td><td>Co-rédigé</td></tr>
+    <tr><td>L'Archétype</td><td>L'archétype attribué, sa description, ses forces et son ombre</td><td>Praticien</td></tr>
+    <tr><td>Le Mythe Personnel</td><td>Le récit mythique écrit par le participant en Phase 6</td><td>Participant</td></tr>
+    <tr><td>Le Contrat d'Âme</td><td>L'engagement pris à l'issue du parcours</td><td>Participant</td></tr>
+    <tr><td>Le Mandala Final</td><td>Représentation visuelle du Mandala complet, exporté en haute résolution</td><td>Application</td></tr>
+  </table>
+
+  <div class="box box-gold">
+    <div class="box-title">Note pour le praticien</div>
+    <p>La génération du Dossier d'Âme est un acte rituel — pas seulement technique. Prenez le temps d'en parler avec le participant avant de le générer. Expliquez ce qu'il contient. Laissez le participant choisir s'il souhaite recevoir un exemplaire imprimé ou digital. Ce moment marque la fin du parcours — il mérite d'être honoré.</p>
+  </div>
+</div>
+
+<div class="section" id="certif">
+  <div class="section-num">Partie VI · 6.2</div>
+  <div class="section-title">La Certification ORIA</div>
+  <div class="section-lead">La certification ORIA est une porte d'entrée, pas une destination. Elle garantit que le praticien a lui-même traversé le parcours et s'est engagé dans une pratique supervisée.</div>
+
+  <table class="tbl">
+    <tr><th>Niveau</th><th>Titre</th><th>Prérequis</th><th>Programme</th><th>Accès</th></tr>
+    <tr>
+      <td><strong>N1</strong></td>
+      <td>Praticien ORIA Associé</td>
+      <td>2 ans d'expérience en accompagnement · Attestation formation connexe</td>
+      <td>4 modules en ligne (12h) · 2 supervisions de groupe · 1 parcours complet en tant que participant · Examen final</td>
+      <td>990 € · Plan SOLO</td>
+    </tr>
+    <tr>
+      <td><strong>N2</strong></td>
+      <td>Praticien ORIA Certifié</td>
+      <td>Statut N1 depuis 6 mois · 5 participants accompagnés avec dossiers complets</td>
+      <td>2 modules avancés (6h) · 4 supervisions · Mémoire de pratique (5 000 mots)</td>
+      <td>590 € · Plan PRO · Mention "Praticien ORIA Certifié"</td>
+    </tr>
+    <tr>
+      <td><strong>N3</strong></td>
+      <td>Superviseur ORIA</td>
+      <td>Certification N2 depuis 2 ans · 20 participants accompagnés · Recommandation de deux superviseurs</td>
+      <td>Formation à la supervision (3 jours présentiel) · Co-supervision 12 mois · Validation par ORIA</td>
+      <td>1 490 € · Dashboard supervision · Commissionnement sur certifications supervisées</td>
+    </tr>
+  </table>
+
+  <div class="pq"><p>Un praticien certifié ORIA n'est pas quelqu'un qui "sait" — c'est quelqu'un qui a traversé, qui continue de traverser, et qui s'engage à ne jamais guider seul.</p></div>
+
+  <h3>L'engagement de supervision continue</h3>
+  <p>Tout praticien certifié ORIA s'engage à une supervision régulière — minimum une session par mois pour les N1 et N2, minimum une session par trimestre pour les N3. La supervision n'est pas une obligation administrative : c'est la colonne vertébrale de la pratique.</p>
+
+  <div class="box box-gold">
+    <div class="box-title">Ce que vous emportez de cette formation</div>
+    <ul>
+      <li>Une compréhension profonde des 4 Lois et du Postulat Central</li>
+      <li>La maîtrise des 8 phases — leurs intentions, leurs outils, leurs signaux de validation</li>
+      <li>La capacité à lire un génosociogramme et à y reconnaître les répétitions actives</li>
+      <li>La connaissance des 12 archétypes ORIA et du processus d'attribution</li>
+      <li>Une posture éthique claire et des réflexes de supervision</li>
+      <li>Les outils ORIA : Mandala Vivant, Journal, Dossier d'Âme</li>
+    </ul>
+  </div>
+
+  <div class="divider"><div class="div-line"></div><div class="div-icon">✦</div><div class="div-line"></div></div>
+
+  <div style="text-align:center;padding:40px 0">
+    <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-family:-apple-system,sans-serif;margin-bottom:16px">Postulat Vivant — ORIA</div>
+    <div style="font-size:22px;font-style:italic;color:var(--brown);line-height:1.9;max-width:580px;margin:0 auto">
+      "Tu n'es pas venu guérir ton histoire.<br>
+      Tu es venu révéler ce que ton histoire tentait de protéger."
+    </div>
+    <div style="margin-top:32px;font-size:12px;color:var(--muted);font-family:-apple-system,sans-serif">
+      ORIA — Document de formation propriétaire · Version 1.0 · 2026<br>
+      Tous droits réservés — Jonathan Guez, créateur de la méthode ORIA
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+// Sidebar scroll tracking
+var sections=document.querySelectorAll('[id]');
+var links=document.querySelectorAll('.sb-link');
+function scrollTo(id){
+  var el=document.getElementById(id);
+  if(el)el.scrollIntoView({behavior:'smooth'});
+}
+window.addEventListener('scroll',function(){
+  var pos=window.scrollY+120;
+  var current='';
+  sections.forEach(function(s){if(s.offsetTop<=pos)current=s.id;});
+  links.forEach(function(l){
+    l.classList.remove('on');
+    if(l.getAttribute('onclick')&&l.getAttribute('onclick').indexOf("'"+current+"'")>-1)l.classList.add('on');
+  });
+},{passive:true});
+</script>
+</body>
+</html>
