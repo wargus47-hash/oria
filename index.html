@@ -3,887 +3,495 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>ORIA — Méthode de Transformation</title>
+<title>ORIA</title>
 <style>
 :root{
-  --gold:#C4A44A;--gold-light:#E8D8A0;--gold-dark:#8B6B20;
-  --brown:#3C2415;--brown-mid:#6B4D2F;--brown-light:#8B5E30;
-  --ivory:#FAF6EE;--ivory-dark:#F0E8D8;--ivory-mid:#FBF6EC;
-  --white:#FFFFFF;--border:#E0D5C0;--muted:#A08060;
-  --sidebar:220px;--hdr:60px;
+  --gold:#C4A44A;--gold-d:#8B6B20;--gold-l:rgba(196,164,74,.12);
+  --brown:#3C2415;--brn:#6B4D2F;--brn-l:#8B5E30;
+  --ivory:#FAF6EE;--ivory-d:#F0E8D8;--white:#FFFFFF;
+  --border:#E0D5C0;--muted:#A08060;--sidebar:220px;--hdr:58px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--ivory);color:var(--brown);min-height:100vh}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--ivory);color:var(--brown);min-height:100vh;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer}
+textarea,input{font-family:inherit}
 
-/* ──────────── LAUNCHER ──────────── */
-#launcher{position:fixed;inset:0;background:var(--ivory);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .4s}
+/* ── TOAST ── */
+#toasts{position:fixed;top:16px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--brown);color:var(--ivory);padding:10px 18px;border-radius:8px;font-size:13px;opacity:0;transform:translateX(20px);transition:all .3s;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(0)}
+.toast.gold{background:var(--gold);color:var(--brown)}
+
+/* ── LAUNCHER ── */
+#launcher{position:fixed;inset:0;background:var(--ivory);z-index:1000;display:flex;align-items:center;justify-content:center;transition:opacity .4s}
 #launcher.out{opacity:0;pointer-events:none}
-.ls{display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:28px;width:100%;max-width:420px;padding:48px 24px}
+.ls{display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:24px;width:100%;max-width:420px;padding:40px 24px;animation:fup .4s ease}
 .ls.on{display:flex}
-.ls-split{display:none;flex-direction:row;width:100%;max-width:820px;min-height:520px;background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(60,36,21,.08)}
+.ls-split{display:none;flex-direction:row;width:100%;max-width:800px;min-height:500px;background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;animation:fup .4s ease}
 .ls-split.on{display:flex}
 @keyframes rin{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
-@keyframes fup{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .r6{animation:rin .5s ease .10s both}.r5{animation:rin .5s ease .28s both}
 .r4{animation:rin .5s ease .46s both}.r3{animation:rin .5s ease .64s both}
 .r2{animation:rin .5s ease .82s both}.r1{animation:rin .5s ease 1.00s both}
 .rc{animation:rin .5s ease 1.18s both}
 .fade1{animation:fup .6s ease .8s both}.fade2{animation:fup .6s ease 1.0s both}.fade3{animation:fup .6s ease 1.2s both}
-.oria-name{font-size:38px;font-weight:300;letter-spacing:.18em;text-transform:uppercase;color:var(--brown)}
-.oria-tag{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--brown-light)}
-.quote{font-size:14px;color:var(--brown-mid);font-style:italic;line-height:1.9;border-left:2px solid var(--gold);padding-left:18px;text-align:left;max-width:340px}
-.btn-g{background:var(--gold);color:var(--brown);border:none;border-radius:8px;padding:13px 32px;font-size:14px;font-weight:500;cursor:pointer;width:100%;transition:background .2s;letter-spacing:.02em}
-.btn-g:hover{background:var(--gold-dark);color:var(--ivory)}
-.btn-o{background:transparent;color:var(--brown-light);border:1px solid var(--gold);border-radius:8px;padding:12px 32px;font-size:14px;cursor:pointer;width:100%;transition:all .2s}
-.btn-o:hover{background:rgba(196,164,74,.1)}
-.btn-ghost{background:none;border:none;color:var(--brown-light);font-size:12px;cursor:pointer;text-decoration:underline;padding:0}
-.btn-back{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;padding:0;margin-bottom:auto}
-.ctas{display:flex;flex-direction:column;gap:10px;width:100%;max-width:280px}
-.dots{display:flex;gap:8px}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--border)}
-.dot.on{background:var(--gold)}
-
-/* Role cards */
-.rcards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;width:100%;max-width:560px}
-.rcard{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px 16px;display:flex;flex-direction:column;align-items:center;gap:12px;cursor:pointer;transition:all .2s;text-align:center}
-.rcard:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 4px 20px rgba(196,164,74,.15)}
-.rico{width:48px;height:48px;border-radius:50%;background:var(--ivory);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:20px}
+.l-title{font-size:36px;font-weight:300;letter-spacing:.18em;text-transform:uppercase;color:var(--brown)}
+.l-tag{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--brn-l);margin-top:2px}
+.quote{font-size:14px;color:var(--brn);font-style:italic;line-height:1.9;border-left:2px solid var(--gold);padding-left:16px;text-align:left;max-width:320px}
+.btn-g{background:var(--gold);color:var(--brown);border:none;border-radius:8px;padding:12px 28px;font-size:14px;font-weight:500;width:100%;transition:background .2s}
+.btn-g:hover{background:var(--gold-d);color:var(--ivory)}
+.btn-o{background:transparent;color:var(--brn-l);border:1px solid var(--gold);border-radius:8px;padding:11px 28px;font-size:14px;width:100%;transition:all .2s}
+.btn-o:hover{background:var(--gold-l)}
+.btn-ghost{background:none;border:none;color:var(--brn-l);font-size:12px;text-decoration:underline;padding:0}
+.btn-back{background:none;border:none;color:var(--muted);font-size:13px;display:flex;align-items:center;gap:5px;padding:0;margin-bottom:auto}
+.ctas{display:flex;flex-direction:column;gap:10px;width:100%;max-width:270px}
+.rcards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:100%;max-width:540px}
+.rcard{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:22px 14px;display:flex;flex-direction:column;align-items:center;gap:10px;transition:all .2s;text-align:center}
+.rcard:hover{border-color:var(--gold);transform:translateY(-2px);cursor:pointer}
+.rico{width:44px;height:44px;border-radius:50%;background:var(--ivory);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:20px}
 .rname{font-size:13px;font-weight:600;color:var(--brown)}
 .rdesc{font-size:11px;color:var(--muted);line-height:1.5}
-
-/* Split login */
-.spl-l{width:240px;flex-shrink:0;background:var(--brown);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;gap:20px}
-.spl-l-t{font-size:22px;font-weight:300;letter-spacing:.12em;color:var(--ivory)}
-.spl-l-s{font-size:11px;letter-spacing:.08em;color:var(--gold)}
-.spl-l-h{font-size:12px;color:#A08878;line-height:1.6;max-width:160px}
-.spl-r{flex:1;display:flex;flex-direction:column;padding:40px 40px;gap:20px;background:var(--ivory)}
-.f-title{font-size:20px;font-weight:500;color:var(--brown)}
-.f-sub{font-size:12px;color:var(--muted)}
-.fields{display:flex;flex-direction:column;gap:14px}
+.spl-l{width:230px;flex-shrink:0;background:var(--brown);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:36px 22px;text-align:center;gap:18px}
+.spl-r{flex:1;display:flex;flex-direction:column;padding:36px 36px;gap:18px}
 .field{display:flex;flex-direction:column;gap:5px}
-.field label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--brown-mid)}
-.field input{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--brown);outline:none;transition:border-color .2s}
-.field input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(196,164,74,.12)}
-.f-foot{border-top:1px solid var(--border);padding-top:14px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--muted)}
+.field label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--brn)}
+.field input{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:10px 13px;font-size:13px;color:var(--brown);outline:none;transition:border-color .2s}
+.field input:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-l)}
+.fields{display:flex;flex-direction:column;gap:12px}
+.f-foot{border-top:1px solid var(--border);padding-top:12px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--muted)}
+.err{font-size:12px;color:#C0392B;display:none}
+.err.show{display:block}
+.demo-hint{background:var(--ivory-d);border-radius:8px;padding:10px 12px;font-size:11px;color:var(--brn);line-height:1.6;text-align:left}
+.demo-hint strong{color:var(--brown)}
 
-/* Certif */
-.ccards{display:flex;flex-direction:column;gap:10px;width:100%;max-width:400px}
-.ccard{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s}
-.ccard:hover,.ccard.sel{border-color:var(--gold);background:var(--ivory-mid)}
-.clvl{width:32px;height:32px;border-radius:50%;background:var(--ivory);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--brown-light);flex-shrink:0}
-.cname{font-size:13px;font-weight:600;color:var(--brown)}
-.cprice{font-size:11px;color:var(--muted);margin-top:2px}
-.cchk{margin-left:auto;color:transparent;font-size:18px}
-.ccard.sel .cchk{color:var(--gold)}
-
-/* ──────────── APP ──────────── */
-#app{display:none;min-height:100vh}
-#app.on{display:flex;flex-direction:column}
-.app-hdr{height:var(--hdr);background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:16px;position:sticky;top:0;z-index:100}
+/* ── APP ── */
+#app{display:none;min-height:100vh;flex-direction:column}
+#app.on{display:flex}
+.hdr{height:var(--hdr);background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 22px;gap:14px;position:sticky;top:0;z-index:100}
 .hdr-logo{font-size:18px;font-weight:300;letter-spacing:.15em;text-transform:uppercase;color:var(--brown)}
-.hdr-sep{width:1px;height:20px;background:var(--border)}
+.hdr-sep{width:1px;height:18px;background:var(--border)}
 .hdr-ctx{font-size:12px;color:var(--muted)}
-.hdr-right{margin-left:auto;display:flex;align-items:center;gap:12px}
-.role-badge{background:var(--ivory-dark);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--brown-light);font-weight:600;letter-spacing:.04em}
-.hdr-avatar{width:32px;height:32px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--brown);cursor:pointer;flex-shrink:0}
-
-.app-body{display:flex;flex:1}
-.sidebar{width:var(--sidebar);flex-shrink:0;background:var(--white);border-right:1px solid var(--border);padding:20px 0;display:flex;flex-direction:column;position:sticky;top:var(--hdr);height:calc(100vh - var(--hdr))}
-.nav-section{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:16px 20px 6px}
-.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;font-size:13px;color:var(--brown-mid);cursor:pointer;transition:all .2s;border-left:3px solid transparent}
-.nav-item:hover{background:var(--ivory);color:var(--brown)}
-.nav-item.on{background:var(--ivory-dark);color:var(--brown);border-left-color:var(--gold);font-weight:500}
-.nav-item .ico{font-size:16px;width:18px;text-align:center}
-.nav-bottom{margin-top:auto;border-top:1px solid var(--border);padding:12px 0}
-
-.main{flex:1;padding:32px;background:var(--ivory);overflow-y:auto}
+.hdr-r{margin-left:auto;display:flex;align-items:center;gap:10px}
+.role-pill{background:var(--ivory-d);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--brn-l);font-weight:600}
+.rtog{display:flex;background:var(--ivory-d);border-radius:8px;padding:3px;gap:2px}
+.rtog-b{padding:5px 12px;border-radius:6px;border:none;font-size:12px;font-weight:500;background:transparent;color:var(--muted);transition:all .2s}
+.rtog-b.on{background:var(--white);color:var(--brown);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.av{width:32px;height:32px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--brown);cursor:pointer;position:relative}
+.av-menu{position:absolute;top:38px;right:0;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:6px;min-width:160px;box-shadow:0 4px 20px rgba(0,0,0,.1);display:none;z-index:200}
+.av-menu.open{display:block}
+.av-menu-item{padding:8px 12px;font-size:13px;color:var(--brown);border-radius:6px;cursor:pointer;transition:background .15s}
+.av-menu-item:hover{background:var(--ivory)}
+.av-menu-item.danger{color:#C0392B}
+.body{display:flex;flex:1}
+.sidebar{width:var(--sidebar);flex-shrink:0;background:var(--white);border-right:1px solid var(--border);padding:16px 0;display:flex;flex-direction:column;position:sticky;top:var(--hdr);height:calc(100vh - var(--hdr));overflow-y:auto}
+.ns{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:14px 18px 5px}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 18px;font-size:13px;color:var(--brn);cursor:pointer;transition:all .15s;border-left:3px solid transparent}
+.ni:hover{background:var(--ivory);color:var(--brown)}
+.ni.on{background:var(--ivory-d);color:var(--brown);border-left-color:var(--gold);font-weight:500}
+.ni .ico{font-size:15px;width:16px;text-align:center;flex-shrink:0}
+.nb{margin-top:auto;border-top:1px solid var(--border);padding:10px 0}
+.main{flex:1;padding:28px 32px;overflow-y:auto}
 .page{display:none}.page.on{display:block}
-.page-title{font-size:22px;font-weight:300;color:var(--brown);letter-spacing:.04em;margin-bottom:4px}
-.page-sub{font-size:13px;color:var(--muted);margin-bottom:28px}
+.ptitle{font-size:22px;font-weight:300;color:var(--brown);letter-spacing:.03em;margin-bottom:4px}
+.psub{font-size:13px;color:var(--muted);margin-bottom:24px}
 
 /* Cards */
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:28px}
-.card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:24px}
+.card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px}
 .card-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:6px}
 .card-val{font-size:26px;font-weight:300;color:var(--brown)}
 .card-hint{font-size:11px;color:var(--muted);margin-top:4px}
 
-/* Mandala container */
-.mandala-wrap{display:flex;gap:32px;align-items:flex-start}
-.mandala-panel{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:32px;display:flex;flex-direction:column;align-items:center;gap:20px}
-.mandala-legend{flex:1;display:flex;flex-direction:column;gap:10px}
-.leg-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--white);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:border-color .2s}
-.leg-item:hover{border-color:var(--gold)}
-.leg-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+/* Info box */
+.ibox{background:var(--gold-l);border:1px solid rgba(196,164,74,.3);border-radius:10px;padding:13px 15px;font-size:13px;color:var(--brn);line-height:1.6;display:flex;gap:10px;margin-bottom:20px}
+
+/* Mandala */
+.m-wrap{display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap}
+.m-panel{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:28px;display:flex;flex-direction:column;align-items:center;gap:18px}
+.m-legend{flex:1;min-width:240px;display:flex;flex-direction:column;gap:9px}
+.leg{display:flex;align-items:center;gap:11px;padding:10px 13px;background:var(--white);border:1px solid var(--border);border-radius:10px;cursor:default}
+.leg-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
 .leg-name{font-size:13px;font-weight:500;color:var(--brown)}
-.leg-phase{font-size:11px;color:var(--muted)}
-.leg-status{margin-left:auto;font-size:11px;padding:2px 8px;border-radius:20px}
-.st-done{background:#E8F5E9;color:#2E7D32}
-.st-active{background:rgba(196,164,74,.15);color:var(--gold-dark)}
-.st-locked{background:var(--ivory-dark);color:var(--muted)}
+.leg-ph{font-size:11px;color:var(--muted)}
+.badge{margin-left:auto;font-size:11px;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.b-done{background:#E8F5E9;color:#2E7D32}
+.b-active{background:rgba(196,164,74,.15);color:var(--gold-d)}
+.b-lock{background:var(--ivory-d);color:var(--muted)}
 
-/* Phases list */
-.phases{display:flex;flex-direction:column;gap:12px}
-.phase-row{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px 20px;display:flex;align-items:center;gap:16px;cursor:pointer;transition:all .2s}
-.phase-row:hover{border-color:var(--gold);box-shadow:0 2px 12px rgba(196,164,74,.1)}
-.phase-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+/* Phases */
+.phases{display:flex;flex-direction:column;gap:11px;max-width:700px}
+.prow{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 18px;display:flex;align-items:center;gap:14px;transition:all .2s}
+.prow.clickable:hover{border-color:var(--gold);cursor:pointer}
+.prow.current{border-color:var(--gold);box-shadow:0 2px 12px var(--gold-l)}
+.pnum{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
 .ph-done{background:#E8F5E9;color:#2E7D32}
-.ph-active{background:rgba(196,164,74,.2);color:var(--gold-dark);border:2px solid var(--gold)}
-.ph-locked{background:var(--ivory-dark);color:var(--muted)}
-.phase-info{flex:1}
-.phase-name{font-size:14px;font-weight:500;color:var(--brown)}
-.phase-desc{font-size:12px;color:var(--muted);margin-top:2px}
-.phase-progress{width:120px}
-.progress-bar{height:4px;background:var(--ivory-dark);border-radius:2px;overflow:hidden}
-.progress-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .3s}
-
-/* Journal */
-.journal-entries{display:flex;flex-direction:column;gap:14px}
-.j-entry{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
-.j-date{font-size:11px;color:var(--muted);margin-bottom:6px}
-.j-prompt{font-size:12px;font-weight:600;color:var(--brown-light);margin-bottom:8px}
-.j-text{font-size:13px;color:var(--brown-mid);line-height:1.7}
-.j-new{background:var(--white);border:2px dashed var(--border);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px}
-.j-new textarea{background:transparent;border:none;outline:none;font-size:13px;color:var(--brown);resize:none;line-height:1.7;font-family:inherit;min-height:80px}
+.ph-act{background:rgba(196,164,74,.2);color:var(--gold-d);border:2px solid var(--gold)}
+.ph-lock{background:var(--ivory-d);color:var(--muted)}
+.p-info{flex:1}
+.p-name{font-size:14px;font-weight:500;color:var(--brown)}
+.p-desc{font-size:12px;color:var(--muted);margin-top:2px}
+.prog-wrap{width:110px}
+.prog-pct{font-size:11px;color:var(--muted);margin-bottom:4px;text-align:right}
+.prog-bar{height:4px;background:var(--ivory-d);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .4s}
 
 /* Exercise */
-.ex-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:28px;max-width:680px}
-.ex-phase{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--gold-dark);margin-bottom:8px}
-.ex-title{font-size:18px;font-weight:500;color:var(--brown);margin-bottom:12px}
-.ex-body{font-size:14px;color:var(--brown-mid);line-height:1.8;margin-bottom:20px}
-.ex-q{background:var(--ivory-dark);border-radius:10px;padding:16px 18px;font-size:14px;color:var(--brown);line-height:1.7;font-style:italic;border-left:3px solid var(--gold);margin-bottom:20px}
-.ex-textarea{width:100%;background:var(--ivory);border:1px solid var(--border);border-radius:10px;padding:14px 16px;font-size:13px;color:var(--brown);resize:none;outline:none;font-family:inherit;line-height:1.7;min-height:120px;transition:border-color .2s}
-.ex-textarea:focus{border-color:var(--gold)}
+.ex{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:26px;max-width:660px}
+.ex-ph{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--gold-d);margin-bottom:7px}
+.ex-title{font-size:18px;font-weight:500;color:var(--brown);margin-bottom:11px}
+.ex-body{font-size:14px;color:var(--brn);line-height:1.8;margin-bottom:18px}
+.ex-q{background:var(--ivory-d);border-radius:10px;padding:14px 16px;font-size:14px;color:var(--brown);line-height:1.7;font-style:italic;border-left:3px solid var(--gold);margin-bottom:18px}
+.ta{width:100%;background:var(--ivory);border:1px solid var(--border);border-radius:10px;padding:13px 15px;font-size:13px;color:var(--brown);resize:vertical;outline:none;line-height:1.7;transition:border-color .2s}
+.ta:focus{border-color:var(--gold)}
+.sent-badge{display:inline-flex;align-items:center;gap:6px;background:#E8F5E9;color:#2E7D32;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:500;margin-top:8px}
 
-/* Participants list (praticien) */
-.part-list{display:flex;flex-direction:column;gap:10px}
-.part-row{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:16px;cursor:pointer;transition:all .2s}
-.part-row:hover{border-color:var(--gold)}
-.p-avatar{width:38px;height:38px;border-radius:50%;background:var(--gold-light);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--brown);flex-shrink:0}
-.p-name{font-size:14px;font-weight:500;color:var(--brown)}
-.p-meta{font-size:12px;color:var(--muted)}
-.p-phase{margin-left:auto;font-size:11px;padding:3px 10px;background:rgba(196,164,74,.15);color:var(--gold-dark);border-radius:20px;font-weight:500}
+/* Journal */
+.j-new{background:var(--white);border:2px dashed var(--border);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:11px;max-width:680px;margin-bottom:20px}
+.j-entries{display:flex;flex-direction:column;gap:12px;max-width:680px}
+.j-entry{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:17px 19px;animation:fup .3s ease}
+.j-date{font-size:11px;color:var(--muted);margin-bottom:5px}
+.j-text{font-size:13px;color:var(--brn);line-height:1.7}
+
+/* Participants */
+.p-list{display:flex;flex-direction:column;gap:10px;max-width:680px}
+.p-row{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:15px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s}
+.p-row:hover{border-color:var(--gold)}
+.p-av{width:38px;height:38px;border-radius:50%;background:rgba(196,164,74,.2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--brown);flex-shrink:0}
+.p-ph{margin-left:auto;font-size:11px;padding:3px 10px;background:var(--gold-l);color:var(--gold-d);border-radius:20px;font-weight:500;white-space:nowrap}
 
 /* Session notes */
-.note-area{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px;max-width:700px}
-.note-hdr{display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);padding-bottom:14px;margin-bottom:4px}
-.note-textarea{width:100%;background:transparent;border:none;outline:none;font-size:13px;color:var(--brown);resize:none;line-height:1.8;font-family:inherit;min-height:180px}
+.note-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;max-width:680px}
+.note-hdr{display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);padding-bottom:14px;margin-bottom:14px}
 
-/* Alert/info box */
-.info-box{background:rgba(196,164,74,.08);border:1px solid rgba(196,164,74,.3);border-radius:10px;padding:14px 16px;font-size:13px;color:var(--brown-mid);line-height:1.6;display:flex;gap:10px}
-
-/* Role toggle */
-.role-toggle{display:flex;background:var(--ivory-dark);border-radius:8px;padding:3px;gap:2px;margin-left:auto}
-.rtog-btn{padding:5px 14px;border-radius:6px;border:none;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;background:transparent;color:var(--muted)}
-.rtog-btn.on{background:var(--white);color:var(--brown);box-shadow:0 1px 4px rgba(0,0,0,.08)}
-
-/* Archetype card */
-.arch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
-.arch-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:all .2s}
+/* Archetypes */
+.arch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:11px;max-width:680px}
+.arch-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:15px;text-align:center;cursor:pointer;transition:all .2s}
 .arch-card:hover{border-color:var(--gold)}
-.arch-card.sel{border-color:var(--gold);background:rgba(196,164,74,.06)}
-.arch-ico{font-size:28px;margin-bottom:8px}
-.arch-name{font-size:13px;font-weight:600;color:var(--brown);margin-bottom:4px}
+.arch-card.sel{border-color:var(--gold);background:var(--gold-l)}
+.arch-ico{font-size:28px;margin-bottom:7px}
+.arch-name{font-size:13px;font-weight:600;color:var(--brown);margin-bottom:3px}
 .arch-desc{font-size:11px;color:var(--muted);line-height:1.4}
 
-/* Responsive */
-@media(max-width:768px){
-  .rcards{grid-template-columns:1fr}
-  .ls-split.on{flex-direction:column}
-  .spl-l{width:100%;min-height:auto;padding:24px}
-  .sidebar{display:none}
-  .mandala-wrap{flex-direction:column}
-}
+/* Participant detail */
+.p-detail{max-width:700px}
+.p-detail-hdr{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.p-big-av{width:52px;height:52px;border-radius:50%;background:rgba(196,164,74,.2);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:var(--brown);flex-shrink:0}
+
+/* Dossier */
+.dossier-locked{background:var(--white);border:2px dashed var(--border);border-radius:16px;padding:48px;text-align:center;max-width:460px}
+.dossier-ready{background:var(--white);border:1px solid var(--gold);border-radius:16px;padding:32px;max-width:480px;text-align:center}
+
+/* Certif */
+.certif-ccards{display:flex;flex-direction:column;gap:9px;max-width:400px}
+.ccrd{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:13px 15px;display:flex;align-items:center;gap:13px;cursor:pointer;transition:all .2s}
+.ccrd:hover,.ccrd.sel{border-color:var(--gold);background:var(--gold-l)}
+.clvl{width:30px;height:30px;border-radius:50%;background:var(--ivory);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--brn-l);flex-shrink:0}
+
+@media(max-width:700px){.sidebar{display:none}.m-wrap{flex-direction:column}.rcards{grid-template-columns:1fr}.spl-l{width:100%;min-height:auto}}
 </style>
 </head>
 <body>
+<div id="toasts"></div>
 
-<!-- ═══════════════════ LAUNCHER ═══════════════════ -->
+<!-- ═══════════ LAUNCHER ═══════════ -->
 <div id="launcher">
 
-  <!-- HERO -->
   <div class="ls on" id="l-hero">
-    <div>
-      <div class="oria-name fade1">ORIA</div>
-      <div class="oria-tag fade2">Méthode de transformation</div>
-    </div>
-    <svg width="180" height="180" viewBox="0 0 180 180">
-      <g transform="translate(90,90)">
-        <line class="r6" x1="0" y1="-84" x2="0" y2="-17" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4"/>
-        <line class="r6" x1="0" y1="-84" x2="0" y2="-17" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(45)"/>
-        <line class="r6" x1="0" y1="-84" x2="0" y2="-17" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(90)"/>
-        <line class="r6" x1="0" y1="-84" x2="0" y2="-17" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(135)"/>
-        <line class="r6" x1="0" y1="-84" x2="0" y2="-17" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(180)"/>
-        <line class="r6" x1="0" y1="-84" x2="0" y2="-17" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(225)"/>
-        <line class="r6" x1="0" y1="-84" x2="0" y2="-17" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(270)"/>
-        <line class="r6" x1="0" y1="-84" x2="0" y2="-17" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(315)"/>
-        <circle class="r6" cx="0" cy="0" r="84" fill="none" stroke="#D4C4A8" stroke-width="1"/>
-        <circle class="r5" cx="0" cy="0" r="70" fill="none" stroke="#C8B48A" stroke-width="1"/>
-        <circle class="r4" cx="0" cy="0" r="56" fill="none" stroke="#C4A44A" stroke-width="1.5"/>
-        <circle class="r3" cx="0" cy="0" r="42" fill="none" stroke="#B8943A" stroke-width="1.5"/>
-        <circle class="r2" cx="0" cy="0" r="28" fill="none" stroke="#9A7228" stroke-width="2"/>
+    <div><div class="l-title fade1">ORIA</div><div class="l-tag fade2">Méthode de transformation</div></div>
+    <svg width="170" height="170" viewBox="0 0 170 170">
+      <g transform="translate(85,85)">
+        <line class="r6" x1="0" y1="-82" x2="0" y2="-17" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4"/>
+        <line class="r6" x1="0" y1="-82" x2="0" y2="-17" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(45)"/>
+        <line class="r6" x1="0" y1="-82" x2="0" y2="-17" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(90)"/>
+        <line class="r6" x1="0" y1="-82" x2="0" y2="-17" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(135)"/>
+        <line class="r6" x1="0" y1="-82" x2="0" y2="-17" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(180)"/>
+        <line class="r6" x1="0" y1="-82" x2="0" y2="-17" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(225)"/>
+        <line class="r6" x1="0" y1="-82" x2="0" y2="-17" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(270)"/>
+        <line class="r6" x1="0" y1="-82" x2="0" y2="-17" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(315)"/>
+        <circle class="r6" cx="0" cy="0" r="82" fill="none" stroke="#D4C4A8" stroke-width="1"/>
+        <circle class="r5" cx="0" cy="0" r="68" fill="none" stroke="#C8B48A" stroke-width="1"/>
+        <circle class="r4" cx="0" cy="0" r="54" fill="none" stroke="#C4A44A" stroke-width="1.5"/>
+        <circle class="r3" cx="0" cy="0" r="40" fill="none" stroke="#B8943A" stroke-width="1.5"/>
+        <circle class="r2" cx="0" cy="0" r="27" fill="none" stroke="#9A7228" stroke-width="2"/>
         <circle class="r1" cx="0" cy="0" r="15" fill="none" stroke="#7B5220" stroke-width="2"/>
         <circle class="rc" cx="0" cy="0" r="5" fill="#3C2415"/>
       </g>
     </svg>
-    <div class="quote fade3">
-      Tu n'es pas venu guérir ton histoire.<br>
-      Tu es venu révéler ce que ton histoire<br>tentait de protéger.
-    </div>
+    <div class="quote fade3">Tu n'es pas venu guérir ton histoire.<br>Tu es venu révéler ce que ton histoire<br>tentait de protéger.</div>
     <div class="ctas fade3">
       <button class="btn-g" onclick="lgo('l-roles')">Commencer mon parcours</button>
       <button class="btn-o" onclick="lgo('l-login-p')">J'ai déjà un compte</button>
     </div>
-    <div class="dots"><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div>
   </div>
 
-  <!-- ROLES -->
   <div class="ls" id="l-roles">
     <button class="btn-back" onclick="lgo('l-hero')">← Retour</button>
-    <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-dark);font-weight:600">Qui êtes-vous ?</div>
-    <div style="font-size:20px;font-weight:500;color:var(--brown)">Choisissez votre espace</div>
+    <div style="font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold-d);font-weight:600">Qui êtes-vous ?</div>
+    <div style="font-size:20px;font-weight:500">Choisissez votre espace</div>
     <div class="rcards">
-      <div class="rcard" onclick="enterApp('participant')">
-        <div class="rico">🌿</div>
-        <div class="rname">Participant</div>
-        <div class="rdesc">J'ai reçu une invitation d'un praticien</div>
-      </div>
-      <div class="rcard" onclick="enterApp('praticien')">
-        <div class="rico">⭕</div>
-        <div class="rname">Praticien certifié</div>
-        <div class="rdesc">J'accompagne des participants ORIA</div>
-      </div>
-      <div class="rcard" onclick="lgo('l-certif')">
-        <div class="rico">✦</div>
-        <div class="rname">Devenir praticien</div>
-        <div class="rdesc">Je veux me certifier à la méthode</div>
-      </div>
+      <div class="rcard" onclick="lgo('l-login-p')"><div class="rico">🌿</div><div class="rname">Participant</div><div class="rdesc">Invitation d'un praticien</div></div>
+      <div class="rcard" onclick="lgo('l-login-pr')"><div class="rico">⭕</div><div class="rname">Praticien certifié</div><div class="rdesc">Accompagnement ORIA</div></div>
+      <div class="rcard" onclick="lgo('l-certif')"><div class="rico">✦</div><div class="rname">Devenir praticien</div><div class="rdesc">Demande de certification</div></div>
     </div>
-    <div class="dots"><div class="dot"></div><div class="dot on"></div><div class="dot"></div></div>
   </div>
 
-  <!-- LOGIN PARTICIPANT -->
   <div class="ls-split" id="l-login-p">
     <div class="spl-l">
-      <svg width="90" height="90" viewBox="0 0 90 90"><g transform="translate(45,45)">
-        <circle cx="0" cy="0" r="42" fill="none" stroke="#5C3C20" stroke-width="1"/>
-        <circle cx="0" cy="0" r="33" fill="none" stroke="#8B5E30" stroke-width="1"/>
-        <circle cx="0" cy="0" r="24" fill="none" stroke="#C4A44A" stroke-width="1.5"/>
-        <circle cx="0" cy="0" r="15" fill="none" stroke="#C4A44A" stroke-width="1.5"/>
-        <circle cx="0" cy="0" r="7" fill="none" stroke="#FAF6EE" stroke-width="1.5"/>
-        <circle cx="0" cy="0" r="3" fill="#C4A44A"/>
-      </g></svg>
-      <div class="spl-l-t">ORIA</div>
-      <div class="spl-l-s">Espace Participant</div>
-      <div class="spl-l-h">Votre parcours a été préparé par votre praticien ORIA.</div>
+      <svg width="80" height="80" viewBox="0 0 80 80"><g transform="translate(40,40)"><circle cx="0" cy="0" r="37" fill="none" stroke="#5C3C20" stroke-width="1"/><circle cx="0" cy="0" r="28" fill="none" stroke="#C4A44A" stroke-width="1.5"/><circle cx="0" cy="0" r="18" fill="none" stroke="#C4A44A" stroke-width="1.5"/><circle cx="0" cy="0" r="8" fill="none" stroke="#FAF6EE" stroke-width="1.5"/><circle cx="0" cy="0" r="3" fill="#C4A44A"/></g></svg>
+      <div style="font-size:20px;font-weight:300;letter-spacing:.12em;color:#FAF6EE">ORIA</div>
+      <div style="font-size:11px;letter-spacing:.08em;color:var(--gold)">Espace Participant</div>
+      <div class="demo-hint"><strong>Démo :</strong><br>jonathan@oria.com<br>ou votre propre email</div>
     </div>
     <div class="spl-r">
       <button class="btn-back" onclick="lgo('l-roles')">← Retour</button>
-      <div><div class="f-title">Connexion</div><div class="f-sub" style="margin-top:4px">Accédez à votre espace participant</div></div>
+      <div><div style="font-size:19px;font-weight:500">Connexion</div><div style="font-size:12px;color:var(--muted);margin-top:3px">Accédez à votre espace participant</div></div>
       <div class="fields">
-        <div class="field"><label>Email</label><input type="email" placeholder="votre@email.com"/></div>
-        <div class="field"><label>Code d'invitation</label><input type="text" placeholder="ORIA-XXXX-XXXX"/></div>
-        <div class="field"><label>Mot de passe</label><input type="password" placeholder="••••••••"/></div>
+        <div class="field"><label>Prénom</label><input id="p-name" type="text" placeholder="Votre prénom"/></div>
+        <div class="field"><label>Email</label><input id="p-email" type="email" placeholder="votre@email.com"/></div>
+        <div class="field"><label>Mot de passe</label><input id="p-pwd" type="password" placeholder="••••••••"/></div>
       </div>
-      <button class="btn-g" onclick="enterApp('participant')">Accéder à mon parcours</button>
-      <div class="f-foot">
-        <span>Première connexion ?</span>
-        <button class="btn-ghost">Créer mon compte</button>
-      </div>
+      <div class="err" id="p-err">Veuillez remplir tous les champs.</div>
+      <button class="btn-g" onclick="loginParticipant()">Accéder à mon parcours</button>
+      <div class="f-foot"><span>Première connexion ? Entrez votre prénom et votre email.</span></div>
     </div>
   </div>
 
-  <!-- LOGIN PRATICIEN -->
   <div class="ls-split" id="l-login-pr">
     <div class="spl-l">
-      <svg width="90" height="90" viewBox="0 0 90 90"><g transform="translate(45,45)">
-        <circle cx="0" cy="0" r="42" fill="none" stroke="#5C3C20" stroke-width="1"/>
-        <circle cx="0" cy="0" r="33" fill="none" stroke="#8B5E30" stroke-width="1"/>
-        <circle cx="0" cy="0" r="24" fill="none" stroke="#C4A44A" stroke-width="1.5"/>
-        <circle cx="0" cy="0" r="15" fill="none" stroke="#C4A44A" stroke-width="1.5"/>
-        <circle cx="0" cy="0" r="7" fill="none" stroke="#FAF6EE" stroke-width="1.5"/>
-        <circle cx="0" cy="0" r="3" fill="#C4A44A"/>
-      </g></svg>
-      <div class="spl-l-t">ORIA</div>
-      <div class="spl-l-s">Espace Praticien</div>
-      <div class="spl-l-h">Guidez vos participants avec la méthode ORIA.</div>
+      <svg width="80" height="80" viewBox="0 0 80 80"><g transform="translate(40,40)"><circle cx="0" cy="0" r="37" fill="none" stroke="#5C3C20" stroke-width="1"/><circle cx="0" cy="0" r="28" fill="none" stroke="#C4A44A" stroke-width="1.5"/><circle cx="0" cy="0" r="18" fill="none" stroke="#C4A44A" stroke-width="1.5"/><circle cx="0" cy="0" r="8" fill="none" stroke="#FAF6EE" stroke-width="1.5"/><circle cx="0" cy="0" r="3" fill="#C4A44A"/></g></svg>
+      <div style="font-size:20px;font-weight:300;letter-spacing:.12em;color:#FAF6EE">ORIA</div>
+      <div style="font-size:11px;letter-spacing:.08em;color:var(--gold)">Espace Praticien</div>
+      <div class="demo-hint"><strong>Démo :</strong><br>marie@oria.com<br>ou votre propre email</div>
     </div>
     <div class="spl-r">
       <button class="btn-back" onclick="lgo('l-roles')">← Retour</button>
-      <div><div class="f-title">Connexion praticien</div><div class="f-sub" style="margin-top:4px">Votre espace certifié ORIA</div></div>
+      <div><div style="font-size:19px;font-weight:500">Connexion praticien</div><div style="font-size:12px;color:var(--muted);margin-top:3px">Votre espace certifié ORIA</div></div>
       <div class="fields">
-        <div class="field"><label>Email professionnel</label><input type="email" placeholder="praticien@cabinet.fr"/></div>
-        <div class="field"><label>Mot de passe</label><input type="password" placeholder="••••••••"/></div>
+        <div class="field"><label>Prénom</label><input id="pr-name" type="text" placeholder="Votre prénom"/></div>
+        <div class="field"><label>Email professionnel</label><input id="pr-email" type="email" placeholder="praticien@cabinet.fr"/></div>
+        <div class="field"><label>Mot de passe</label><input id="pr-pwd" type="password" placeholder="••••••••"/></div>
       </div>
-      <button class="btn-g" onclick="enterApp('praticien')">Accéder à mon espace</button>
-      <div class="f-foot">
-        <span>Mot de passe oublié ?</span>
-        <button class="btn-ghost">Réinitialiser</button>
-      </div>
+      <div class="err" id="pr-err">Veuillez remplir tous les champs.</div>
+      <button class="btn-g" onclick="loginPraticien()">Accéder à mon espace</button>
     </div>
   </div>
 
-  <!-- CERTIFICATION -->
   <div class="ls" id="l-certif">
     <button class="btn-back" onclick="lgo('l-roles')">← Retour</button>
-    <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-dark);font-weight:600">Certification ORIA</div>
-    <div style="font-size:20px;font-weight:500;color:var(--brown)">Choisissez votre niveau</div>
-    <div class="ccards">
-      <div class="ccard sel" onclick="selC(this)">
-        <div class="clvl">1</div>
-        <div><div class="cname">Praticien ORIA Associé</div><div class="cprice">990 € · 3-6 mois · Plan SOLO</div></div>
-        <span class="cchk">✓</span>
-      </div>
-      <div class="ccard" onclick="selC(this)">
-        <div class="clvl">2</div>
-        <div><div class="cname">Praticien ORIA Certifié</div><div class="cprice">590 € · Après 6 mois · Plan PRO</div></div>
-        <span class="cchk">✓</span>
-      </div>
-      <div class="ccard" onclick="selC(this)">
-        <div class="clvl">3</div>
-        <div><div class="cname">Superviseur ORIA</div><div class="cprice">1 490 € · Après 2 ans certifié</div></div>
-        <span class="cchk">✓</span>
-      </div>
+    <div style="font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold-d);font-weight:600">Certification ORIA</div>
+    <div style="font-size:20px;font-weight:500">Choisissez votre niveau</div>
+    <div class="certif-ccards">
+      <div class="ccrd sel" onclick="selC(this)"><div class="clvl">1</div><div><div style="font-size:13px;font-weight:600;color:var(--brown)">Praticien ORIA Associé</div><div style="font-size:11px;color:var(--muted)">990 € · 3-6 mois · Plan SOLO</div></div><span style="margin-left:auto;color:var(--gold);font-size:18px" class="cchk">✓</span></div>
+      <div class="ccrd" onclick="selC(this)"><div class="clvl">2</div><div><div style="font-size:13px;font-weight:600;color:var(--brown)">Praticien ORIA Certifié</div><div style="font-size:11px;color:var(--muted)">590 € · Après 6 mois · Plan PRO</div></div><span style="margin-left:auto;color:transparent;font-size:18px" class="cchk">✓</span></div>
+      <div class="ccrd" onclick="selC(this)"><div class="clvl">3</div><div><div style="font-size:13px;font-weight:600;color:var(--brown)">Superviseur ORIA</div><div style="font-size:11px;color:var(--muted)">1 490 € · Après 2 ans certifié</div></div><span style="margin-left:auto;color:transparent;font-size:18px" class="cchk">✓</span></div>
     </div>
-    <div class="field" style="width:100%;max-width:400px">
-      <label>Email professionnel</label>
-      <input type="email" placeholder="praticien@cabinet.fr"/>
-    </div>
-    <button class="btn-g" style="max-width:400px" onclick="lgo('l-certif-ok')">Soumettre ma demande</button>
+    <div class="field" style="width:100%;max-width:400px"><label>Email professionnel</label><input id="certif-email" type="email" placeholder="praticien@cabinet.fr"/></div>
+    <button class="btn-g" style="max-width:400px" onclick="submitCertif()">Soumettre ma demande</button>
   </div>
 
-  <!-- CERTIF SUCCESS -->
   <div class="ls" id="l-certif-ok">
-    <div style="width:64px;height:64px;border-radius:50%;background:rgba(196,164,74,.12);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:28px">✉️</div>
-    <div style="font-size:20px;font-weight:500;color:var(--brown)">Demande transmise</div>
-    <div style="font-size:14px;color:var(--muted);text-align:center;line-height:1.7;max-width:280px">Réponse sous 48h avec les prochaines étapes de votre certification.</div>
-    <div style="background:var(--brown);color:var(--gold);font-size:11px;padding:5px 16px;border-radius:20px;letter-spacing:.07em">Certification Niveau 1 — En attente</div>
-    <button class="btn-o" style="max-width:240px" onclick="lgo('l-hero')">Retour à l'accueil</button>
+    <div style="width:60px;height:60px;border-radius:50%;background:var(--gold-l);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:26px">✉️</div>
+    <div style="font-size:20px;font-weight:500">Demande transmise</div>
+    <div style="font-size:13px;color:var(--muted);text-align:center;line-height:1.7;max-width:260px">Réponse sous 48h avec les prochaines étapes de votre certification ORIA.</div>
+    <div style="background:var(--brown);color:var(--gold);font-size:11px;padding:5px 14px;border-radius:20px;letter-spacing:.07em">Niveau 1 — En attente de validation</div>
+    <button class="btn-o" style="max-width:220px" onclick="lgo('l-hero')">Retour à l'accueil</button>
   </div>
 
 </div><!-- /launcher -->
 
-<!-- ═══════════════════ APP ═══════════════════ -->
+<!-- ═══════════ APP ═══════════ -->
 <div id="app">
-
-  <!-- HEADER -->
-  <header class="app-hdr">
+  <header class="hdr">
     <div class="hdr-logo">ORIA</div>
     <div class="hdr-sep"></div>
     <div class="hdr-ctx" id="hdr-ctx">Tableau de bord</div>
-    <div class="hdr-right">
-      <div class="role-toggle">
-        <button class="rtog-btn on" id="tog-p" onclick="switchRole('participant')">Participant</button>
-        <button class="rtog-btn" id="tog-pr" onclick="switchRole('praticien')">Praticien</button>
+    <div class="hdr-r">
+      <div class="rtog">
+        <button class="rtog-b on" id="tog-p" onclick="switchRole('participant')">Participant</button>
+        <button class="rtog-b" id="tog-pr" onclick="switchRole('praticien')">Praticien</button>
       </div>
-      <div class="hdr-avatar" id="hdr-av">J</div>
+      <div class="av" id="hdr-av" onclick="toggleMenu()">J
+        <div class="av-menu" id="av-menu">
+          <div class="av-menu-item" id="av-name-item" style="font-weight:500;color:var(--brown);cursor:default"></div>
+          <div class="av-menu-item" id="av-role-item" style="font-size:11px;color:var(--muted);cursor:default;padding-top:2px"></div>
+          <div style="border-top:1px solid var(--border);margin:6px 0"></div>
+          <div class="av-menu-item danger" onclick="logout()">Se déconnecter</div>
+        </div>
+      </div>
     </div>
   </header>
-
-  <div class="app-body">
-
-    <!-- SIDEBAR PARTICIPANT -->
+  <div class="body">
     <nav class="sidebar" id="nav-participant">
-      <div class="nav-section">Mon parcours</div>
-      <div class="nav-item on" onclick="nav('dash-p','Tableau de bord')">
-        <span class="ico">⊞</span> Tableau de bord
-      </div>
-      <div class="nav-item" onclick="nav('mandala-p','Mon Mandala')">
-        <span class="ico">◎</span> Mon Mandala
-      </div>
-      <div class="nav-item" onclick="nav('phases-p','Mes phases')">
-        <span class="ico">◈</span> Mes phases
-      </div>
-      <div class="nav-item" onclick="nav('exercice-p','Exercice en cours')">
-        <span class="ico">✦</span> Exercice en cours
-      </div>
-      <div class="nav-item" onclick="nav('journal-p','Mon journal')">
-        <span class="ico">✎</span> Mon journal
-      </div>
-      <div class="nav-section">Ressources</div>
-      <div class="nav-item" onclick="nav('dossier-p','Mon Dossier d\'Âme')">
-        <span class="ico">⬡</span> Dossier d'Âme
-      </div>
-      <div class="nav-bottom">
-        <div class="nav-item" onclick="location.reload()">
-          <span class="ico">←</span> Se déconnecter
-        </div>
-      </div>
+      <div class="ns">Mon parcours</div>
+      <div class="ni on" onclick="nav('dash-p','Tableau de bord')"><span class="ico">⊞</span>Tableau de bord</div>
+      <div class="ni" onclick="nav('mandala-p','Mon Mandala')"><span class="ico">◎</span>Mon Mandala</div>
+      <div class="ni" onclick="nav('phases-p','Mes phases')"><span class="ico">◈</span>Mes phases</div>
+      <div class="ni" onclick="nav('exercice-p','Exercice en cours')"><span class="ico">✦</span>Exercice en cours</div>
+      <div class="ni" onclick="nav('journal-p','Mon journal')"><span class="ico">✎</span>Mon journal</div>
+      <div class="ns">Documents</div>
+      <div class="ni" onclick="nav('dossier-p','Dossier d\'Âme')"><span class="ico">⬡</span>Dossier d'Âme</div>
+      <div class="nb"><div class="ni" onclick="logout()"><span class="ico">←</span>Se déconnecter</div></div>
     </nav>
-
-    <!-- SIDEBAR PRATICIEN -->
     <nav class="sidebar" id="nav-praticien" style="display:none">
-      <div class="nav-section">Mes participants</div>
-      <div class="nav-item on" onclick="nav('dash-pr','Tableau de bord')">
-        <span class="ico">⊞</span> Tableau de bord
-      </div>
-      <div class="nav-item" onclick="nav('participants','Mes participants')">
-        <span class="ico">◉</span> Participants
-      </div>
-      <div class="nav-item" onclick="nav('session','Notes de séance')">
-        <span class="ico">✎</span> Notes de séance
-      </div>
-      <div class="nav-section">Outils</div>
-      <div class="nav-item" onclick="nav('archetypes','Attribution archétypes')">
-        <span class="ico">✦</span> Archétypes
-      </div>
-      <div class="nav-item" onclick="nav('mandala-pr','Mandala — vue praticien')">
-        <span class="ico">◎</span> Mandala
-      </div>
-      <div class="nav-section">Compte</div>
-      <div class="nav-item" onclick="nav('certif-pr','Ma certification')">
-        <span class="ico">⬡</span> Ma certification
-      </div>
-      <div class="nav-bottom">
-        <div class="nav-item" onclick="location.reload()">
-          <span class="ico">←</span> Se déconnecter
-        </div>
-      </div>
+      <div class="ns">Mes participants</div>
+      <div class="ni on" onclick="nav('dash-pr','Tableau de bord')"><span class="ico">⊞</span>Tableau de bord</div>
+      <div class="ni" onclick="nav('participants','Mes participants')"><span class="ico">◉</span>Participants</div>
+      <div class="ni" onclick="nav('session','Notes de séance')"><span class="ico">✎</span>Notes de séance</div>
+      <div class="ns">Outils</div>
+      <div class="ni" onclick="nav('archetypes','Attribution archétypes')"><span class="ico">✦</span>Archétypes</div>
+      <div class="ni" onclick="nav('mandala-pr','Mandala praticien')"><span class="ico">◎</span>Mandala</div>
+      <div class="ns">Compte</div>
+      <div class="ni" onclick="nav('certif-pr','Ma certification')"><span class="ico">⬡</span>Ma certification</div>
+      <div class="nb"><div class="ni" onclick="logout()"><span class="ico">←</span>Se déconnecter</div></div>
     </nav>
-
-    <!-- MAIN CONTENT -->
     <main class="main">
 
-      <!-- ── PARTICIPANT PAGES ── -->
-
-      <!-- Dashboard participant -->
+      <!-- ── PARTICIPANT ── -->
       <div class="page on" id="dash-p">
-        <div class="page-title">Bienvenue, Jonathan</div>
-        <div class="page-sub">Votre parcours ORIA est en cours · Phase 2 — La Reconnaissance</div>
-        <div class="cards-grid">
-          <div class="card">
-            <div class="card-lbl">Phase actuelle</div>
-            <div class="card-val">2</div>
-            <div class="card-hint">La Reconnaissance</div>
-          </div>
-          <div class="card">
-            <div class="card-lbl">Sessions complétées</div>
-            <div class="card-val">7</div>
-            <div class="card-hint">depuis le 10 mars 2026</div>
-          </div>
-          <div class="card">
-            <div class="card-lbl">Entrées journal</div>
-            <div class="card-val">14</div>
-            <div class="card-hint">dernière il y a 2 jours</div>
-          </div>
-          <div class="card">
-            <div class="card-lbl">Praticien</div>
-            <div class="card-val" style="font-size:16px;margin-top:6px">Marie L.</div>
-            <div class="card-hint">Praticien ORIA Certifié N2</div>
-          </div>
-        </div>
-        <div class="info-box">
-          <span>◎</span>
-          <span>Votre praticien a validé votre Phase 1 le 2 juin 2026. Vous êtes désormais en Phase 2 — La Reconnaissance. Un exercice vous attend.</span>
-        </div>
-        <div style="margin-top:24px">
-          <div class="page-sub">Prochain exercice</div>
-          <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;display:flex;align-items:center;gap:16px;cursor:pointer;max-width:560px" onclick="nav('exercice-p','Exercice en cours')">
-            <div style="width:44px;height:44px;border-radius:50%;background:rgba(196,164,74,.15);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">✦</div>
-            <div style="flex:1">
-              <div style="font-size:14px;font-weight:500;color:var(--brown)">La loyauté invisible</div>
-              <div style="font-size:12px;color:var(--muted)">Phase 2 · Exercice 3 sur 5</div>
-            </div>
-            <span style="font-size:20px;color:var(--muted)">→</span>
+        <div class="ptitle" id="dp-welcome">Bienvenue</div>
+        <div class="psub" id="dp-sub">Votre parcours ORIA est en cours</div>
+        <div class="cgrid" id="dp-cards"></div>
+        <div class="ibox" id="dp-infobox"></div>
+        <div>
+          <div class="psub">Prochain exercice</div>
+          <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px;display:flex;align-items:center;gap:14px;cursor:pointer;max-width:520px" onclick="nav('exercice-p','Exercice en cours')">
+            <div style="width:42px;height:42px;border-radius:50%;background:var(--gold-l);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">✦</div>
+            <div style="flex:1"><div id="dp-ex-title" style="font-size:14px;font-weight:500;color:var(--brown)"></div><div id="dp-ex-sub" style="font-size:12px;color:var(--muted)"></div></div>
+            <span style="font-size:18px;color:var(--muted)">→</span>
           </div>
         </div>
       </div>
 
-      <!-- Mandala participant -->
       <div class="page" id="mandala-p">
-        <div class="page-title">Mon Mandala Vivant</div>
-        <div class="page-sub">Représentation de votre parcours — illuminé au fil de vos phases</div>
-        <div class="mandala-wrap">
-          <div class="mandala-panel">
-            <svg width="280" height="280" viewBox="0 0 280 280">
-              <g transform="translate(140,140)">
-                <line x1="0" y1="-128" x2="0" y2="-22" stroke="#D4C4A8" stroke-width="0.5" opacity="0.35"/>
-                <line x1="0" y1="-128" x2="0" y2="-22" stroke="#D4C4A8" stroke-width="0.5" opacity="0.35" transform="rotate(45)"/>
-                <line x1="0" y1="-128" x2="0" y2="-22" stroke="#D4C4A8" stroke-width="0.5" opacity="0.35" transform="rotate(90)"/>
-                <line x1="0" y1="-128" x2="0" y2="-22" stroke="#D4C4A8" stroke-width="0.5" opacity="0.35" transform="rotate(135)"/>
-                <line x1="0" y1="-128" x2="0" y2="-22" stroke="#D4C4A8" stroke-width="0.5" opacity="0.35" transform="rotate(180)"/>
-                <line x1="0" y1="-128" x2="0" y2="-22" stroke="#D4C4A8" stroke-width="0.5" opacity="0.35" transform="rotate(225)"/>
-                <line x1="0" y1="-128" x2="0" y2="-22" stroke="#D4C4A8" stroke-width="0.5" opacity="0.35" transform="rotate(270)"/>
-                <line x1="0" y1="-128" x2="0" y2="-22" stroke="#D4C4A8" stroke-width="0.5" opacity="0.35" transform="rotate(315)"/>
-                <!-- Ring 6 locked -->
-                <circle cx="0" cy="0" r="128" fill="none" stroke="#E0D5C0" stroke-width="2" stroke-dasharray="4 3"/>
-                <!-- Ring 5 locked -->
-                <circle cx="0" cy="0" r="108" fill="none" stroke="#E0D5C0" stroke-width="2" stroke-dasharray="4 3"/>
-                <!-- Ring 4 locked -->
-                <circle cx="0" cy="0" r="88" fill="none" stroke="#E0D5C0" stroke-width="2" stroke-dasharray="4 3"/>
-                <!-- Ring 3 locked -->
-                <circle cx="0" cy="0" r="68" fill="none" stroke="#E0D5C0" stroke-width="2" stroke-dasharray="4 3"/>
-                <!-- Ring 2 active -->
-                <circle cx="0" cy="0" r="48" fill="rgba(196,164,74,0.08)" stroke="#C4A44A" stroke-width="2.5"/>
-                <!-- Ring 1 done -->
-                <circle cx="0" cy="0" r="30" fill="rgba(196,164,74,0.18)" stroke="#B8943A" stroke-width="3"/>
-                <!-- Center -->
-                <circle cx="0" cy="0" r="14" fill="#3C2415"/>
-                <text x="0" y="4" text-anchor="middle" font-size="9" fill="#C4A44A" font-family="serif">✦</text>
-              </g>
-            </svg>
-            <div style="font-size:12px;color:var(--muted);text-align:center;line-height:1.6">
-              Anneau 1 validé · Anneau 2 en cours<br>
-              <span style="color:var(--gold-dark);font-weight:500">Phase 2 — La Reconnaissance</span>
-            </div>
+        <div class="ptitle">Mon Mandala Vivant</div>
+        <div class="psub">Votre parcours en symboles — illuminé au fil des phases validées</div>
+        <div class="m-wrap">
+          <div class="m-panel"><svg id="mandala-svg-p" width="260" height="260" viewBox="0 0 260 260"></svg>
+            <div id="mandala-p-caption" style="font-size:12px;color:var(--muted);text-align:center;line-height:1.6"></div>
           </div>
-          <div class="mandala-legend">
-            <div class="leg-item">
-              <div class="leg-dot" style="background:#3C2415"></div>
-              <div><div class="leg-name">Le Noyau</div><div class="leg-phase">Centre · Votre identité essentielle</div></div>
-              <span class="leg-status st-active">En révélation</span>
-            </div>
-            <div class="leg-item">
-              <div class="leg-dot" style="background:#B8943A"></div>
-              <div><div class="leg-name">Anneau 1 — Le Témoin</div><div class="leg-phase">Phase 0 · Observation</div></div>
-              <span class="leg-status st-done">Validé</span>
-            </div>
-            <div class="leg-item">
-              <div class="leg-dot" style="background:#C4A44A"></div>
-              <div><div class="leg-name">Anneau 2 — La Reconnaissance</div><div class="leg-phase">Phase 2 · En cours</div></div>
-              <span class="leg-status st-active">En cours</span>
-            </div>
-            <div class="leg-item" style="opacity:.5">
-              <div class="leg-dot" style="background:#D4C4A8"></div>
-              <div><div class="leg-name">Anneau 3 — L'Intégration</div><div class="leg-phase">Phase 3</div></div>
-              <span class="leg-status st-locked">Verrouillé</span>
-            </div>
-            <div class="leg-item" style="opacity:.5">
-              <div class="leg-dot" style="background:#D4C4A8"></div>
-              <div><div class="leg-name">Anneau 4 — Le Projet d'Âme</div><div class="leg-phase">Phase 4</div></div>
-              <span class="leg-status st-locked">Verrouillé</span>
-            </div>
-            <div class="leg-item" style="opacity:.5">
-              <div class="leg-dot" style="background:#D4C4A8"></div>
-              <div><div class="leg-name">Anneau 5 — L'Archétype</div><div class="leg-phase">Phase 5-6</div></div>
-              <span class="leg-status st-locked">Verrouillé</span>
-            </div>
-            <div class="leg-item" style="opacity:.5">
-              <div class="leg-dot" style="background:#D4C4A8"></div>
-              <div><div class="leg-name">Anneau 6 — L'Alignement</div><div class="leg-phase">Phase 7</div></div>
-              <span class="leg-status st-locked">Verrouillé</span>
-            </div>
-          </div>
+          <div class="m-legend" id="mandala-legend-p"></div>
         </div>
       </div>
 
-      <!-- Phases participant -->
       <div class="page" id="phases-p">
-        <div class="page-title">Mes phases</div>
-        <div class="page-sub">Progression du parcours ORIA · Validation par votre praticien</div>
-        <div class="phases">
-          <div class="phase-row">
-            <div class="phase-num ph-done">0</div>
-            <div class="phase-info">
-              <div class="phase-name">Le Témoin</div>
-              <div class="phase-desc">Observation sans jugement · Posture de présence</div>
-            </div>
-            <div class="phase-progress">
-              <div style="font-size:11px;color:var(--muted);margin-bottom:4px;text-align:right">Validée</div>
-              <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
-            </div>
-          </div>
-          <div class="phase-row">
-            <div class="phase-num ph-done">1</div>
-            <div class="phase-info">
-              <div class="phase-name">L'Origine</div>
-              <div class="phase-desc">Cartographie de l'héritage familial · Génosociogramme</div>
-            </div>
-            <div class="phase-progress">
-              <div style="font-size:11px;color:var(--muted);margin-bottom:4px;text-align:right">Validée</div>
-              <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
-            </div>
-          </div>
-          <div class="phase-row" style="border-color:var(--gold);box-shadow:0 2px 12px rgba(196,164,74,.15)">
-            <div class="phase-num ph-active">2</div>
-            <div class="phase-info">
-              <div class="phase-name">La Reconnaissance</div>
-              <div class="phase-desc">Identifier les loyautés et répétitions · En cours</div>
-            </div>
-            <div class="phase-progress">
-              <div style="font-size:11px;color:var(--gold-dark);margin-bottom:4px;text-align:right">60%</div>
-              <div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div>
-            </div>
-          </div>
-          <div class="phase-row" style="opacity:.5;cursor:default">
-            <div class="phase-num ph-locked">2.5</div>
-            <div class="phase-info">
-              <div class="phase-name">Le Désert Identitaire</div>
-              <div class="phase-desc">Phase de vide et de transition · Si nécessaire</div>
-            </div>
-            <div class="phase-progress">
-              <div style="font-size:11px;color:var(--muted);margin-bottom:4px;text-align:right">—</div>
-              <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
-            </div>
-          </div>
-          <div class="phase-row" style="opacity:.5;cursor:default">
-            <div class="phase-num ph-locked">3</div>
-            <div class="phase-info">
-              <div class="phase-name">L'Intégration</div>
-              <div class="phase-desc">Réconciliation avec l'héritage</div>
-            </div>
-            <div class="phase-progress">
-              <div style="font-size:11px;color:var(--muted);margin-bottom:4px;text-align:right">Verrouillée</div>
-              <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
-            </div>
-          </div>
-          <div class="phase-row" style="opacity:.4;cursor:default">
-            <div class="phase-num ph-locked">4</div>
-            <div class="phase-info"><div class="phase-name">Le Projet d'Âme</div><div class="phase-desc">Découverte de la vocation profonde</div></div>
-            <div class="phase-progress"><div style="font-size:11px;color:var(--muted);margin-bottom:4px;text-align:right">Verrouillée</div><div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div></div>
-          </div>
-          <div class="phase-row" style="opacity:.4;cursor:default">
-            <div class="phase-num ph-locked">5</div>
-            <div class="phase-info"><div class="phase-name">L'Archétype</div><div class="phase-desc">Attribution du rôle mythique par le praticien</div></div>
-            <div class="phase-progress"><div style="font-size:11px;color:var(--muted);margin-bottom:4px;text-align:right">Verrouillée</div><div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div></div>
-          </div>
-          <div class="phase-row" style="opacity:.4;cursor:default">
-            <div class="phase-num ph-locked">6</div>
-            <div class="phase-info"><div class="phase-name">Le Mythe Personnel</div><div class="phase-desc">Construction du récit transformé</div></div>
-            <div class="phase-progress"><div style="font-size:11px;color:var(--muted);margin-bottom:4px;text-align:right">Verrouillée</div><div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div></div>
-          </div>
-          <div class="phase-row" style="opacity:.4;cursor:default">
-            <div class="phase-num ph-locked">7</div>
-            <div class="phase-info"><div class="phase-name">L'Alignement</div><div class="phase-desc">Engagement dans la contribution</div></div>
-            <div class="phase-progress"><div style="font-size:11px;color:var(--muted);margin-bottom:4px;text-align:right">Verrouillée</div><div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div></div>
-          </div>
-        </div>
+        <div class="ptitle">Mes phases</div>
+        <div class="psub">Progression validée par votre praticien</div>
+        <div class="phases" id="phases-list-p"></div>
       </div>
 
-      <!-- Exercice participant -->
       <div class="page" id="exercice-p">
-        <div class="page-title">Exercice en cours</div>
-        <div class="page-sub">Phase 2 — La Reconnaissance · Exercice 3 sur 5</div>
-        <div class="ex-card">
-          <div class="ex-phase">Phase 2 · La Reconnaissance</div>
-          <div class="ex-title">La loyauté invisible</div>
-          <div class="ex-body">
-            Toute répétition dans notre vie porte une loyauté. Nous répétons ce que nous n'avons pas encore reconnu comme appartenant à l'histoire qui nous a précédés. Avant de transformer, nous devons voir.
-          </div>
-          <div class="ex-q">
-            Quelle situation dans votre vie actuelle ressemble à une situation que vous avez observée dans votre histoire familiale ? Décrivez-la sans chercher à l'expliquer — juste l'observer, comme un témoin.
-          </div>
-          <textarea class="ex-textarea" placeholder="Commencez à écrire... il n'y a pas de bonne ou de mauvaise réponse. Laissez venir ce qui vient."></textarea>
-          <div style="display:flex;gap:12px;margin-top:8px">
-            <button class="btn-g" style="flex:1;max-width:200px">Sauvegarder</button>
-            <button class="btn-o" style="flex:1;max-width:200px">Envoyer au praticien</button>
-          </div>
-        </div>
+        <div class="ptitle">Exercice en cours</div>
+        <div class="psub" id="ex-sub-p"></div>
+        <div class="ex" id="ex-content-p"></div>
       </div>
 
-      <!-- Journal -->
       <div class="page" id="journal-p">
-        <div class="page-title">Mon journal</div>
-        <div class="page-sub">Espace d'écriture libre · Visible uniquement par vous et votre praticien</div>
-        <div class="j-new" style="margin-bottom:20px;max-width:680px">
-          <div style="font-size:12px;font-weight:600;color:var(--brown-light)">Nouvelle entrée — aujourd'hui</div>
-          <textarea class="note-textarea" style="background:transparent;border:none;outline:none;min-height:80px;font-size:13px;color:var(--brown);resize:none;line-height:1.7;font-family:inherit;width:100%" placeholder="Qu'est-ce que vous observez en vous aujourd'hui ?"></textarea>
+        <div class="ptitle">Mon journal</div>
+        <div class="psub">Espace d'écriture libre · Visible par vous et votre praticien</div>
+        <div class="j-new">
+          <div style="font-size:12px;font-weight:600;color:var(--brn-l)" id="j-today-label">Nouvelle entrée — aujourd'hui</div>
+          <textarea class="ta" id="j-input" rows="4" placeholder="Qu'observez-vous en vous aujourd'hui ?"></textarea>
           <div style="display:flex;justify-content:flex-end">
-            <button class="btn-g" style="width:auto;padding:9px 20px">Enregistrer</button>
+            <button class="btn-g" style="width:auto;padding:9px 20px" onclick="saveJournal()">Enregistrer</button>
           </div>
         </div>
-        <div class="journal-entries" style="max-width:680px">
-          <div class="j-entry">
-            <div class="j-date">13 juin 2026</div>
-            <div class="j-prompt">Exercice 2 — Ce que j'évite de regarder</div>
-            <div class="j-text">J'ai réalisé aujourd'hui que mon rapport à l'autorité reproduit quelque chose que j'ai vu dans la relation de mon père avec son propre père. La même distance respectueuse, la même difficulté à exprimer le désaccord. Je n'avais jamais fait ce lien avant...</div>
-          </div>
-          <div class="j-entry">
-            <div class="j-date">10 juin 2026</div>
-            <div class="j-prompt">Réflexion libre après séance</div>
-            <div class="j-text">La séance d'aujourd'hui a été intense. Marie m'a posé une question simple : "Qui dans votre famille portait cette même solitude ?" Et là, le visage de ma grand-mère est apparu. Je ne m'y attendais pas.</div>
-          </div>
-          <div class="j-entry">
-            <div class="j-date">5 juin 2026</div>
-            <div class="j-prompt">Début de la Phase 2</div>
-            <div class="j-text">Nouvelle phase. Je me sens à la fois curieux et un peu résistant. Reconnaître les répétitions, c'est admettre qu'on n'est pas aussi libre qu'on le croit. Mais c'est aussi la condition de cette liberté, je crois.</div>
-          </div>
-        </div>
+        <div class="j-entries" id="journal-list"></div>
       </div>
 
-      <!-- Dossier d'Âme -->
       <div class="page" id="dossier-p">
-        <div class="page-title">Mon Dossier d'Âme</div>
-        <div class="page-sub">Synthèse complète de votre parcours · Disponible à la fin du parcours</div>
-        <div class="info-box" style="max-width:580px;margin-bottom:24px">
-          <span>◎</span>
-          <span>Le Dossier d'Âme sera généré par votre praticien à la validation de votre Phase 7 — L'Alignement. Il synthétisera l'intégralité de votre parcours, vos archétypes, votre mythe personnel et votre contrat d'âme.</span>
-        </div>
-        <div style="background:var(--white);border:2px dashed var(--border);border-radius:16px;padding:48px;text-align:center;max-width:480px;color:var(--muted)">
-          <div style="font-size:48px;margin-bottom:16px">⬡</div>
-          <div style="font-size:16px;font-weight:500;color:var(--brown);margin-bottom:8px">Votre dossier est en préparation</div>
-          <div style="font-size:13px;line-height:1.7">Phase actuelle : 2 sur 7<br>Continuez votre parcours pour révéler votre Dossier d'Âme</div>
-        </div>
+        <div class="ptitle">Mon Dossier d'Âme</div>
+        <div class="psub">Synthèse complète de votre parcours</div>
+        <div id="dossier-container"></div>
       </div>
 
-      <!-- ── PRATICIEN PAGES ── -->
-
-      <!-- Dashboard praticien -->
+      <!-- ── PRATICIEN ── -->
       <div class="page" id="dash-pr">
-        <div class="page-title">Tableau de bord</div>
-        <div class="page-sub">Plan PRO · Marie Lambert — Praticien ORIA Certifié N2</div>
-        <div class="cards-grid">
-          <div class="card">
-            <div class="card-lbl">Participants actifs</div>
-            <div class="card-val">8</div>
-            <div class="card-hint">sur 30 inclus (Plan PRO)</div>
-          </div>
-          <div class="card">
-            <div class="card-lbl">Sessions ce mois</div>
-            <div class="card-val">23</div>
-            <div class="card-hint">+4 vs mois dernier</div>
-          </div>
-          <div class="card">
-            <div class="card-lbl">Dossiers générés</div>
-            <div class="card-val">3</div>
-            <div class="card-hint">illimités sur PRO</div>
-          </div>
-          <div class="card">
-            <div class="card-lbl">Validations en attente</div>
-            <div class="card-val">2</div>
-            <div class="card-hint">phases à valider</div>
-          </div>
-        </div>
-        <div style="margin-top:8px">
-          <div class="page-sub">Activité récente</div>
-          <div class="part-list" style="max-width:600px">
-            <div class="part-row" onclick="nav('participants','Mes participants')">
-              <div class="p-avatar">J</div>
-              <div><div class="p-name">Jonathan G.</div><div class="p-meta">Exercice soumis · 13 juin 2026</div></div>
-              <div class="p-phase">Phase 2</div>
-            </div>
-            <div class="part-row" onclick="nav('participants','Mes participants')">
-              <div class="p-avatar">S</div>
-              <div><div class="p-name">Sophie M.</div><div class="p-meta">Demande de validation phase · 12 juin 2026</div></div>
-              <div class="p-phase">Phase 3</div>
-            </div>
-            <div class="part-row" onclick="nav('participants','Mes participants')">
-              <div class="p-avatar">L</div>
-              <div><div class="p-name">Lucas P.</div><div class="p-meta">Nouvelle entrée journal · 11 juin 2026</div></div>
-              <div class="p-phase">Phase 1</div>
-            </div>
-          </div>
-        </div>
+        <div class="ptitle" id="dpr-welcome">Tableau de bord</div>
+        <div class="psub" id="dpr-sub">Plan PRO · Praticien ORIA Certifié</div>
+        <div class="cgrid" id="dpr-cards"></div>
+        <div class="psub">Activité récente</div>
+        <div class="p-list" id="dpr-activity"></div>
       </div>
 
-      <!-- Participants -->
       <div class="page" id="participants">
-        <div class="page-title">Mes participants</div>
-        <div class="page-sub">8 participants actifs · Inviter via code unique</div>
-        <div style="margin-bottom:16px">
-          <button class="btn-g" style="width:auto;padding:10px 20px">+ Inviter un participant</button>
-        </div>
-        <div class="part-list" style="max-width:680px">
-          <div class="part-row"><div class="p-avatar">J</div><div><div class="p-name">Jonathan G.</div><div class="p-meta">Depuis le 10 mars 2026 · 7 sessions</div></div><div class="p-phase">Phase 2</div></div>
-          <div class="part-row"><div class="p-avatar">S</div><div><div class="p-name">Sophie M.</div><div class="p-meta">Depuis le 15 jan 2026 · 14 sessions</div></div><div class="p-phase">Phase 3</div></div>
-          <div class="part-row"><div class="p-avatar">L</div><div><div class="p-name">Lucas P.</div><div class="p-meta">Depuis le 20 avril 2026 · 4 sessions</div></div><div class="p-phase">Phase 1</div></div>
-          <div class="part-row"><div class="p-avatar">C</div><div><div class="p-name">Claire D.</div><div class="p-meta">Depuis le 5 fév 2026 · 18 sessions</div></div><div class="p-phase">Phase 4</div></div>
-          <div class="part-row"><div class="p-avatar">M</div><div><div class="p-name">Marc T.</div><div class="p-meta">Depuis le 1er mai 2026 · 3 sessions</div></div><div class="p-phase">Phase 0</div></div>
+        <div class="ptitle">Mes participants</div>
+        <div class="psub" id="part-sub"></div>
+        <div style="margin-bottom:16px"><button class="btn-g" style="width:auto;padding:10px 18px" onclick="genInvite()">+ Inviter un participant</button></div>
+        <div class="p-list" id="part-list"></div>
+      </div>
+
+      <div class="page" id="participant-detail">
+        <button class="btn-back" style="margin-bottom:16px" onclick="nav('participants','Mes participants')">← Retour aux participants</button>
+        <div class="p-detail-hdr" id="pd-hdr"></div>
+        <div class="cgrid" id="pd-cards"></div>
+        <div class="psub">Phases</div>
+        <div class="phases" id="pd-phases"></div>
+        <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
+          <button class="btn-g" style="width:auto;padding:10px 18px" id="pd-validate-btn" onclick="validatePhase()">Valider la phase en cours</button>
+          <button class="btn-o" style="width:auto;padding:10px 18px" onclick="nav('archetypes','Attribution archétypes')">Attribuer un archétype</button>
+          <button class="btn-o" style="width:auto;padding:10px 18px" id="pd-dossier-btn" onclick="generateDossier()">Générer Dossier d'Âme</button>
         </div>
       </div>
 
-      <!-- Notes de séance -->
       <div class="page" id="session">
-        <div class="page-title">Notes de séance</div>
-        <div class="page-sub">Jonathan G. · Séance du 13 juin 2026</div>
-        <div class="note-area">
-          <div class="note-hdr">
-            <div style="width:36px;height:36px;border-radius:50%;background:var(--gold-light);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--brown)">J</div>
-            <div>
-              <div style="font-size:14px;font-weight:500;color:var(--brown)">Jonathan G.</div>
-              <div style="font-size:12px;color:var(--muted)">Phase 2 — La Reconnaissance · Séance 7</div>
-            </div>
-            <div style="margin-left:auto;font-size:12px;color:var(--muted)">13 juin 2026</div>
-          </div>
-          <textarea class="note-textarea" placeholder="Notes de séance — visibles uniquement par le praticien...&#10;&#10;Ce qui a émergé :&#10;&#10;Observations :&#10;&#10;Prochaine étape :"></textarea>
-          <div style="display:flex;gap:10px;border-top:1px solid var(--border);padding-top:14px">
-            <button class="btn-g" style="flex:1;max-width:160px">Sauvegarder</button>
-            <button class="btn-o" style="flex:1;max-width:200px">Valider la phase</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Archétypes -->
-      <div class="page" id="archetypes">
-        <div class="page-title">Attribution des archétypes</div>
-        <div class="page-sub">Réservé au praticien · Attribution manuelle — jamais automatique</div>
+        <div class="ptitle">Notes de séance</div>
+        <div class="psub" id="session-sub">Sélectionnez un participant</div>
         <div style="margin-bottom:16px">
-          <div style="font-size:13px;font-weight:500;color:var(--brown);margin-bottom:4px">Participant : Jonathan G. · Phase 5</div>
-          <div class="info-box" style="max-width:580px">
-            <span>⚠</span>
-            <span>L'archétype est attribué par le praticien après discernement en séance. Il ne peut être auto-attribué par le participant.</span>
+          <label style="font-size:12px;font-weight:600;color:var(--brn);text-transform:uppercase;letter-spacing:.05em">Participant</label>
+          <select id="session-select" style="display:block;margin-top:6px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:9px 13px;font-size:13px;color:var(--brown);outline:none;width:260px" onchange="loadSessionNotes()"></select>
+        </div>
+        <div class="note-wrap" id="note-wrap" style="display:none">
+          <div class="note-hdr" id="note-hdr"></div>
+          <textarea class="ta" id="note-ta" rows="8" placeholder="Notes de séance...&#10;&#10;Ce qui a émergé :&#10;&#10;Observations :&#10;&#10;Prochaine étape :"></textarea>
+          <div style="display:flex;gap:10px;border-top:1px solid var(--border);padding-top:14px;margin-top:12px">
+            <button class="btn-g" style="flex:1;max-width:140px" onclick="saveNote()">Sauvegarder</button>
           </div>
-        </div>
-        <div class="arch-grid" style="max-width:680px">
-          <div class="arch-card sel"><div class="arch-ico">🜂</div><div class="arch-name">Le Passeur</div><div class="arch-desc">Celui qui traverse les mondes et guide les autres</div></div>
-          <div class="arch-card"><div class="arch-ico">🜁</div><div class="arch-name">Le Gardien</div><div class="arch-desc">Celui qui protège et maintient la mémoire</div></div>
-          <div class="arch-card"><div class="arch-ico">🜃</div><div class="arch-name">Le Bâtisseur</div><div class="arch-desc">Celui qui construit du durable avec l'héritage</div></div>
-          <div class="arch-card"><div class="arch-ico">🜄</div><div class="arch-name">Le Nomade</div><div class="arch-desc">Celui qui cherche et défriche les territoires</div></div>
-          <div class="arch-card"><div class="arch-ico">☽</div><div class="arch-name">La Tisseuse</div><div class="arch-desc">Celle qui relie, répare les liens rompus</div></div>
-          <div class="arch-card"><div class="arch-ico">☀</div><div class="arch-name">Le Révélateur</div><div class="arch-desc">Celui qui voit ce que les autres n'osent pas nommer</div></div>
-        </div>
-        <div style="margin-top:20px">
-          <button class="btn-g" style="width:auto;padding:10px 24px">Confirmer l'attribution</button>
         </div>
       </div>
 
-      <!-- Mandala praticien -->
+      <div class="page" id="archetypes">
+        <div class="ptitle">Attribution des archétypes</div>
+        <div class="psub">Réservé au praticien · Attribution manuelle — jamais automatique</div>
+        <div style="margin-bottom:16px">
+          <label style="font-size:12px;font-weight:600;color:var(--brn);text-transform:uppercase;letter-spacing:.05em">Participant</label>
+          <select id="arch-select" style="display:block;margin-top:6px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:9px 13px;font-size:13px;color:var(--brown);outline:none;width:260px"></select>
+        </div>
+        <div class="ibox" style="max-width:580px"><span>⚠</span><span>L'archétype est attribué par le praticien après discernement en séance. Il ne peut pas être auto-attribué.</span></div>
+        <div class="arch-grid" id="arch-grid"></div>
+        <div style="margin-top:18px"><button class="btn-g" style="width:auto;padding:10px 22px" onclick="confirmArchetype()">Confirmer l'attribution</button></div>
+      </div>
+
       <div class="page" id="mandala-pr">
-        <div class="page-title">Mandala — vue praticien</div>
-        <div class="page-sub">Jonathan G. · Validation et annotation des phases</div>
-        <div class="mandala-wrap">
-          <div class="mandala-panel">
-            <svg width="260" height="260" viewBox="0 0 260 260">
-              <g transform="translate(130,130)">
-                <circle cx="0" cy="0" r="120" fill="none" stroke="#E0D5C0" stroke-width="2" stroke-dasharray="4 3"/>
-                <circle cx="0" cy="0" r="100" fill="none" stroke="#E0D5C0" stroke-width="2" stroke-dasharray="4 3"/>
-                <circle cx="0" cy="0" r="80" fill="none" stroke="#E0D5C0" stroke-width="2" stroke-dasharray="4 3"/>
-                <circle cx="0" cy="0" r="60" fill="none" stroke="#E0D5C0" stroke-width="2" stroke-dasharray="4 3"/>
-                <circle cx="0" cy="0" r="42" fill="rgba(196,164,74,0.08)" stroke="#C4A44A" stroke-width="2.5"/>
-                <circle cx="0" cy="0" r="25" fill="rgba(196,164,74,0.18)" stroke="#B8943A" stroke-width="3"/>
-                <circle cx="0" cy="0" r="11" fill="#3C2415"/>
-                <text x="0" y="4" text-anchor="middle" font-size="8" fill="#C4A44A" font-family="serif">✦</text>
-              </g>
-            </svg>
+        <div class="ptitle">Mandala — vue praticien</div>
+        <div style="margin-bottom:16px">
+          <label style="font-size:12px;font-weight:600;color:var(--brn);text-transform:uppercase;letter-spacing:.05em">Participant</label>
+          <select id="mandala-pr-select" style="display:block;margin-top:6px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:9px 13px;font-size:13px;color:var(--brown);outline:none;width:260px" onchange="renderPraticienMandala()"></select>
+        </div>
+        <div class="m-wrap">
+          <div class="m-panel"><svg id="mandala-svg-pr" width="240" height="240" viewBox="0 0 240 240"></svg>
+            <div id="mandala-pr-caption" style="font-size:12px;color:var(--muted);text-align:center;line-height:1.6"></div>
             <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
-              <button class="btn-o" style="width:auto;padding:8px 16px;font-size:12px">Valider Phase 2</button>
-              <button class="btn-g" style="width:auto;padding:8px 16px;font-size:12px">Générer Dossier d'Âme</button>
+              <button class="btn-o" style="width:auto;padding:8px 14px;font-size:12px" onclick="validatePhaseFromMandala()">Valider phase</button>
+              <button class="btn-g" style="width:auto;padding:8px 14px;font-size:12px" onclick="generateDossierFromMandala()">Dossier d'Âme</button>
             </div>
           </div>
-          <div class="mandala-legend">
-            <div style="font-size:13px;font-weight:600;color:var(--brown);margin-bottom:10px">Phases de Jonathan</div>
-            <div class="leg-item"><div class="leg-dot" style="background:#B8943A"></div><div><div class="leg-name">Phase 0 — Le Témoin</div><div class="leg-phase">Validée le 15 mars 2026</div></div><span class="leg-status st-done">✓</span></div>
-            <div class="leg-item"><div class="leg-dot" style="background:#B8943A"></div><div><div class="leg-name">Phase 1 — L'Origine</div><div class="leg-phase">Validée le 2 juin 2026</div></div><span class="leg-status st-done">✓</span></div>
-            <div class="leg-item"><div class="leg-dot" style="background:#C4A44A"></div><div><div class="leg-name">Phase 2 — La Reconnaissance</div><div class="leg-phase">60% · En cours</div></div><span class="leg-status st-active">En cours</span></div>
-            <div class="leg-item" style="opacity:.5"><div class="leg-dot" style="background:#E0D5C0"></div><div><div class="leg-name">Phase 3 — L'Intégration</div><div class="leg-phase">Non débutée</div></div><span class="leg-status st-locked">—</span></div>
-            <div class="leg-item" style="opacity:.5"><div class="leg-dot" style="background:#E0D5C0"></div><div><div class="leg-name">Phase 4 — Le Projet d'Âme</div><div class="leg-phase">Non débutée</div></div><span class="leg-status st-locked">—</span></div>
-          </div>
+          <div class="m-legend" id="mandala-legend-pr"></div>
         </div>
       </div>
 
-      <!-- Certification praticien -->
       <div class="page" id="certif-pr">
-        <div class="page-title">Ma certification</div>
-        <div class="page-sub">Marie Lambert · Praticien ORIA Certifié Niveau 2</div>
-        <div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
-          <div class="card">
-            <div class="card-lbl">Niveau actuel</div>
-            <div class="card-val" style="font-size:18px;margin-top:4px">Praticien ORIA Certifié — N2</div>
-            <div class="card-hint">Certifiée depuis le 10 sept 2025 · Superviseur : Dr. A. Fontaine</div>
-          </div>
-          <div class="card">
-            <div class="card-lbl">Progression vers N3 — Superviseur</div>
+        <div class="ptitle">Ma certification</div>
+        <div class="psub" id="certif-pr-sub">Praticien ORIA Certifié</div>
+        <div style="display:flex;flex-direction:column;gap:14px;max-width:520px">
+          <div class="card"><div class="card-lbl">Niveau actuel</div><div class="card-val" style="font-size:17px;margin-top:4px" id="certif-level-val"></div><div class="card-hint" id="certif-level-hint"></div></div>
+          <div class="card"><div class="card-lbl">Progression vers Superviseur N3</div>
             <div style="margin-top:10px">
-              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px"><span>Participants accompagnés</span><span>8 / 20</span></div>
-              <div class="progress-bar"><div class="progress-fill" style="width:40%"></div></div>
-              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:10px;margin-bottom:6px"><span>Mois depuis certification N2</span><span>9 / 24</span></div>
-              <div class="progress-bar"><div class="progress-fill" style="width:37%"></div></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px"><span>Participants accompagnés</span><span id="certif-part-count">0 / 20</span></div>
+              <div class="prog-bar"><div class="prog-fill" id="certif-part-fill" style="width:0%"></div></div>
             </div>
           </div>
-          <div class="info-box">
-            <span>◎</span>
-            <span>Pour accéder au Niveau 3 — Superviseur ORIA : 20 participants accompagnés, 24 mois de pratique, et recommandation de deux superviseurs existants.</span>
-          </div>
+          <div class="ibox"><span>◎</span><span>Pour accéder au Niveau 3 — Superviseur ORIA : 20 participants accompagnés, 24 mois de pratique, et recommandation de deux superviseurs existants.</span></div>
         </div>
       </div>
 
@@ -892,60 +500,572 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div><!-- /app -->
 
 <script>
-var currentRole = 'participant';
+// ─── STATE ───────────────────────────────────────────────
+const SK = 'oria_v2';
+const PHASES = [
+  {n:0, name:'Le Témoin', desc:'Observation sans jugement · Posture de présence'},
+  {n:1, name:"L'Origine", desc:'Cartographie de l\'héritage familial · Génosociogramme'},
+  {n:2, name:'La Reconnaissance', desc:'Identifier les loyautés et répétitions'},
+  {n:'2.5', name:'Le Désert Identitaire', desc:'Phase de vide et de transition · Si nécessaire'},
+  {n:3, name:"L'Intégration", desc:'Réconciliation avec l\'héritage'},
+  {n:4, name:"Le Projet d'Âme", desc:'Découverte de la vocation profonde'},
+  {n:5, name:"L'Archétype", desc:'Attribution du rôle mythique par le praticien'},
+  {n:6, name:'Le Mythe Personnel', desc:'Construction du récit transformé'},
+  {n:7, name:"L'Alignement", desc:'Engagement dans la contribution'},
+];
+const PHASE_NAMES = ['Le Témoin',"L'Origine",'La Reconnaissance','Le Désert Identitaire',"L'Intégration","Le Projet d'Âme","L'Archétype",'Le Mythe Personnel',"L'Alignement"];
+const ARCHETYPES = [
+  {id:'passeur', ico:'🜂', name:'Le Passeur', desc:'Traverse les mondes, guide les autres'},
+  {id:'gardien', ico:'🜁', name:'Le Gardien', desc:'Protège et maintient la mémoire'},
+  {id:'batisseur', ico:'🜃', name:'Le Bâtisseur', desc:'Construit du durable avec l\'héritage'},
+  {id:'nomade', ico:'🜄', name:'Le Nomade', desc:'Cherche et défriche les territoires'},
+  {id:'tisseuse', ico:'☽', name:'La Tisseuse', desc:'Relie, répare les liens rompus'},
+  {id:'revelateur', ico:'☀', name:'Le Révélateur', desc:'Voit ce que les autres n\'osent pas nommer'},
+  {id:'oracle', ico:'✦', name:"L'Oracle", desc:'Porte la vision et l\'intuition ancestrale'},
+  {id:'heraut', ico:'⚡', name:'Le Héraut', desc:'Annonce et initie les transformations'},
+];
+const EXERCISES = [
+  {phase:0, title:'Le regard du témoin', body:"La posture du Témoin est la première chose à cultiver dans la méthode ORIA. Avant de vouloir comprendre ou changer quoi que ce soit, nous devons apprendre à observer.", q:"Fermez les yeux 2 minutes. Observez ce qui se passe en vous — pensées, sensations, émotions — sans rien juger. Ensuite, décrivez ce que vous avez observé, comme si vous étiez un témoin bienveillant de votre propre intériorité."},
+  {phase:1, title:"La carte de l'héritage", body:"Toute histoire personnelle s'inscrit dans une histoire familiale plus large. Avant de transformer, nous devons voir d'où nous venons.", q:"Dessinez ou décrivez les grandes figures de votre histoire familiale sur deux générations (parents, grands-parents). Quels traits de caractère, quelles situations, quels métiers ou vocations se répètent ?"},
+  {phase:2, title:'La loyauté invisible', body:"Toute répétition dans notre vie porte une loyauté. Nous répétons ce que nous n'avons pas encore reconnu comme appartenant à l'histoire qui nous a précédés.", q:"Quelle situation dans votre vie actuelle ressemble à une situation que vous avez observée dans votre histoire familiale ? Décrivez-la sans chercher à l'expliquer — juste l'observer, comme un témoin."},
+  {phase:3, title:"Le mouvement de réconciliation", body:"Reconnaître ne suffit pas. L'intégration demande un acte intérieur : accueillir l'héritage, même ce qui est douloureux, comme une partie de notre histoire qui a cherché à nous protéger.", q:"Choisissez un élément de votre héritage que vous avez longtemps rejeté ou tenté d'ignorer. Que cherchait-il à vous dire ou à vous protéger ? Écrivez une lettre à cette partie de votre histoire."},
+  {phase:4, title:'La question de l\'âme', body:"Le Projet d'Âme n'est pas une ambition ni un plan. C'est la vocation profonde qui a toujours été là, sous les répétitions et les voiles.", q:"Si votre histoire de vie — avec toutes ses difficultés et ses répétitions — cherchait à vous préparer à quelque chose, à quelle contribution vous préparerait-elle ? Laissez venir la réponse sans censure."},
+];
 
-// LAUNCHER
+function defaultState(){
+  return {
+    session: null,
+    participants: {
+      p1:{id:'p1',name:'Jonathan G.',email:'jonathan@oria.com',initial:'J',phase:2,progress:60,sessions:7,since:'10 mars 2026',archetype:''},
+      p2:{id:'p2',name:'Sophie M.',email:'sophie@oria-demo.com',initial:'S',phase:3,progress:80,sessions:14,since:'15 jan 2026',archetype:'tisseuse'},
+      p3:{id:'p3',name:'Lucas P.',email:'lucas@oria-demo.com',initial:'L',phase:1,progress:40,sessions:4,since:'20 avr 2026',archetype:''},
+      p4:{id:'p4',name:'Claire D.',email:'claire@oria-demo.com',initial:'C',phase:4,progress:20,sessions:18,since:'5 fév 2026',archetype:'batisseur'},
+      p5:{id:'p5',name:'Marc T.',email:'marc@oria-demo.com',initial:'M',phase:0,progress:30,sessions:3,since:'1er mai 2026',archetype:''},
+    },
+    journals:{},
+    exercises:{},
+    notes:{
+      p1:[{date:'13 juin 2026',text:'Forte résistance au début, puis ouverture progressive. Connexion avec la figure paternelle clairement émergente. Proposer exercice sur la loyauté.'}],
+    },
+    archetypes:{p2:'tisseuse',p4:'batisseur'},
+    dossiers:{},
+  };
+}
+
+var S = {};
+function load(){
+  try{ var r=localStorage.getItem(SK); S=r?JSON.parse(r):defaultState(); }
+  catch(e){ S=defaultState(); }
+}
+function save(){ localStorage.setItem(SK,JSON.stringify(S)); }
+load();
+
+// ─── UTILS ────────────────────────────────────────────────
+function toast(msg,type){
+  var d=document.createElement('div');
+  d.className='toast'+(type==='gold'?' gold':'');
+  d.textContent=msg;
+  document.getElementById('toasts').appendChild(d);
+  setTimeout(()=>d.classList.add('show'),10);
+  setTimeout(()=>{d.classList.remove('show');setTimeout(()=>d.remove(),400);},3000);
+}
+function today(){
+  return new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+}
+function phaseIdx(n){ return typeof n==='number'?n:parseFloat(n); }
+function getParticipantByEmail(email){
+  return Object.values(S.participants).find(p=>p.email===email);
+}
+
+// ─── LAUNCHER ────────────────────────────────────────────
 function lgo(id){
-  document.querySelectorAll('.ls,.ls-split').forEach(s=>{s.classList.remove('on')});
+  document.querySelectorAll('.ls,.ls-split').forEach(s=>s.classList.remove('on'));
   document.getElementById(id).classList.add('on');
 }
 function selC(el){
-  document.querySelectorAll('.ccard').forEach(c=>c.classList.remove('sel'));
-  el.classList.add('sel');
+  document.querySelectorAll('.ccrd').forEach(c=>{c.classList.remove('sel');c.querySelector('.cchk').style.color='transparent'});
+  el.classList.add('sel');el.querySelector('.cchk').style.color='var(--gold)';
 }
+function submitCertif(){
+  var e=document.getElementById('certif-email').value.trim();
+  if(!e){toast('Veuillez entrer votre email.');return;}
+  lgo('l-certif-ok');
+}
+
+function loginParticipant(){
+  var name=document.getElementById('p-name').value.trim();
+  var email=document.getElementById('p-email').value.trim();
+  var err=document.getElementById('p-err');
+  if(!name||!email){err.classList.add('show');return;}
+  err.classList.remove('show');
+  // Find or create participant
+  var p=getParticipantByEmail(email)||getParticipantByEmail('jonathan@oria.com');
+  if(!p){
+    // create new participant
+    var id='p'+Date.now();
+    S.participants[id]={id,name:name+' (nouveau)',email,initial:name[0].toUpperCase(),phase:0,progress:0,sessions:0,since:today(),archetype:''};
+    p=S.participants[id];
+  }
+  S.session={role:'participant',name,email,participantId:p.id};
+  save();
+  enterApp('participant');
+}
+
+function loginPraticien(){
+  var name=document.getElementById('pr-name').value.trim();
+  var email=document.getElementById('pr-email').value.trim();
+  var err=document.getElementById('pr-err');
+  if(!name||!email){err.classList.add('show');return;}
+  err.classList.remove('show');
+  S.session={role:'praticien',name,email};
+  save();
+  enterApp('praticien');
+}
+
 function enterApp(role){
-  currentRole = role;
-  var l = document.getElementById('launcher');
+  var l=document.getElementById('launcher');
   l.classList.add('out');
-  setTimeout(function(){
+  setTimeout(()=>{
     l.style.display='none';
-    var a=document.getElementById('app');
-    a.classList.add('on');
+    document.getElementById('app').classList.add('on');
+    if(!S.session) S.session={role,name:role==='participant'?'Jonathan':'Marie',email:role==='participant'?'jonathan@oria.com':'marie@oria.com',participantId:'p1'};
     switchRole(role);
   },400);
 }
 
-// APP NAVIGATION
-function nav(pageId, label){
+// ─── APP NAV ──────────────────────────────────────────────
+var currentRole='participant';
+var selectedParticipantId='p1';
+var selectedArchetype='';
+
+function nav(pageId,label){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
   document.getElementById(pageId).classList.add('on');
-  document.getElementById('hdr-ctx').textContent = label;
-  var navEl = document.getElementById('nav-'+currentRole);
-  if(navEl) navEl.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('on'));
-  // highlight active item
-  if(navEl){
-    navEl.querySelectorAll('.nav-item').forEach(function(item){
-      if(item.getAttribute('onclick') && item.getAttribute('onclick').indexOf("'"+pageId+"'")!==-1){
-        item.classList.add('on');
-      }
-    });
-  }
+  document.getElementById('hdr-ctx').textContent=label;
+  var nav=document.getElementById('nav-'+currentRole);
+  if(nav){nav.querySelectorAll('.ni').forEach(i=>i.classList.remove('on'));
+    nav.querySelectorAll('.ni').forEach(i=>{if(i.getAttribute('onclick')&&i.getAttribute('onclick').indexOf("'"+pageId+"'")>-1)i.classList.add('on');});}
+  // Lazy render per page
+  if(pageId==='dash-p') renderDashP();
+  if(pageId==='mandala-p') renderMandalaP();
+  if(pageId==='phases-p') renderPhasesP();
+  if(pageId==='exercice-p') renderExerciseP();
+  if(pageId==='journal-p') renderJournal();
+  if(pageId==='dossier-p') renderDossier();
+  if(pageId==='dash-pr') renderDashPr();
+  if(pageId==='participants') renderParticipants();
+  if(pageId==='participant-detail') renderParticipantDetail();
+  if(pageId==='session') renderSession();
+  if(pageId==='archetypes') renderArchetypes();
+  if(pageId==='mandala-pr') renderPraticienMandala();
+  if(pageId==='certif-pr') renderCertifPr();
 }
 
 function switchRole(role){
-  currentRole = role;
-  // toggle nav
-  document.getElementById('nav-participant').style.display = role==='participant' ? 'flex' : 'none';
-  document.getElementById('nav-praticien').style.display = role==='praticien' ? 'flex' : 'none';
-  // toggle buttons
-  document.getElementById('tog-p').classList.toggle('on', role==='participant');
-  document.getElementById('tog-pr').classList.toggle('on', role==='praticien');
-  // toggle avatar
-  document.getElementById('hdr-av').textContent = role==='participant' ? 'J' : 'M';
-  // go to dashboard
+  currentRole=role;
+  document.getElementById('nav-participant').style.display=role==='participant'?'flex':'none';
+  document.getElementById('nav-praticien').style.display=role==='praticien'?'flex':'none';
+  document.getElementById('tog-p').classList.toggle('on',role==='participant');
+  document.getElementById('tog-pr').classList.toggle('on',role==='praticien');
+  var sess=S.session||{};
+  var name=sess.name||'';
+  document.getElementById('hdr-av').textContent=name?name[0].toUpperCase():'?';
+  document.getElementById('av-name-item').textContent=name;
+  document.getElementById('av-role-item').textContent=role==='participant'?'Participant ORIA':'Praticien ORIA Certifié';
   if(role==='participant') nav('dash-p','Tableau de bord');
   else nav('dash-pr','Tableau de bord');
 }
+
+function toggleMenu(){
+  document.getElementById('av-menu').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.av')) document.getElementById('av-menu').classList.remove('open');
+});
+
+function logout(){
+  S.session=null; save();
+  document.getElementById('app').classList.remove('on');
+  document.getElementById('launcher').style.display='flex';
+  document.getElementById('launcher').classList.remove('out');
+  lgo('l-hero');
+}
+
+// ─── MANDALA RENDER ───────────────────────────────────────
+function drawMandala(svgId, phase, size){
+  var svg=document.getElementById(svgId);
+  var cx=size/2,cy=size/2;
+  var radii=[size*.47,size*.39,size*.31,size*.23,size*.16,size*.095];
+  var fills=['none','none','none','none','none','none'];
+  var strokes=['#E0D5C0','#E0D5C0','#E0D5C0','#E0D5C0','#E0D5C0','#E0D5C0'];
+  var widths=[1,1,1,1,1,1];
+  var dashes=['4 3','4 3','4 3','4 3','4 3','4 3'];
+  // ring 6=phase7, ring5=phase5-6, ring4=phase4, ring3=phase3, ring2=phase2, ring1=phase0-1
+  var thresholds=[1,2,3,4,5,7]; // phase needed to light ring (index 0=innermost ring)
+  for(var i=0;i<6;i++){
+    if(phase>=thresholds[i]){
+      var intensity=Math.min(1,(phase-thresholds[i]+1));
+      fills[i]=i===0?'rgba(196,164,74,0.18)':'rgba(196,164,74,0.08)';
+      strokes[i]=i===0?'#B8943A':'#C4A44A';
+      widths[i]=i===0?3:2;
+      dashes[i]='none';
+    }
+  }
+  var html='<g transform="translate('+cx+','+cy+')">';
+  // Radial lines
+  for(var a=0;a<8;a++) html+='<line x1="0" y1="-'+(size*.47)+'" x2="0" y2="-'+(size*.095)+'" stroke="#D4C4A8" stroke-width="0.5" opacity="0.35" transform="rotate('+(a*45)+')"/>';
+  // Rings (outer to inner)
+  for(var i=5;i>=0;i--) html+='<circle cx="0" cy="0" r="'+radii[i]+'" fill="'+fills[i]+'" stroke="'+strokes[i]+'" stroke-width="'+widths[i]+'"'+(dashes[i]!=='none'?' stroke-dasharray="'+dashes[i]+'"':'')+'/>';
+  // Center
+  html+='<circle cx="0" cy="0" r="'+(size*.038)+'" fill="#3C2415"/>';
+  html+='<text x="0" y="'+(size*.015)+'" text-anchor="middle" font-size="'+(size*.04)+'" fill="#C4A44A" font-family="serif">✦</text>';
+  html+='</g>';
+  svg.innerHTML=html;
+}
+
+// ─── PARTICIPANT PAGES ────────────────────────────────────
+function getMyParticipant(){
+  var sess=S.session||{};
+  return S.participants[sess.participantId]||Object.values(S.participants)[0];
+}
+
+function renderDashP(){
+  var p=getMyParticipant();
+  var phase=p.phase;
+  var pname=PHASES.find(x=>x.n===phase)||PHASES[phase]||PHASES[2];
+  document.getElementById('dp-welcome').textContent='Bienvenue, '+(S.session&&S.session.name||p.name.split(' ')[0]);
+  document.getElementById('dp-sub').textContent='Phase '+phase+' — '+pname.name+' · Votre parcours est en cours';
+  document.getElementById('dp-cards').innerHTML=
+    card('Phase actuelle',phase,pname.name)+
+    card('Sessions complétées',p.sessions,'depuis le '+p.since)+
+    card('Entrées journal',(S.journals[p.id]||[]).length,'entrées sauvegardées')+
+    card('Praticien','Marie L.','Praticien ORIA Certifié N2');
+  var ex=EXERCISES.find(e=>e.phase===phase)||EXERCISES[EXERCISES.length-1];
+  document.getElementById('dp-infobox').innerHTML='<span>◎</span><span>Vous êtes en Phase '+phase+' — '+pname.name+'. Un exercice vous attend.</span>';
+  document.getElementById('dp-ex-title').textContent=ex.title;
+  document.getElementById('dp-ex-sub').textContent='Phase '+phase+' · Exercice disponible';
+}
+
+function card(lbl,val,hint){
+  return '<div class="card"><div class="card-lbl">'+lbl+'</div><div class="card-val">'+val+'</div><div class="card-hint">'+hint+'</div></div>';
+}
+
+function renderMandalaP(){
+  var p=getMyParticipant();
+  drawMandala('mandala-svg-p',p.phase,260);
+  var pname=PHASES.find(x=>x.n===p.phase)||PHASES[2];
+  document.getElementById('mandala-p-caption').innerHTML='Phase '+p.phase+' — <strong>'+pname.name+'</strong><br><span style="color:var(--gold-d)">'+p.progress+'% en cours</span>';
+  var html='';
+  var ringDefs=[
+    {ring:6,phase:'7',name:"L'Alignement",thresh:7},
+    {ring:5,phase:'5-6',name:"L'Archétype & Le Mythe",thresh:5},
+    {ring:4,phase:'4',name:"Le Projet d'Âme",thresh:4},
+    {ring:3,phase:'3',name:"L'Intégration",thresh:3},
+    {ring:2,phase:'2',name:'La Reconnaissance',thresh:2},
+    {ring:1,phase:'0-1',name:'Le Témoin & L\'Origine',thresh:1},
+    {ring:0,phase:'Noyau',name:'Le Noyau — votre identité essentielle',thresh:0},
+  ];
+  ringDefs.forEach(function(r){
+    var done=p.phase>r.thresh;
+    var active=p.phase===r.thresh;
+    var locked=p.phase<r.thresh;
+    var color=done?'#B8943A':active?'#C4A44A':'#E0D5C0';
+    var badge=done?'<span class="badge b-done">Validé</span>':active?'<span class="badge b-active">En cours</span>':'<span class="badge b-lock">Verrouillé</span>';
+    var op=locked?'opacity:.45;':'';
+    html+='<div class="leg" style="'+op+'"><div class="leg-dot" style="background:'+color+'"></div><div><div class="leg-name">'+r.name+'</div><div class="leg-ph">Phase '+r.phase+'</div></div>'+badge+'</div>';
+  });
+  document.getElementById('mandala-legend-p').innerHTML=html;
+}
+
+function renderPhasesP(){
+  var p=getMyParticipant();
+  var html='';
+  PHASES.forEach(function(ph){
+    var phN=typeof ph.n==='number'?ph.n:parseFloat(ph.n);
+    var done=p.phase>phN;
+    var active=p.phase===phN;
+    var locked=p.phase<phN;
+    var cls=done?'ph-done':active?'ph-act':'ph-lock';
+    var rowCls='prow'+(active?' current':locked?'':' clickable');
+    var op=locked&&phN>p.phase+0.5?' style="opacity:.45"':'';
+    var pct=done?100:active?p.progress:0;
+    var pctLabel=done?'Validée':active?(p.progress+'%'):'Verrouillée';
+    html+='<div class="'+rowCls+'"'+op+'><div class="pnum '+cls+'">'+ph.n+'</div><div class="p-info"><div class="p-name">'+ph.name+'</div><div class="p-desc">'+ph.desc+'</div></div><div class="prog-wrap"><div class="prog-pct">'+pctLabel+'</div><div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%"></div></div></div></div>';
+  });
+  document.getElementById('phases-list-p').innerHTML=html;
+}
+
+function renderExerciseP(){
+  var p=getMyParticipant();
+  var ex=EXERCISES.find(e=>e.phase===p.phase)||EXERCISES[Math.min(p.phase,EXERCISES.length-1)];
+  var saved=(S.exercises[p.id]||{})[p.phase]||{text:'',sent:false};
+  document.getElementById('ex-sub-p').textContent='Phase '+p.phase+' — '+ex.title;
+  var sentHtml=saved.sent?'<div class="sent-badge">✓ Envoyé à votre praticien</div>':'<div style="display:flex;gap:10px;margin-top:8px"><button class="btn-g" style="flex:1;max-width:180px" onclick="saveExercise(false)">Sauvegarder</button><button class="btn-o" style="flex:1;max-width:180px" onclick="saveExercise(true)">Envoyer au praticien</button></div>';
+  document.getElementById('ex-content-p').innerHTML=
+    '<div class="ex-ph">Phase '+p.phase+' · '+PHASES.find(x=>x.n===p.phase).name+'</div>'+
+    '<div class="ex-title">'+ex.title+'</div>'+
+    '<div class="ex-body">'+ex.body+'</div>'+
+    '<div class="ex-q">'+ex.q+'</div>'+
+    '<textarea class="ta" id="ex-ta" rows="6"'+(saved.sent?' readonly':'')+'>'+(saved.text||'')+'</textarea>'+
+    sentHtml;
+}
+
+function saveExercise(send){
+  var p=getMyParticipant();
+  var text=document.getElementById('ex-ta').value.trim();
+  if(!text){toast('Écrivez quelque chose d\'abord.');return;}
+  if(!S.exercises[p.id]) S.exercises[p.id]={};
+  S.exercises[p.id][p.phase]={text,sent:send};
+  save();
+  if(send){toast('Exercice envoyé à votre praticien ✓','gold');renderExerciseP();}
+  else toast('Réponse sauvegardée.');
+}
+
+function renderJournal(){
+  var p=getMyParticipant();
+  var entries=S.journals[p.id]||[];
+  document.getElementById('j-today-label').textContent='Nouvelle entrée — '+today();
+  document.getElementById('j-input').value='';
+  var html=entries.length===0?'<div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">Votre journal est vide. Écrivez votre première entrée ci-dessus.</div>':'';
+  [...entries].reverse().forEach(function(e){
+    html+='<div class="j-entry"><div class="j-date">'+e.date+'</div><div class="j-text">'+e.text+'</div></div>';
+  });
+  document.getElementById('journal-list').innerHTML=html;
+}
+
+function saveJournal(){
+  var p=getMyParticipant();
+  var text=document.getElementById('j-input').value.trim();
+  if(!text){toast('Écrivez quelque chose d\'abord.');return;}
+  if(!S.journals[p.id]) S.journals[p.id]=[];
+  S.journals[p.id].push({date:today(),text});
+  save();
+  toast('Entrée enregistrée ✓','gold');
+  renderJournal();
+}
+
+function renderDossier(){
+  var p=getMyParticipant();
+  var hasDossier=S.dossiers&&S.dossiers[p.id];
+  var container=document.getElementById('dossier-container');
+  if(hasDossier){
+    container.innerHTML='<div class="dossier-ready"><div style="font-size:48px;margin-bottom:14px">⬡</div><div style="font-size:18px;font-weight:500;color:var(--brown);margin-bottom:8px">Dossier d\'Âme généré</div><div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px">Votre praticien a généré votre Dossier d\'Âme.<br>Il synthétise l\'intégralité de votre parcours ORIA.</div><button class="btn-g" style="max-width:240px" onclick="toast(\'Téléchargement simulé — PDF disponible en version réelle.\')">Télécharger le PDF</button></div>';
+  } else {
+    var pct=Math.round((p.phase/7)*100);
+    container.innerHTML='<div class="dossier-locked"><div style="font-size:48px;margin-bottom:14px;opacity:.4">⬡</div><div style="font-size:16px;font-weight:500;color:var(--brown);margin-bottom:8px">Votre dossier se révèle</div><div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px">Phase actuelle : <strong>'+p.phase+'</strong> sur 7<br>Le Dossier d\'Âme sera généré par votre praticien à la completion de la Phase 7.</div><div class="prog-bar" style="max-width:300px;margin:0 auto"><div class="prog-fill" style="width:'+pct+'%"></div></div><div style="font-size:11px;color:var(--muted);margin-top:8px">'+pct+'% du parcours accompli</div></div>';
+  }
+}
+
+// ─── PRATICIEN PAGES ──────────────────────────────────────
+function renderDashPr(){
+  var name=S.session&&S.session.name||'Marie';
+  var parts=Object.values(S.participants);
+  document.getElementById('dpr-welcome').textContent='Tableau de bord';
+  document.getElementById('dpr-sub').textContent=name+' · Plan PRO · Praticien ORIA Certifié N2';
+  var totalSessions=parts.reduce(function(a,p){return a+p.sessions;},0);
+  var pending=parts.filter(function(p){return p.progress>=100&&p.phase<7;}).length;
+  document.getElementById('dpr-cards').innerHTML=
+    card('Participants actifs',parts.length,'sur 30 inclus (Plan PRO)')+
+    card('Sessions totales',totalSessions,'tous participants')+
+    card('Dossiers générés',Object.keys(S.dossiers||{}).length,'illimités sur PRO')+
+    card('Validations en attente',pending,'phases à 100%');
+  var html='';
+  parts.slice(0,4).forEach(function(p){
+    var pname=PHASES.find(x=>x.n===p.phase)||PHASES[2];
+    html+='<div class="p-row" onclick="selectedParticipantId=\''+p.id+'\';nav(\'participant-detail\',\''+p.name+'\')"><div class="p-av">'+p.initial+'</div><div><div style="font-size:14px;font-weight:500;color:var(--brown)">'+p.name+'</div><div style="font-size:12px;color:var(--muted)">'+p.sessions+' sessions · Phase '+p.phase+'</div></div><div class="p-ph">Phase '+p.phase+'</div></div>';
+  });
+  document.getElementById('dpr-activity').innerHTML=html;
+}
+
+function renderParticipants(){
+  var parts=Object.values(S.participants);
+  document.getElementById('part-sub').textContent=parts.length+' participants actifs · Cliquez pour accéder au dossier';
+  var html='';
+  parts.forEach(function(p){
+    var pname=PHASES.find(x=>x.n===p.phase)||PHASES[2];
+    html+='<div class="p-row" onclick="selectedParticipantId=\''+p.id+'\';nav(\'participant-detail\',\''+p.name+'\')"><div class="p-av">'+p.initial+'</div><div style="flex:1"><div style="font-size:14px;font-weight:500;color:var(--brown)">'+p.name+'</div><div style="font-size:12px;color:var(--muted)">Depuis le '+p.since+' · '+p.sessions+' sessions</div></div><div class="p-ph">Phase '+p.phase+'</div></div>';
+  });
+  document.getElementById('part-list').innerHTML=html;
+}
+
+function genInvite(){
+  var code='ORIA-'+Math.random().toString(36).substr(2,4).toUpperCase()+'-'+Math.random().toString(36).substr(2,4).toUpperCase();
+  toast('Code d\'invitation généré : '+code,'gold');
+}
+
+function renderParticipantDetail(){
+  var p=S.participants[selectedParticipantId];
+  if(!p) return;
+  var pname=PHASES.find(x=>x.n===p.phase)||PHASES[2];
+  var arch=ARCHETYPES.find(a=>a.id===(S.archetypes[p.id]||p.archetype));
+  document.getElementById('pd-hdr').innerHTML=
+    '<div class="p-big-av">'+p.initial+'</div><div><div style="font-size:17px;font-weight:500;color:var(--brown)">'+p.name+'</div><div style="font-size:12px;color:var(--muted);margin-top:3px">Participant depuis le '+p.since+' · '+p.sessions+' sessions</div>'+(arch?'<div style="margin-top:6px;font-size:12px;color:var(--gold-d)">Archétype : '+arch.ico+' '+arch.name+'</div>':'')+'</div>';
+  document.getElementById('pd-cards').innerHTML=
+    card('Phase actuelle',p.phase,pname.name)+
+    card('Progression',p.progress+'%','sur la phase en cours')+
+    card('Sessions',p.sessions,'complétées')+
+    card('Journal',(S.journals[p.id]||[]).length+' entrées','rédigées');
+  // Phases
+  var html='';
+  PHASES.slice(0,5).forEach(function(ph){
+    var phN=typeof ph.n==='number'?ph.n:parseFloat(ph.n);
+    var done=p.phase>phN;
+    var active=p.phase===phN;
+    var locked=p.phase<phN;
+    var cls=done?'ph-done':active?'ph-act':'ph-lock';
+    var pct=done?100:active?p.progress:0;
+    var op=locked?' style="opacity:.45"':'';
+    html+='<div class="prow"'+op+'><div class="pnum '+cls+'">'+ph.n+'</div><div class="p-info"><div class="p-name">'+ph.name+'</div><div class="p-desc">'+ph.desc+'</div></div><div class="prog-wrap"><div class="prog-pct">'+(done?'Validée':active?p.progress+'%':'—')+'</div><div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%"></div></div></div></div>';
+  });
+  document.getElementById('pd-phases').innerHTML=html;
+  var btn=document.getElementById('pd-validate-btn');
+  btn.textContent=p.phase>=7?'Parcours complet':'Valider la Phase '+p.phase;
+  btn.disabled=p.phase>=7;
+  document.getElementById('pd-dossier-btn').textContent=p.phase>=7?'Générer Dossier d\'Âme':'Dossier d\'Âme (Phase 7 requise)';
+}
+
+function validatePhase(){
+  var p=S.participants[selectedParticipantId];
+  if(!p||p.phase>=7){toast('Parcours déjà complet.');return;}
+  p.phase=Math.min(p.phase+1,7);
+  p.progress=0;
+  p.sessions++;
+  save();
+  toast('Phase '+(p.phase)+' validée pour '+p.name+' ✓','gold');
+  renderParticipantDetail();
+}
+
+function generateDossier(){
+  var p=S.participants[selectedParticipantId];
+  if(!p){return;}
+  if(p.phase<7){toast('La Phase 7 doit être complétée pour générer le Dossier d\'Âme.');return;}
+  if(!S.dossiers) S.dossiers={};
+  S.dossiers[p.id]=true;
+  save();
+  toast('Dossier d\'Âme généré pour '+p.name+' ✓','gold');
+}
+
+function renderSession(){
+  var parts=Object.values(S.participants);
+  var sel=document.getElementById('session-select');
+  sel.innerHTML=parts.map(p=>'<option value="'+p.id+'">'+p.name+'</option>').join('');
+  loadSessionNotes();
+}
+
+function loadSessionNotes(){
+  var id=document.getElementById('session-select').value;
+  var p=S.participants[id];
+  if(!p){document.getElementById('note-wrap').style.display='none';return;}
+  document.getElementById('note-wrap').style.display='block';
+  document.getElementById('note-hdr').innerHTML='<div class="p-av" style="width:36px;height:36px;font-size:12px">'+p.initial+'</div><div><div style="font-size:14px;font-weight:500;color:var(--brown)">'+p.name+'</div><div style="font-size:12px;color:var(--muted)">Phase '+p.phase+' · '+p.sessions+' sessions</div></div><div style="margin-left:auto;font-size:12px;color:var(--muted)">'+today()+'</div>';
+  var notes=S.notes[id]||[];
+  var lastNote=notes[notes.length-1];
+  document.getElementById('note-ta').value=lastNote?lastNote.text:'';
+  selectedParticipantId=id;
+}
+
+function saveNote(){
+  var id=document.getElementById('session-select').value;
+  var text=document.getElementById('note-ta').value.trim();
+  if(!text){toast('Rien à sauvegarder.');return;}
+  if(!S.notes) S.notes={};
+  if(!S.notes[id]) S.notes[id]=[];
+  S.notes[id].push({date:today(),text});
+  S.participants[id].sessions++;
+  save();
+  toast('Note sauvegardée ✓','gold');
+}
+
+function renderArchetypes(){
+  var parts=Object.values(S.participants);
+  var sel=document.getElementById('arch-select');
+  sel.innerHTML=parts.map(p=>'<option value="'+p.id+'">'+p.name+'</option>').join('');
+  selectedArchetype=S.archetypes[sel.value]||'';
+  var html='';
+  ARCHETYPES.forEach(function(a){
+    var isSel=selectedArchetype===a.id||(S.archetypes[sel.value]===a.id);
+    html+='<div class="arch-card'+(isSel?' sel':'')+'" onclick="selectArch(this,\''+a.id+'\')">'+'<div class="arch-ico">'+a.ico+'</div><div class="arch-name">'+a.name+'</div><div class="arch-desc">'+a.desc+'</div></div>';
+  });
+  document.getElementById('arch-grid').innerHTML=html;
+}
+
+function selectArch(el,id){
+  document.querySelectorAll('.arch-card').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  selectedArchetype=id;
+}
+
+function confirmArchetype(){
+  if(!selectedArchetype){toast('Sélectionnez un archétype.');return;}
+  var id=document.getElementById('arch-select').value;
+  if(!S.archetypes) S.archetypes={};
+  S.archetypes[id]=selectedArchetype;
+  S.participants[id].archetype=selectedArchetype;
+  save();
+  var arch=ARCHETYPES.find(a=>a.id===selectedArchetype);
+  toast('Archétype '+arch.ico+' '+arch.name+' attribué ✓','gold');
+}
+
+function renderPraticienMandala(){
+  var parts=Object.values(S.participants);
+  var sel=document.getElementById('mandala-pr-select');
+  if(!sel.innerHTML) sel.innerHTML=parts.map(p=>'<option value="'+p.id+'">'+p.name+'</option>').join('');
+  var id=sel.value||parts[0].id;
+  var p=S.participants[id];
+  if(!p) return;
+  selectedParticipantId=id;
+  drawMandala('mandala-svg-pr',p.phase,240);
+  var pname=PHASES.find(x=>x.n===p.phase)||PHASES[2];
+  document.getElementById('mandala-pr-caption').innerHTML=p.name+' · Phase '+p.phase+' — '+pname.name;
+  var html='';
+  PHASES.slice(0,6).forEach(function(ph){
+    var phN=typeof ph.n==='number'?ph.n:parseFloat(ph.n);
+    var done=p.phase>phN;var active=p.phase===phN;var locked=p.phase<phN;
+    var color=done?'#B8943A':active?'#C4A44A':'#E0D5C0';
+    var badge=done?'<span class="badge b-done">✓</span>':active?'<span class="badge b-active">En cours</span>':'<span class="badge b-lock">—</span>';
+    html+='<div class="leg" style="'+(locked?'opacity:.4;':'')+'"><div class="leg-dot" style="background:'+color+'"></div><div><div class="leg-name">Phase '+ph.n+' — '+ph.name+'</div></div>'+badge+'</div>';
+  });
+  document.getElementById('mandala-legend-pr').innerHTML=html;
+}
+
+function validatePhaseFromMandala(){
+  var p=S.participants[selectedParticipantId];
+  if(!p||p.phase>=7){toast('Parcours déjà complet.');return;}
+  p.phase=Math.min(p.phase+1,7);p.progress=0;p.sessions++;
+  save();
+  toast('Phase validée pour '+p.name+' ✓','gold');
+  renderPraticienMandala();
+}
+
+function generateDossierFromMandala(){
+  var p=S.participants[selectedParticipantId];
+  if(!p) return;
+  if(p.phase<7){toast('La Phase 7 doit être complétée.');return;}
+  if(!S.dossiers) S.dossiers={};
+  S.dossiers[p.id]=true;
+  save();
+  toast('Dossier d\'Âme généré pour '+p.name+' ✓','gold');
+}
+
+function renderCertifPr(){
+  var name=S.session&&S.session.name||'Marie';
+  var parts=Object.values(S.participants);
+  document.getElementById('certif-pr-sub').textContent=name+' · Praticien ORIA Certifié';
+  document.getElementById('certif-level-val').textContent='Praticien ORIA Certifié — N2';
+  document.getElementById('certif-level-hint').textContent='Certifié·e depuis le 10 sept 2025 · Superviseur : Dr. A. Fontaine';
+  var pct=Math.round((parts.length/20)*100);
+  document.getElementById('certif-part-count').textContent=parts.length+' / 20';
+  document.getElementById('certif-part-fill').style.width=pct+'%';
+}
+
+// ─── INIT ────────────────────────────────────────────────
+(function init(){
+  if(S.session){
+    document.getElementById('launcher').style.display='none';
+    document.getElementById('app').classList.add('on');
+    switchRole(S.session.role);
+  }
+})();
 </script>
 </body>
 </html>
