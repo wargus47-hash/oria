@@ -1,1071 +1,1092 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>ORIA</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ORIA — Espace Praticien</title>
 <style>
-:root{
-  --gold:#C4A44A;--gold-d:#8B6B20;--gold-l:rgba(196,164,74,.12);
-  --brown:#3C2415;--brn:#6B4D2F;--brn-l:#8B5E30;
-  --ivory:#FAF6EE;--ivory-d:#F0E8D8;--white:#FFFFFF;
-  --border:#E0D5C0;--muted:#A08060;--sidebar:220px;--hdr:58px;
+:root {
+  --gold:#C4A44A; --gold-d:#8B6B20; --gold-l:rgba(196,164,74,.15); --gold-ll:rgba(196,164,74,.06);
+  --brown:#3C2415; --brn:#6B4D2F; --brn-l:#8B5E30; --brn-ll:#B07A4A;
+  --ivory:#FAF6EE; --ivory-d:#F0E8D8; --ivory-dd:#E4D5BE;
+  --white:#FFFFFF; --border:#D4C5A0; --muted:#9A7860; --muted-l:#C4A880;
+  --danger:#8B3A2A; --ok:#4A7A4A;
+  --sidebar:260px;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--ivory);color:var(--brown);min-height:100vh;overflow-x:hidden}
-button{font-family:inherit;cursor:pointer}
-textarea,input{font-family:inherit}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Georgia,serif;background:var(--ivory);color:var(--brown);min-height:100vh;overflow-x:hidden;}
 
-/* ── TOAST ── */
-#toasts{position:fixed;top:16px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
-.toast{background:var(--brown);color:var(--ivory);padding:10px 18px;border-radius:8px;font-size:13px;opacity:0;transform:translateX(20px);transition:all .3s;pointer-events:none}
-.toast.show{opacity:1;transform:translateX(0)}
-.toast.gold{background:var(--gold);color:var(--brown)}
+/* ── SETUP SCREEN ─────────────────────────────────────────────── */
+#setup{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--brown);}
+.setup-card{background:var(--ivory);border-radius:4px;padding:60px 70px;max-width:520px;width:90%;text-align:center;border-top:4px solid var(--gold);}
+.setup-card .oria-logo{font-size:3rem;letter-spacing:.4em;color:var(--gold);font-weight:normal;margin-bottom:6px;}
+.setup-card .oria-sub{font-size:.85rem;letter-spacing:.25em;color:var(--muted);text-transform:uppercase;margin-bottom:40px;}
+.setup-card label{display:block;text-align:left;font-size:.75rem;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:6px;margin-top:20px;}
+.setup-card input, .setup-card select{width:100%;padding:12px 14px;border:1px solid var(--border);background:var(--white);font-family:Georgia,serif;font-size:.95rem;color:var(--brown);border-radius:2px;outline:none;}
+.setup-card input:focus, .setup-card select:focus{border-color:var(--gold);}
+.btn-gold{display:inline-block;background:var(--gold);color:var(--brown);border:none;padding:14px 36px;font-family:Georgia,serif;font-size:.9rem;letter-spacing:.15em;cursor:pointer;margin-top:30px;border-radius:2px;text-transform:uppercase;}
+.btn-gold:hover{background:var(--gold-d);}
 
-/* ── LAUNCHER ── */
-#launcher{position:fixed;inset:0;background:var(--ivory);z-index:1000;display:flex;align-items:center;justify-content:center;transition:opacity .4s}
-#launcher.out{opacity:0;pointer-events:none}
-.ls{display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:24px;width:100%;max-width:420px;padding:40px 24px;animation:fup .4s ease}
-.ls.on{display:flex}
-.ls-split{display:none;flex-direction:row;width:100%;max-width:800px;min-height:500px;background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;animation:fup .4s ease}
-.ls-split.on{display:flex}
-@keyframes rin{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
-@keyframes fup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.r6{animation:rin .5s ease .10s both}.r5{animation:rin .5s ease .28s both}
-.r4{animation:rin .5s ease .46s both}.r3{animation:rin .5s ease .64s both}
-.r2{animation:rin .5s ease .82s both}.r1{animation:rin .5s ease 1.00s both}
-.rc{animation:rin .5s ease 1.18s both}
-.fade1{animation:fup .6s ease .8s both}.fade2{animation:fup .6s ease 1.0s both}.fade3{animation:fup .6s ease 1.2s both}
-.l-title{font-size:36px;font-weight:300;letter-spacing:.18em;text-transform:uppercase;color:var(--brown)}
-.l-tag{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--brn-l);margin-top:2px}
-.quote{font-size:14px;color:var(--brn);font-style:italic;line-height:1.9;border-left:2px solid var(--gold);padding-left:16px;text-align:left;max-width:320px}
-.btn-g{background:var(--gold);color:var(--brown);border:none;border-radius:8px;padding:12px 28px;font-size:14px;font-weight:500;width:100%;transition:background .2s}
-.btn-g:hover{background:var(--gold-d);color:var(--ivory)}
-.btn-o{background:transparent;color:var(--brn-l);border:1px solid var(--gold);border-radius:8px;padding:11px 28px;font-size:14px;width:100%;transition:all .2s}
-.btn-o:hover{background:var(--gold-l)}
-.btn-ghost{background:none;border:none;color:var(--brn-l);font-size:12px;text-decoration:underline;padding:0}
-.btn-back{background:none;border:none;color:var(--muted);font-size:13px;display:flex;align-items:center;gap:5px;padding:0;margin-bottom:auto}
-.ctas{display:flex;flex-direction:column;gap:10px;width:100%;max-width:270px}
-.rcards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:100%;max-width:540px}
-.rcard{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:22px 14px;display:flex;flex-direction:column;align-items:center;gap:10px;transition:all .2s;text-align:center}
-.rcard:hover{border-color:var(--gold);transform:translateY(-2px);cursor:pointer}
-.rico{width:44px;height:44px;border-radius:50%;background:var(--ivory);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:20px}
-.rname{font-size:13px;font-weight:600;color:var(--brown)}
-.rdesc{font-size:11px;color:var(--muted);line-height:1.5}
-.spl-l{width:230px;flex-shrink:0;background:var(--brown);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:36px 22px;text-align:center;gap:18px}
-.spl-r{flex:1;display:flex;flex-direction:column;padding:36px 36px;gap:18px}
-.field{display:flex;flex-direction:column;gap:5px}
-.field label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--brn)}
-.field input{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:10px 13px;font-size:13px;color:var(--brown);outline:none;transition:border-color .2s}
-.field input:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-l)}
-.fields{display:flex;flex-direction:column;gap:12px}
-.f-foot{border-top:1px solid var(--border);padding-top:12px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--muted)}
-.err{font-size:12px;color:#C0392B;display:none}
-.err.show{display:block}
-.demo-hint{background:var(--ivory-d);border-radius:8px;padding:10px 12px;font-size:11px;color:var(--brn);line-height:1.6;text-align:left}
-.demo-hint strong{color:var(--brown)}
+/* ── APP LAYOUT ───────────────────────────────────────────────── */
+#app{display:none;height:100vh;overflow:hidden;}
+.layout{display:flex;height:100%;}
 
-/* ── APP ── */
-#app{display:none;min-height:100vh;flex-direction:column}
-#app.on{display:flex}
-.hdr{height:var(--hdr);background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 22px;gap:14px;position:sticky;top:0;z-index:100}
-.hdr-logo{font-size:18px;font-weight:300;letter-spacing:.15em;text-transform:uppercase;color:var(--brown)}
-.hdr-sep{width:1px;height:18px;background:var(--border)}
-.hdr-ctx{font-size:12px;color:var(--muted)}
-.hdr-r{margin-left:auto;display:flex;align-items:center;gap:10px}
-.role-pill{background:var(--ivory-d);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--brn-l);font-weight:600}
-.rtog{display:flex;background:var(--ivory-d);border-radius:8px;padding:3px;gap:2px}
-.rtog-b{padding:5px 12px;border-radius:6px;border:none;font-size:12px;font-weight:500;background:transparent;color:var(--muted);transition:all .2s}
-.rtog-b.on{background:var(--white);color:var(--brown);box-shadow:0 1px 4px rgba(0,0,0,.08)}
-.av{width:32px;height:32px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--brown);cursor:pointer;position:relative}
-.av-menu{position:absolute;top:38px;right:0;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:6px;min-width:160px;box-shadow:0 4px 20px rgba(0,0,0,.1);display:none;z-index:200}
-.av-menu.open{display:block}
-.av-menu-item{padding:8px 12px;font-size:13px;color:var(--brown);border-radius:6px;cursor:pointer;transition:background .15s}
-.av-menu-item:hover{background:var(--ivory)}
-.av-menu-item.danger{color:#C0392B}
-.body{display:flex;flex:1}
-.sidebar{width:var(--sidebar);flex-shrink:0;background:var(--white);border-right:1px solid var(--border);padding:16px 0;display:flex;flex-direction:column;position:sticky;top:var(--hdr);height:calc(100vh - var(--hdr));overflow-y:auto}
-.ns{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:14px 18px 5px}
-.ni{display:flex;align-items:center;gap:9px;padding:9px 18px;font-size:13px;color:var(--brn);cursor:pointer;transition:all .15s;border-left:3px solid transparent}
-.ni:hover{background:var(--ivory);color:var(--brown)}
-.ni.on{background:var(--ivory-d);color:var(--brown);border-left-color:var(--gold);font-weight:500}
-.ni .ico{font-size:15px;width:16px;text-align:center;flex-shrink:0}
-.nb{margin-top:auto;border-top:1px solid var(--border);padding:10px 0}
-.main{flex:1;padding:28px 32px;overflow-y:auto}
-.page{display:none}.page.on{display:block}
-.ptitle{font-size:22px;font-weight:300;color:var(--brown);letter-spacing:.03em;margin-bottom:4px}
-.psub{font-size:13px;color:var(--muted);margin-bottom:24px}
+/* ── SIDEBAR ──────────────────────────────────────────────────── */
+.sidebar{width:var(--sidebar);min-width:var(--sidebar);background:var(--brown);display:flex;flex-direction:column;height:100%;overflow:hidden;}
+.sidebar-head{padding:24px 20px 20px;border-bottom:1px solid rgba(196,164,74,.2);}
+.sidebar-logo{font-size:1.6rem;letter-spacing:.35em;color:var(--gold);font-weight:normal;}
+.sidebar-practitioner{font-size:.72rem;color:var(--muted-l);letter-spacing:.1em;margin-top:4px;text-transform:uppercase;}
+.sidebar-section{font-size:.65rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;padding:16px 20px 8px;}
+.client-list{flex:1;overflow-y:auto;padding:0 12px 12px;}
+.client-item{padding:10px 12px;border-radius:2px;cursor:pointer;color:var(--ivory-d);font-size:.88rem;margin-bottom:2px;border-left:2px solid transparent;transition:background .15s;}
+.client-item:hover{background:rgba(255,255,255,.06);}
+.client-item.active{background:var(--gold-l);border-left-color:var(--gold);color:var(--ivory);}
+.client-item .client-name{font-weight:normal;}
+.client-item .client-phase{font-size:.7rem;color:var(--muted-l);margin-top:2px;}
+.sidebar-actions{padding:14px 12px;border-top:1px solid rgba(196,164,74,.2);}
+.btn-add-client{width:100%;padding:10px;background:transparent;border:1px solid rgba(196,164,74,.4);color:var(--gold);font-family:Georgia,serif;font-size:.8rem;letter-spacing:.1em;cursor:pointer;text-transform:uppercase;border-radius:2px;}
+.btn-add-client:hover{background:var(--gold-l);}
+.sidebar-footer{padding:12px 20px;font-size:.65rem;color:var(--muted);border-top:1px solid rgba(255,255,255,.05);line-height:1.5;}
 
-/* Cards */
-.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:24px}
-.card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px}
-.card-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:6px}
-.card-val{font-size:26px;font-weight:300;color:var(--brown)}
-.card-hint{font-size:11px;color:var(--muted);margin-top:4px}
+/* ── MAIN ─────────────────────────────────────────────────────── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--ivory);}
 
-/* Info box */
-.ibox{background:var(--gold-l);border:1px solid rgba(196,164,74,.3);border-radius:10px;padding:13px 15px;font-size:13px;color:var(--brn);line-height:1.6;display:flex;gap:10px;margin-bottom:20px}
+/* ── DASHBOARD ────────────────────────────────────────────────── */
+#dashboard{flex:1;overflow-y:auto;padding:50px 60px;display:flex;flex-direction:column;gap:28px;}
+.dash-title{font-size:1.6rem;font-weight:normal;color:var(--brown);margin-bottom:4px;}
+.dash-subtitle{font-size:.85rem;color:var(--muted);letter-spacing:.05em;}
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;}
+.dash-card{background:var(--white);border:1px solid var(--border);border-radius:2px;padding:24px;cursor:pointer;transition:border-color .15s;}
+.dash-card:hover{border-color:var(--gold);}
+.dash-card .stat{font-size:2rem;color:var(--gold);font-weight:normal;}
+.dash-card .stat-label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:4px;}
+.dash-banner{background:var(--brown);color:var(--ivory-d);padding:20px 24px;border-radius:2px;border-left:4px solid var(--gold);font-size:.9rem;line-height:1.7;}
+.dash-banner strong{color:var(--gold);}
 
-/* Mandala */
-.m-wrap{display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap}
-.m-panel{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:28px;display:flex;flex-direction:column;align-items:center;gap:18px}
-.m-legend{flex:1;min-width:240px;display:flex;flex-direction:column;gap:9px}
-.leg{display:flex;align-items:center;gap:11px;padding:10px 13px;background:var(--white);border:1px solid var(--border);border-radius:10px;cursor:default}
-.leg-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
-.leg-name{font-size:13px;font-weight:500;color:var(--brown)}
-.leg-ph{font-size:11px;color:var(--muted)}
-.badge{margin-left:auto;font-size:11px;padding:2px 8px;border-radius:20px;white-space:nowrap}
-.b-done{background:#E8F5E9;color:#2E7D32}
-.b-active{background:rgba(196,164,74,.15);color:var(--gold-d)}
-.b-lock{background:var(--ivory-d);color:var(--muted)}
+/* ── CLIENT WORKSPACE ─────────────────────────────────────────── */
+#workspace{display:none;flex-direction:column;height:100%;overflow:hidden;}
+.ws-header{padding:16px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;background:var(--white);flex-shrink:0;}
+.ws-client-name{font-size:1.15rem;color:var(--brown);}
+.ws-client-phase{font-size:.78rem;color:var(--muted);background:var(--ivory-d);padding:3px 10px;border-radius:20px;}
+.ws-client-actions{margin-left:auto;display:flex;gap:8px;}
+.btn-sm{padding:6px 14px;font-family:Georgia,serif;font-size:.75rem;border:1px solid var(--border);background:transparent;color:var(--brown);cursor:pointer;border-radius:2px;letter-spacing:.05em;}
+.btn-sm:hover{border-color:var(--gold);color:var(--gold);}
+.btn-sm.danger{border-color:var(--danger);color:var(--danger);}
+.btn-sm.danger:hover{background:var(--danger);color:var(--ivory);}
 
-/* Phases */
-.phases{display:flex;flex-direction:column;gap:11px;max-width:700px}
-.prow{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 18px;display:flex;align-items:center;gap:14px;transition:all .2s}
-.prow.clickable:hover{border-color:var(--gold);cursor:pointer}
-.prow.current{border-color:var(--gold);box-shadow:0 2px 12px var(--gold-l)}
-.pnum{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
-.ph-done{background:#E8F5E9;color:#2E7D32}
-.ph-act{background:rgba(196,164,74,.2);color:var(--gold-d);border:2px solid var(--gold)}
-.ph-lock{background:var(--ivory-d);color:var(--muted)}
-.p-info{flex:1}
-.p-name{font-size:14px;font-weight:500;color:var(--brown)}
-.p-desc{font-size:12px;color:var(--muted);margin-top:2px}
-.prog-wrap{width:110px}
-.prog-pct{font-size:11px;color:var(--muted);margin-bottom:4px;text-align:right}
-.prog-bar{height:4px;background:var(--ivory-d);border-radius:2px;overflow:hidden}
-.prog-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .4s}
+/* ── TABS ─────────────────────────────────────────────────────── */
+.tabs{display:flex;border-bottom:1px solid var(--border);background:var(--ivory);flex-shrink:0;padding:0 28px;gap:0;}
+.tab{padding:12px 20px;font-family:Georgia,serif;font-size:.8rem;letter-spacing:.1em;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;text-transform:uppercase;background:none;border-top:none;border-left:none;border-right:none;transition:color .15s;}
+.tab:hover{color:var(--brown);}
+.tab.active{color:var(--gold-d);border-bottom-color:var(--gold);}
+.tab-panels{flex:1;overflow-y:auto;}
+.tab-panel{display:none;padding:32px 36px;}
+.tab-panel.active{display:block;}
 
-/* Exercise */
-.ex{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:26px;max-width:660px}
-.ex-ph{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--gold-d);margin-bottom:7px}
-.ex-title{font-size:18px;font-weight:500;color:var(--brown);margin-bottom:11px}
-.ex-body{font-size:14px;color:var(--brn);line-height:1.8;margin-bottom:18px}
-.ex-q{background:var(--ivory-d);border-radius:10px;padding:14px 16px;font-size:14px;color:var(--brown);line-height:1.7;font-style:italic;border-left:3px solid var(--gold);margin-bottom:18px}
-.ta{width:100%;background:var(--ivory);border:1px solid var(--border);border-radius:10px;padding:13px 15px;font-size:13px;color:var(--brown);resize:vertical;outline:none;line-height:1.7;transition:border-color .2s}
-.ta:focus{border-color:var(--gold)}
-.sent-badge{display:inline-flex;align-items:center;gap:6px;background:#E8F5E9;color:#2E7D32;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:500;margin-top:8px}
+/* ── FORM ELEMENTS ────────────────────────────────────────────── */
+.field-group{margin-bottom:20px;}
+.field-label{display:block;font-size:.72rem;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:6px;}
+.field-input{width:100%;padding:10px 13px;border:1px solid var(--border);background:var(--white);font-family:Georgia,serif;font-size:.9rem;color:var(--brown);border-radius:2px;outline:none;}
+.field-input:focus{border-color:var(--gold);}
+textarea.field-input{resize:vertical;min-height:90px;line-height:1.6;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.section-title{font-size:1rem;color:var(--brown);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);font-weight:normal;letter-spacing:.05em;}
 
-/* Journal */
-.j-new{background:var(--white);border:2px dashed var(--border);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:11px;max-width:680px;margin-bottom:20px}
-.j-entries{display:flex;flex-direction:column;gap:12px;max-width:680px}
-.j-entry{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:17px 19px;animation:fup .3s ease}
-.j-date{font-size:11px;color:var(--muted);margin-bottom:5px}
-.j-text{font-size:13px;color:var(--brn);line-height:1.7}
+/* ── SESSION COMPANION ────────────────────────────────────────── */
+.session-phase-selector{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;}
+.phase-btn{padding:7px 16px;border:1px solid var(--border);background:var(--white);font-family:Georgia,serif;font-size:.8rem;color:var(--muted);cursor:pointer;border-radius:2px;}
+.phase-btn:hover{border-color:var(--gold);color:var(--gold-d);}
+.phase-btn.active{background:var(--gold);border-color:var(--gold);color:var(--brown);}
+.session-guide{background:var(--white);border:1px solid var(--border);border-radius:2px;padding:28px 32px;margin-bottom:20px;}
+.guide-phase-label{font-size:.7rem;letter-spacing:.2em;color:var(--gold-d);text-transform:uppercase;margin-bottom:6px;}
+.guide-phase-name{font-size:1.25rem;color:var(--brown);margin-bottom:4px;}
+.guide-phase-essence{font-size:.88rem;color:var(--muted);font-style:italic;margin-bottom:22px;line-height:1.6;}
+.guide-section{margin-bottom:22px;}
+.guide-section-title{font-size:.72rem;letter-spacing:.18em;color:var(--gold-d);text-transform:uppercase;margin-bottom:10px;}
+.exercise-block{background:var(--ivory);border-left:3px solid var(--gold);padding:14px 18px;margin-bottom:12px;border-radius:0 2px 2px 0;}
+.exercise-num{font-size:.68rem;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
+.exercise-title{font-size:.92rem;color:var(--brown);margin-bottom:6px;}
+.exercise-text{font-size:.85rem;color:var(--brn);line-height:1.7;}
+.question-list{list-style:none;padding:0;}
+.question-list li{padding:8px 0;border-bottom:1px solid var(--border);font-size:.88rem;color:var(--brown);line-height:1.5;}
+.question-list li:last-child{border-bottom:none;}
+.question-list li::before{content:"·";color:var(--gold);margin-right:10px;}
+.journal-reminder{background:var(--gold-ll);border:1px solid var(--gold);border-radius:2px;padding:14px 18px;font-size:.85rem;color:var(--gold-d);margin-bottom:20px;display:flex;align-items:center;gap:12px;}
+.notes-area{background:var(--white);border:1px solid var(--border);border-radius:2px;padding:20px 24px;}
+.notes-area h4{font-size:.72rem;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-bottom:10px;}
+.btn-save{background:var(--gold);color:var(--brown);border:none;padding:10px 24px;font-family:Georgia,serif;font-size:.82rem;letter-spacing:.1em;cursor:pointer;border-radius:2px;margin-top:12px;text-transform:uppercase;}
+.btn-save:hover{background:var(--gold-d);}
 
-/* Participants */
-.p-list{display:flex;flex-direction:column;gap:10px;max-width:680px}
-.p-row{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:15px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s}
-.p-row:hover{border-color:var(--gold)}
-.p-av{width:38px;height:38px;border-radius:50%;background:rgba(196,164,74,.2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--brown);flex-shrink:0}
-.p-ph{margin-left:auto;font-size:11px;padding:3px 10px;background:var(--gold-l);color:var(--gold-d);border-radius:20px;font-weight:500;white-space:nowrap}
+/* ── PARCOURS ─────────────────────────────────────────────────── */
+.phase-timeline{display:flex;flex-direction:column;gap:0;}
+.phase-row{display:flex;align-items:flex-start;gap:20px;padding:16px 0;border-bottom:1px solid var(--border);}
+.phase-row:last-child{border-bottom:none;}
+.phase-num{width:54px;height:54px;flex-shrink:0;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.85rem;color:var(--muted);background:var(--white);}
+.phase-num.done{border-color:var(--gold);background:var(--gold);color:var(--brown);}
+.phase-info{flex:1;}
+.phase-name{font-size:.95rem;color:var(--brown);margin-bottom:3px;}
+.phase-desc{font-size:.82rem;color:var(--muted);line-height:1.5;margin-bottom:6px;}
+.phase-date{font-size:.72rem;color:var(--muted-l);}
+.phase-actions{display:flex;gap:8px;align-items:center;}
+.btn-validate{padding:7px 18px;background:var(--ok);color:var(--white);border:none;font-family:Georgia,serif;font-size:.78rem;cursor:pointer;border-radius:2px;letter-spacing:.05em;}
+.btn-validate:hover{opacity:.85;}
+.btn-unvalidate{padding:7px 18px;background:transparent;border:1px solid var(--muted);color:var(--muted);font-family:Georgia,serif;font-size:.78rem;cursor:pointer;border-radius:2px;}
+.btn-unvalidate:hover{border-color:var(--danger);color:var(--danger);}
 
-/* Session notes */
-.note-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;max-width:680px}
-.note-hdr{display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);padding-bottom:14px;margin-bottom:14px}
+/* ── MANDALA ──────────────────────────────────────────────────── */
+.mandala-container{display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap;}
+.mandala-svg-wrap{flex:1;min-width:320px;display:flex;flex-direction:column;align-items:center;gap:16px;}
+#mandala-svg{width:100%;max-width:480px;height:auto;}
+.mandala-legend{flex:1;min-width:240px;}
+.mandala-legend-item{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem;}
+.mandala-legend-item:last-child{border-bottom:none;}
+.legend-dot{width:16px;height:16px;border-radius:50%;flex-shrink:0;border:2px solid var(--border);}
+.mandala-actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
 
-/* Archetypes */
-.arch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:11px;max-width:680px}
-.arch-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:15px;text-align:center;cursor:pointer;transition:all .2s}
-.arch-card:hover{border-color:var(--gold)}
-.arch-card.sel{border-color:var(--gold);background:var(--gold-l)}
-.arch-ico{font-size:28px;margin-bottom:7px}
-.arch-name{font-size:13px;font-weight:600;color:var(--brown);margin-bottom:3px}
-.arch-desc{font-size:11px;color:var(--muted);line-height:1.4}
+/* ── ARCHETYPE ────────────────────────────────────────────────── */
+.archetype-lock{background:var(--ivory-dd);border:1px solid var(--border);border-radius:2px;padding:32px;text-align:center;color:var(--muted);font-size:.9rem;line-height:1.7;margin-bottom:24px;}
+.archetype-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:24px;}
+.archetype-card{background:var(--white);border:1px solid var(--border);border-radius:2px;padding:20px;cursor:pointer;transition:border-color .15s;}
+.archetype-card:hover{border-color:var(--gold);}
+.archetype-card.selected{border-color:var(--gold);background:var(--gold-ll);}
+.arch-name{font-size:1rem;color:var(--brown);margin-bottom:4px;}
+.arch-pole{font-size:.72rem;letter-spacing:.1em;color:var(--gold-d);text-transform:uppercase;margin-bottom:8px;}
+.arch-desc{font-size:.82rem;color:var(--muted);line-height:1.6;}
+.arch-shadow{font-size:.8rem;color:var(--brn);font-style:italic;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
+.archetype-assignment{background:var(--white);border:1px solid var(--border);border-radius:2px;padding:24px;margin-top:20px;}
 
-/* Participant detail */
-.p-detail{max-width:700px}
-.p-detail-hdr{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;display:flex;align-items:center;gap:16px;margin-bottom:20px}
-.p-big-av{width:52px;height:52px;border-radius:50%;background:rgba(196,164,74,.2);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:var(--brown);flex-shrink:0}
+/* ── DOSSIER D'AME ────────────────────────────────────────────── */
+.da-lock{background:var(--ivory-dd);border:1px solid var(--border);border-radius:2px;padding:32px;text-align:center;color:var(--muted);font-size:.9rem;line-height:1.7;margin-bottom:24px;}
+.da-section{background:var(--white);border:1px solid var(--border);border-radius:2px;padding:22px;margin-bottom:14px;}
+.da-section-title{font-size:.8rem;letter-spacing:.15em;color:var(--gold-d);text-transform:uppercase;margin-bottom:14px;}
+.da-actions{display:flex;gap:12px;margin-top:24px;}
 
-/* Dossier */
-.dossier-locked{background:var(--white);border:2px dashed var(--border);border-radius:16px;padding:48px;text-align:center;max-width:460px}
-.dossier-ready{background:var(--white);border:1px solid var(--gold);border-radius:16px;padding:32px;max-width:480px;text-align:center}
+/* ── PAST SESSIONS ────────────────────────────────────────────── */
+.session-history{margin-top:24px;}
+.session-history h4{font-size:.72rem;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;}
+.session-entry{background:var(--white);border:1px solid var(--border);border-radius:2px;padding:14px 18px;margin-bottom:8px;}
+.session-entry-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.session-entry-date{font-size:.75rem;color:var(--muted);}
+.session-entry-phase{font-size:.75rem;color:var(--gold-d);background:var(--gold-ll);padding:2px 8px;border-radius:10px;}
+.session-entry-excerpt{font-size:.82rem;color:var(--brn);line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.session-entry-delete{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.9rem;padding:0 4px;margin-left:8px;}
+.session-entry-delete:hover{color:var(--danger);}
 
-/* Certif */
-.certif-ccards{display:flex;flex-direction:column;gap:9px;max-width:400px}
-.ccrd{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:13px 15px;display:flex;align-items:center;gap:13px;cursor:pointer;transition:all .2s}
-.ccrd:hover,.ccrd.sel{border-color:var(--gold);background:var(--gold-l)}
-.clvl{width:30px;height:30px;border-radius:50%;background:var(--ivory);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--brn-l);flex-shrink:0}
+/* ── MODAL ────────────────────────────────────────────────────── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--ivory);border-radius:2px;padding:36px 40px;max-width:500px;width:90%;border-top:3px solid var(--gold);}
+.modal h3{font-size:1.15rem;font-weight:normal;color:var(--brown);margin-bottom:20px;}
+.modal-actions{display:flex;gap:10px;margin-top:24px;justify-content:flex-end;}
+.btn-cancel{padding:10px 20px;background:transparent;border:1px solid var(--border);color:var(--muted);font-family:Georgia,serif;font-size:.82rem;cursor:pointer;border-radius:2px;}
+.btn-cancel:hover{border-color:var(--muted);}
 
-@media(max-width:700px){.sidebar{display:none}.m-wrap{flex-direction:column}.rcards{grid-template-columns:1fr}.spl-l{width:100%;min-height:auto}}
+/* ── PRINT ────────────────────────────────────────────────────── */
+@media print {
+  .sidebar,.tabs,.ws-header,.ws-client-actions,.da-actions,.mandala-actions,
+  #dashboard,.modal-overlay,.session-history,.session-phase-selector,.notes-area{display:none!important;}
+  body{background:white;}
+  .tab-panel{display:block!important;padding:20px;}
+  .da-section{border:1px solid #ccc;break-inside:avoid;margin-bottom:12px;}
+  .print-header{display:block!important;}
+  #panel-dossier{display:block!important;}
+}
+.print-header{display:none;text-align:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--gold);}
+
+/* ── SCROLLBAR ────────────────────────────────────────────────── */
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--ivory-dd);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--border);}
+.client-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);}
+
+/* ── TOAST ────────────────────────────────────────────────────── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--brown);color:var(--ivory);padding:12px 20px;border-radius:2px;border-left:3px solid var(--gold);font-size:.85rem;z-index:200;opacity:0;transform:translateY(10px);transition:all .25s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateY(0);}
 </style>
 </head>
 <body>
-<div id="toasts"></div>
 
-<!-- ═══════════ LAUNCHER ═══════════ -->
-<div id="launcher">
-
-  <div class="ls on" id="l-hero">
-    <div><div class="l-title fade1">ORIA</div><div class="l-tag fade2">Méthode de transformation</div></div>
-    <svg width="170" height="170" viewBox="0 0 170 170">
-      <g transform="translate(85,85)">
-        <line class="r6" x1="0" y1="-82" x2="0" y2="-17" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4"/>
-        <line class="r6" x1="0" y1="-82" x2="0" y2="-17" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(45)"/>
-        <line class="r6" x1="0" y1="-82" x2="0" y2="-17" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(90)"/>
-        <line class="r6" x1="0" y1="-82" x2="0" y2="-17" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(135)"/>
-        <line class="r6" x1="0" y1="-82" x2="0" y2="-17" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(180)"/>
-        <line class="r6" x1="0" y1="-82" x2="0" y2="-17" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(225)"/>
-        <line class="r6" x1="0" y1="-82" x2="0" y2="-17" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(270)"/>
-        <line class="r6" x1="0" y1="-82" x2="0" y2="-17" stroke="#D4C4A8" stroke-width="0.5" opacity="0.4" transform="rotate(315)"/>
-        <circle class="r6" cx="0" cy="0" r="82" fill="none" stroke="#D4C4A8" stroke-width="1"/>
-        <circle class="r5" cx="0" cy="0" r="68" fill="none" stroke="#C8B48A" stroke-width="1"/>
-        <circle class="r4" cx="0" cy="0" r="54" fill="none" stroke="#C4A44A" stroke-width="1.5"/>
-        <circle class="r3" cx="0" cy="0" r="40" fill="none" stroke="#B8943A" stroke-width="1.5"/>
-        <circle class="r2" cx="0" cy="0" r="27" fill="none" stroke="#9A7228" stroke-width="2"/>
-        <circle class="r1" cx="0" cy="0" r="15" fill="none" stroke="#7B5220" stroke-width="2"/>
-        <circle class="rc" cx="0" cy="0" r="5" fill="#3C2415"/>
-      </g>
-    </svg>
-    <div class="quote fade3">Tu n'es pas venu guérir ton histoire.<br>Tu es venu révéler ce que ton histoire<br>tentait de protéger.</div>
-    <div class="ctas fade3">
-      <button class="btn-g" onclick="lgo('l-roles')">Commencer mon parcours</button>
-      <button class="btn-o" onclick="lgo('l-login-p')">J'ai déjà un compte</button>
-    </div>
+<!-- SETUP SCREEN -->
+<div id="setup">
+  <div class="setup-card">
+    <div class="oria-logo">ORIA</div>
+    <div class="oria-sub">Espace Praticien</div>
+    <label>Votre prénom et nom</label>
+    <input type="text" id="setup-name" placeholder="Ex : Marie Dupont" />
+    <label>Niveau de certification</label>
+    <select id="setup-level">
+      <option value="N1">Niveau 1 — Praticien Certifié</option>
+      <option value="N2">Niveau 2 — Praticien Avancé</option>
+      <option value="N3">Niveau 3 — Praticien Superviseur</option>
+    </select>
+    <button class="btn-gold" onclick="initPractitioner()">Accéder à l'espace praticien</button>
   </div>
+</div>
 
-  <div class="ls" id="l-roles">
-    <button class="btn-back" onclick="lgo('l-hero')">← Retour</button>
-    <div style="font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold-d);font-weight:600">Qui êtes-vous ?</div>
-    <div style="font-size:20px;font-weight:500">Choisissez votre espace</div>
-    <div class="rcards">
-      <div class="rcard" onclick="lgo('l-login-p')"><div class="rico">🌿</div><div class="rname">Participant</div><div class="rdesc">Invitation d'un praticien</div></div>
-      <div class="rcard" onclick="lgo('l-login-pr')"><div class="rico">⭕</div><div class="rname">Praticien certifié</div><div class="rdesc">Accompagnement ORIA</div></div>
-      <div class="rcard" onclick="lgo('l-certif')"><div class="rico">✦</div><div class="rname">Devenir praticien</div><div class="rdesc">Demande de certification</div></div>
-    </div>
-  </div>
-
-  <div class="ls-split" id="l-login-p">
-    <div class="spl-l">
-      <svg width="80" height="80" viewBox="0 0 80 80"><g transform="translate(40,40)"><circle cx="0" cy="0" r="37" fill="none" stroke="#5C3C20" stroke-width="1"/><circle cx="0" cy="0" r="28" fill="none" stroke="#C4A44A" stroke-width="1.5"/><circle cx="0" cy="0" r="18" fill="none" stroke="#C4A44A" stroke-width="1.5"/><circle cx="0" cy="0" r="8" fill="none" stroke="#FAF6EE" stroke-width="1.5"/><circle cx="0" cy="0" r="3" fill="#C4A44A"/></g></svg>
-      <div style="font-size:20px;font-weight:300;letter-spacing:.12em;color:#FAF6EE">ORIA</div>
-      <div style="font-size:11px;letter-spacing:.08em;color:var(--gold)">Espace Participant</div>
-      <div class="demo-hint"><strong>Démo :</strong><br>jonathan@oria.com<br>ou votre propre email</div>
-    </div>
-    <div class="spl-r">
-      <button class="btn-back" onclick="lgo('l-roles')">← Retour</button>
-      <div><div style="font-size:19px;font-weight:500">Connexion</div><div style="font-size:12px;color:var(--muted);margin-top:3px">Accédez à votre espace participant</div></div>
-      <div class="fields">
-        <div class="field"><label>Prénom</label><input id="p-name" type="text" placeholder="Votre prénom"/></div>
-        <div class="field"><label>Email</label><input id="p-email" type="email" placeholder="votre@email.com"/></div>
-        <div class="field"><label>Mot de passe</label><input id="p-pwd" type="password" placeholder="••••••••"/></div>
-      </div>
-      <div class="err" id="p-err">Veuillez remplir tous les champs.</div>
-      <button class="btn-g" onclick="loginParticipant()">Accéder à mon parcours</button>
-      <div class="f-foot"><span>Première connexion ? Entrez votre prénom et votre email.</span></div>
-    </div>
-  </div>
-
-  <div class="ls-split" id="l-login-pr">
-    <div class="spl-l">
-      <svg width="80" height="80" viewBox="0 0 80 80"><g transform="translate(40,40)"><circle cx="0" cy="0" r="37" fill="none" stroke="#5C3C20" stroke-width="1"/><circle cx="0" cy="0" r="28" fill="none" stroke="#C4A44A" stroke-width="1.5"/><circle cx="0" cy="0" r="18" fill="none" stroke="#C4A44A" stroke-width="1.5"/><circle cx="0" cy="0" r="8" fill="none" stroke="#FAF6EE" stroke-width="1.5"/><circle cx="0" cy="0" r="3" fill="#C4A44A"/></g></svg>
-      <div style="font-size:20px;font-weight:300;letter-spacing:.12em;color:#FAF6EE">ORIA</div>
-      <div style="font-size:11px;letter-spacing:.08em;color:var(--gold)">Espace Praticien</div>
-      <div class="demo-hint"><strong>Démo :</strong><br>marie@oria.com<br>ou votre propre email</div>
-    </div>
-    <div class="spl-r">
-      <button class="btn-back" onclick="lgo('l-roles')">← Retour</button>
-      <div><div style="font-size:19px;font-weight:500">Connexion praticien</div><div style="font-size:12px;color:var(--muted);margin-top:3px">Votre espace certifié ORIA</div></div>
-      <div class="fields">
-        <div class="field"><label>Prénom</label><input id="pr-name" type="text" placeholder="Votre prénom"/></div>
-        <div class="field"><label>Email professionnel</label><input id="pr-email" type="email" placeholder="praticien@cabinet.fr"/></div>
-        <div class="field"><label>Mot de passe</label><input id="pr-pwd" type="password" placeholder="••••••••"/></div>
-      </div>
-      <div class="err" id="pr-err">Veuillez remplir tous les champs.</div>
-      <button class="btn-g" onclick="loginPraticien()">Accéder à mon espace</button>
-    </div>
-  </div>
-
-  <div class="ls" id="l-certif">
-    <button class="btn-back" onclick="lgo('l-roles')">← Retour</button>
-    <div style="font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold-d);font-weight:600">Certification ORIA</div>
-    <div style="font-size:20px;font-weight:500">Choisissez votre niveau</div>
-    <div class="certif-ccards">
-      <div class="ccrd sel" onclick="selC(this)"><div class="clvl">1</div><div><div style="font-size:13px;font-weight:600;color:var(--brown)">Praticien ORIA Associé</div><div style="font-size:11px;color:var(--muted)">990 € · 3-6 mois · Plan SOLO</div></div><span style="margin-left:auto;color:var(--gold);font-size:18px" class="cchk">✓</span></div>
-      <div class="ccrd" onclick="selC(this)"><div class="clvl">2</div><div><div style="font-size:13px;font-weight:600;color:var(--brown)">Praticien ORIA Certifié</div><div style="font-size:11px;color:var(--muted)">590 € · Après 6 mois · Plan PRO</div></div><span style="margin-left:auto;color:transparent;font-size:18px" class="cchk">✓</span></div>
-      <div class="ccrd" onclick="selC(this)"><div class="clvl">3</div><div><div style="font-size:13px;font-weight:600;color:var(--brown)">Superviseur ORIA</div><div style="font-size:11px;color:var(--muted)">1 490 € · Après 2 ans certifié</div></div><span style="margin-left:auto;color:transparent;font-size:18px" class="cchk">✓</span></div>
-    </div>
-    <div class="field" style="width:100%;max-width:400px"><label>Email professionnel</label><input id="certif-email" type="email" placeholder="praticien@cabinet.fr"/></div>
-    <button class="btn-g" style="max-width:400px" onclick="submitCertif()">Soumettre ma demande</button>
-  </div>
-
-  <div class="ls" id="l-certif-ok">
-    <div style="width:60px;height:60px;border-radius:50%;background:var(--gold-l);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:26px">✉️</div>
-    <div style="font-size:20px;font-weight:500">Demande transmise</div>
-    <div style="font-size:13px;color:var(--muted);text-align:center;line-height:1.7;max-width:260px">Réponse sous 48h avec les prochaines étapes de votre certification ORIA.</div>
-    <div style="background:var(--brown);color:var(--gold);font-size:11px;padding:5px 14px;border-radius:20px;letter-spacing:.07em">Niveau 1 — En attente de validation</div>
-    <button class="btn-o" style="max-width:220px" onclick="lgo('l-hero')">Retour à l'accueil</button>
-  </div>
-
-</div><!-- /launcher -->
-
-<!-- ═══════════ APP ═══════════ -->
+<!-- APP -->
 <div id="app">
-  <header class="hdr">
-    <div class="hdr-logo">ORIA</div>
-    <div class="hdr-sep"></div>
-    <div class="hdr-ctx" id="hdr-ctx">Tableau de bord</div>
-    <div class="hdr-r">
-      <div class="rtog">
-        <button class="rtog-b on" id="tog-p" onclick="switchRole('participant')">Participant</button>
-        <button class="rtog-b" id="tog-pr" onclick="switchRole('praticien')">Praticien</button>
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-head">
+      <div class="sidebar-logo">ORIA</div>
+      <div class="sidebar-practitioner" id="pract-label">Praticien</div>
+    </div>
+    <div class="sidebar-section">Participants</div>
+    <div class="client-list" id="client-list"></div>
+    <div class="sidebar-actions">
+      <button class="btn-add-client" onclick="openAddClient()">+ Nouveau participant</button>
+    </div>
+    <div class="sidebar-footer">
+      Le praticien est le guide.<br>Le participant est l'explorateur.<br>L'application est la carte.
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- DASHBOARD -->
+    <div id="dashboard">
+      <div>
+        <div class="dash-title" id="dash-welcome">Bienvenue</div>
+        <div class="dash-subtitle">Espace praticien certifié ORIA</div>
       </div>
-      <div class="av" id="hdr-av" onclick="toggleMenu()">J
-        <div class="av-menu" id="av-menu">
-          <div class="av-menu-item" id="av-name-item" style="font-weight:500;color:var(--brown);cursor:default"></div>
-          <div class="av-menu-item" id="av-role-item" style="font-size:11px;color:var(--muted);cursor:default;padding-top:2px"></div>
-          <div style="border-top:1px solid var(--border);margin:6px 0"></div>
-          <div class="av-menu-item danger" onclick="logout()">Se déconnecter</div>
+      <div class="dash-banner">
+        <strong>Journal ORIA — Cahier physique</strong><br>
+        Le Journal ORIA se tient dans un cahier écrit à la main. L'écriture manuscrite est partie intégrante du processus d'intégration. Cette application est un guide et un compagnon de séance — elle ne remplace pas le cahier.
+      </div>
+      <div>
+        <div class="section-title">Vue d'ensemble</div>
+        <div class="dash-grid">
+          <div class="dash-card">
+            <div class="stat" id="stat-total">0</div>
+            <div class="stat-label">Participants actifs</div>
+          </div>
+          <div class="dash-card">
+            <div class="stat" id="stat-sessions">0</div>
+            <div class="stat-label">Séances enregistrées</div>
+          </div>
+          <div class="dash-card">
+            <div class="stat" id="stat-dossiers">0</div>
+            <div class="stat-label">Dossiers d'Âme complétés</div>
+          </div>
         </div>
+      </div>
+      <div class="dash-banner" style="background:var(--ivory-dd);color:var(--brown);border-left-color:var(--brn-l);">
+        <strong style="color:var(--brown);">Rappel éthique</strong><br>
+        ORIA ne diagnostique pas, n'interprète pas psychologiquement, ne remplace pas un thérapeute. Les archétypes sont toujours attribués par le praticien, jamais automatiquement. La supervision est requise pour les cas complexes.
       </div>
     </div>
-  </header>
-  <div class="body">
-    <nav class="sidebar" id="nav-participant">
-      <div class="ns">Mon parcours</div>
-      <div class="ni on" onclick="nav('dash-p','Tableau de bord')"><span class="ico">⊞</span>Tableau de bord</div>
-      <div class="ni" onclick="nav('mandala-p','Mon Mandala')"><span class="ico">◎</span>Mon Mandala</div>
-      <div class="ni" onclick="nav('phases-p','Mes phases')"><span class="ico">◈</span>Mes phases</div>
-      <div class="ni" onclick="nav('exercice-p','Exercice en cours')"><span class="ico">✦</span>Exercice en cours</div>
-      <div class="ni" onclick="nav('journal-p','Mon journal')"><span class="ico">✎</span>Mon journal</div>
-      <div class="ns">Documents</div>
-      <div class="ni" onclick="nav('dossier-p','Dossier d\'Âme')"><span class="ico">⬡</span>Dossier d'Âme</div>
-      <div class="nb"><div class="ni" onclick="logout()"><span class="ico">←</span>Se déconnecter</div></div>
-    </nav>
-    <nav class="sidebar" id="nav-praticien" style="display:none">
-      <div class="ns">Mes participants</div>
-      <div class="ni on" onclick="nav('dash-pr','Tableau de bord')"><span class="ico">⊞</span>Tableau de bord</div>
-      <div class="ni" onclick="nav('participants','Mes participants')"><span class="ico">◉</span>Participants</div>
-      <div class="ni" onclick="nav('session','Notes de séance')"><span class="ico">✎</span>Notes de séance</div>
-      <div class="ns">Outils</div>
-      <div class="ni" onclick="nav('archetypes','Attribution archétypes')"><span class="ico">✦</span>Archétypes</div>
-      <div class="ni" onclick="nav('mandala-pr','Mandala praticien')"><span class="ico">◎</span>Mandala</div>
-      <div class="ns">Compte</div>
-      <div class="ni" onclick="nav('certif-pr','Ma certification')"><span class="ico">⬡</span>Ma certification</div>
-      <div class="nb"><div class="ni" onclick="logout()"><span class="ico">←</span>Se déconnecter</div></div>
-    </nav>
-    <main class="main">
 
-      <!-- ── PARTICIPANT ── -->
-      <div class="page on" id="dash-p">
-        <div class="ptitle" id="dp-welcome">Bienvenue</div>
-        <div class="psub" id="dp-sub">Votre parcours ORIA est en cours</div>
-        <div class="cgrid" id="dp-cards"></div>
-        <div class="ibox" id="dp-infobox"></div>
-        <div>
-          <div class="psub">Prochain exercice</div>
-          <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px;display:flex;align-items:center;gap:14px;cursor:pointer;max-width:520px" onclick="nav('exercice-p','Exercice en cours')">
-            <div style="width:42px;height:42px;border-radius:50%;background:var(--gold-l);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">✦</div>
-            <div style="flex:1"><div id="dp-ex-title" style="font-size:14px;font-weight:500;color:var(--brown)"></div><div id="dp-ex-sub" style="font-size:12px;color:var(--muted)"></div></div>
-            <span style="font-size:18px;color:var(--muted)">→</span>
+    <!-- CLIENT WORKSPACE -->
+    <div id="workspace">
+      <div class="ws-header">
+        <button class="btn-sm" onclick="showDashboard()">&#8592; Retour</button>
+        <span class="ws-client-name" id="ws-name">—</span>
+        <span class="ws-client-phase" id="ws-phase-badge">Phase 0</span>
+        <div class="ws-client-actions">
+          <button class="btn-sm danger" onclick="deleteCurrentClient()">Supprimer</button>
+        </div>
+      </div>
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('profil')">Profil</button>
+        <button class="tab" onclick="switchTab('seance')">Séance</button>
+        <button class="tab" onclick="switchTab('parcours')">Parcours</button>
+        <button class="tab" onclick="switchTab('mandala')">Mandala</button>
+        <button class="tab" id="tab-archetype" onclick="switchTab('archetype')">Archétype</button>
+        <button class="tab" id="tab-dossier" onclick="switchTab('dossier')">Dossier d'Âme</button>
+      </div>
+      <div class="tab-panels">
+
+        <!-- PROFIL -->
+        <div class="tab-panel active" id="panel-profil">
+          <div class="section-title">Informations du participant</div>
+          <div class="field-row">
+            <div class="field-group"><label class="field-label">Prénom</label><input class="field-input" id="p-prenom" onchange="saveProfileField('prenom',this.value)"></div>
+            <div class="field-group"><label class="field-label">Nom</label><input class="field-input" id="p-nom" onchange="saveProfileField('nom',this.value)"></div>
           </div>
-        </div>
-      </div>
-
-      <div class="page" id="mandala-p">
-        <div class="ptitle">Mon Mandala Vivant</div>
-        <div class="psub">Votre parcours en symboles — illuminé au fil des phases validées</div>
-        <div class="m-wrap">
-          <div class="m-panel"><svg id="mandala-svg-p" width="260" height="260" viewBox="0 0 260 260"></svg>
-            <div id="mandala-p-caption" style="font-size:12px;color:var(--muted);text-align:center;line-height:1.6"></div>
+          <div class="field-row">
+            <div class="field-group"><label class="field-label">Date de naissance</label><input type="date" class="field-input" id="p-dob" onchange="saveProfileField('dob',this.value)"></div>
+            <div class="field-group"><label class="field-label">Date de début</label><input type="date" class="field-input" id="p-start" onchange="saveProfileField('startDate',this.value)"></div>
           </div>
-          <div class="m-legend" id="mandala-legend-p"></div>
+          <div class="field-group"><label class="field-label">Motif d'accompagnement</label><textarea class="field-input" id="p-motif" rows="3" onchange="saveProfileField('motif',this.value)"></textarea></div>
+          <div class="field-group"><label class="field-label">Observations initiales du praticien</label><textarea class="field-input" id="p-obs" rows="3" onchange="saveProfileField('obs',this.value)"></textarea></div>
+          <div style="height:1px;background:var(--border);margin:24px 0;"></div>
+          <div class="section-title">Génosociogramme — Notes praticien</div>
+          <div class="field-group"><label class="field-label">Figures marquantes identifiées</label><textarea class="field-input" id="p-geno-figures" rows="3" onchange="saveProfileField('genoFigures',this.value)"></textarea></div>
+          <div class="field-group"><label class="field-label">Loyautés et héritages repérés</label><textarea class="field-input" id="p-geno-loyautes" rows="3" onchange="saveProfileField('genoLoyautes',this.value)"></textarea></div>
+          <div class="field-group"><label class="field-label">Répétitions et patterns transgénérationnels</label><textarea class="field-input" id="p-geno-patterns" rows="3" onchange="saveProfileField('genoPatterns',this.value)"></textarea></div>
+          <div style="height:1px;background:var(--border);margin:24px 0;"></div>
+          <div class="section-title">Voiles identifiés en cours de parcours</div>
+          <div id="voiles-checklist"></div>
         </div>
-      </div>
 
-      <div class="page" id="phases-p">
-        <div class="ptitle">Mes phases</div>
-        <div class="psub">Progression validée par votre praticien</div>
-        <div class="phases" id="phases-list-p"></div>
-      </div>
-
-      <div class="page" id="exercice-p">
-        <div class="ptitle">Exercice en cours</div>
-        <div class="psub" id="ex-sub-p"></div>
-        <div class="ex" id="ex-content-p"></div>
-      </div>
-
-      <div class="page" id="journal-p">
-        <div class="ptitle">Mon journal</div>
-        <div class="psub">Espace d'écriture libre · Visible par vous et votre praticien</div>
-        <div class="j-new">
-          <div style="font-size:12px;font-weight:600;color:var(--brn-l)" id="j-today-label">Nouvelle entrée — aujourd'hui</div>
-          <textarea class="ta" id="j-input" rows="4" placeholder="Qu'observez-vous en vous aujourd'hui ?"></textarea>
-          <div style="display:flex;justify-content:flex-end">
-            <button class="btn-g" style="width:auto;padding:9px 20px" onclick="saveJournal()">Enregistrer</button>
-          </div>
-        </div>
-        <div class="j-entries" id="journal-list"></div>
-      </div>
-
-      <div class="page" id="dossier-p">
-        <div class="ptitle">Mon Dossier d'Âme</div>
-        <div class="psub">Synthèse complète de votre parcours</div>
-        <div id="dossier-container"></div>
-      </div>
-
-      <!-- ── PRATICIEN ── -->
-      <div class="page" id="dash-pr">
-        <div class="ptitle" id="dpr-welcome">Tableau de bord</div>
-        <div class="psub" id="dpr-sub">Plan PRO · Praticien ORIA Certifié</div>
-        <div class="cgrid" id="dpr-cards"></div>
-        <div class="psub">Activité récente</div>
-        <div class="p-list" id="dpr-activity"></div>
-      </div>
-
-      <div class="page" id="participants">
-        <div class="ptitle">Mes participants</div>
-        <div class="psub" id="part-sub"></div>
-        <div style="margin-bottom:16px"><button class="btn-g" style="width:auto;padding:10px 18px" onclick="genInvite()">+ Inviter un participant</button></div>
-        <div class="p-list" id="part-list"></div>
-      </div>
-
-      <div class="page" id="participant-detail">
-        <button class="btn-back" style="margin-bottom:16px" onclick="nav('participants','Mes participants')">← Retour aux participants</button>
-        <div class="p-detail-hdr" id="pd-hdr"></div>
-        <div class="cgrid" id="pd-cards"></div>
-        <div class="psub">Phases</div>
-        <div class="phases" id="pd-phases"></div>
-        <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
-          <button class="btn-g" style="width:auto;padding:10px 18px" id="pd-validate-btn" onclick="validatePhase()">Valider la phase en cours</button>
-          <button class="btn-o" style="width:auto;padding:10px 18px" onclick="nav('archetypes','Attribution archétypes')">Attribuer un archétype</button>
-          <button class="btn-o" style="width:auto;padding:10px 18px" id="pd-dossier-btn" onclick="generateDossier()">Générer Dossier d'Âme</button>
-        </div>
-      </div>
-
-      <div class="page" id="session">
-        <div class="ptitle">Notes de séance</div>
-        <div class="psub" id="session-sub">Sélectionnez un participant</div>
-        <div style="margin-bottom:16px">
-          <label style="font-size:12px;font-weight:600;color:var(--brn);text-transform:uppercase;letter-spacing:.05em">Participant</label>
-          <select id="session-select" style="display:block;margin-top:6px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:9px 13px;font-size:13px;color:var(--brown);outline:none;width:260px" onchange="loadSessionNotes()"></select>
-        </div>
-        <div class="note-wrap" id="note-wrap" style="display:none">
-          <div class="note-hdr" id="note-hdr"></div>
-          <textarea class="ta" id="note-ta" rows="8" placeholder="Notes de séance...&#10;&#10;Ce qui a émergé :&#10;&#10;Observations :&#10;&#10;Prochaine étape :"></textarea>
-          <div style="display:flex;gap:10px;border-top:1px solid var(--border);padding-top:14px;margin-top:12px">
-            <button class="btn-g" style="flex:1;max-width:140px" onclick="saveNote()">Sauvegarder</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="page" id="archetypes">
-        <div class="ptitle">Attribution des archétypes</div>
-        <div class="psub">Réservé au praticien · Attribution manuelle — jamais automatique</div>
-        <div style="margin-bottom:16px">
-          <label style="font-size:12px;font-weight:600;color:var(--brn);text-transform:uppercase;letter-spacing:.05em">Participant</label>
-          <select id="arch-select" style="display:block;margin-top:6px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:9px 13px;font-size:13px;color:var(--brown);outline:none;width:260px"></select>
-        </div>
-        <div class="ibox" style="max-width:580px"><span>⚠</span><span>L'archétype est attribué par le praticien après discernement en séance. Il ne peut pas être auto-attribué.</span></div>
-        <div class="arch-grid" id="arch-grid"></div>
-        <div style="margin-top:18px"><button class="btn-g" style="width:auto;padding:10px 22px" onclick="confirmArchetype()">Confirmer l'attribution</button></div>
-      </div>
-
-      <div class="page" id="mandala-pr">
-        <div class="ptitle">Mandala — vue praticien</div>
-        <div style="margin-bottom:16px">
-          <label style="font-size:12px;font-weight:600;color:var(--brn);text-transform:uppercase;letter-spacing:.05em">Participant</label>
-          <select id="mandala-pr-select" style="display:block;margin-top:6px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:9px 13px;font-size:13px;color:var(--brown);outline:none;width:260px" onchange="renderPraticienMandala()"></select>
-        </div>
-        <div class="m-wrap">
-          <div class="m-panel"><svg id="mandala-svg-pr" width="240" height="240" viewBox="0 0 240 240"></svg>
-            <div id="mandala-pr-caption" style="font-size:12px;color:var(--muted);text-align:center;line-height:1.6"></div>
-            <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
-              <button class="btn-o" style="width:auto;padding:8px 14px;font-size:12px" onclick="validatePhaseFromMandala()">Valider phase</button>
-              <button class="btn-g" style="width:auto;padding:8px 14px;font-size:12px" onclick="generateDossierFromMandala()">Dossier d'Âme</button>
+        <!-- SÉANCE -->
+        <div class="tab-panel" id="panel-seance">
+          <div class="journal-reminder">&#128211; Le Journal ORIA se tient dans un cahier physique écrit à la main. Invitez le participant à noter la référence de page correspondant à cette séance.</div>
+          <div class="section-title">Guide de séance — Sélectionnez la phase</div>
+          <div class="session-phase-selector" id="phase-selector"></div>
+          <div id="session-guide-content"></div>
+          <div class="notes-area">
+            <h4>Notes de séance (praticien)</h4>
+            <textarea class="field-input" id="session-notes" rows="5" placeholder="Observations, éléments saillants, orientations pour la prochaine séance..."></textarea>
+            <div style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-top:12px;">
+              <div class="field-group" style="margin:0;flex:1;min-width:180px;">
+                <label class="field-label">Référence page Journal</label>
+                <input class="field-input" id="journal-page-ref" placeholder="Ex: pp. 12-15">
+              </div>
+              <button class="btn-save" onclick="saveSession()">Enregistrer la séance</button>
             </div>
           </div>
-          <div class="m-legend" id="mandala-legend-pr"></div>
+          <div class="session-history">
+            <h4>Historique des séances</h4>
+            <div id="session-history-list"></div>
+          </div>
         </div>
-      </div>
 
-      <div class="page" id="certif-pr">
-        <div class="ptitle">Ma certification</div>
-        <div class="psub" id="certif-pr-sub">Praticien ORIA Certifié</div>
-        <div style="display:flex;flex-direction:column;gap:14px;max-width:520px">
-          <div class="card"><div class="card-lbl">Niveau actuel</div><div class="card-val" style="font-size:17px;margin-top:4px" id="certif-level-val"></div><div class="card-hint" id="certif-level-hint"></div></div>
-          <div class="card"><div class="card-lbl">Progression vers Superviseur N3</div>
-            <div style="margin-top:10px">
-              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px"><span>Participants accompagnés</span><span id="certif-part-count">0 / 20</span></div>
-              <div class="prog-bar"><div class="prog-fill" id="certif-part-fill" style="width:0%"></div></div>
+        <!-- PARCOURS -->
+        <div class="tab-panel" id="panel-parcours">
+          <div class="section-title">Progression du parcours</div>
+          <div class="field-group">
+            <label class="field-label">Notes de supervision</label>
+            <textarea class="field-input" id="p-supervision" rows="2" onchange="saveProfileField('supervision',this.value)" placeholder="Éléments abordés en supervision, orientations reçues..."></textarea>
+          </div>
+          <div class="phase-timeline" id="phase-timeline"></div>
+        </div>
+
+        <!-- MANDALA -->
+        <div class="tab-panel" id="panel-mandala">
+          <div class="section-title">Mandala Vivant du participant</div>
+          <div class="mandala-container">
+            <div class="mandala-svg-wrap">
+              <svg id="mandala-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"></svg>
+              <div class="mandala-actions">
+                <button class="btn-sm" onclick="window.print()">Imprimer</button>
+                <button class="btn-sm" onclick="exportMandala()">Exporter PNG</button>
+              </div>
+            </div>
+            <div class="mandala-legend">
+              <div class="section-title">Légende des anneaux</div>
+              <div id="mandala-legend-list"></div>
+              <div style="margin-top:16px;padding:14px;background:var(--ivory-dd);border-radius:2px;font-size:.82rem;color:var(--muted);line-height:1.6;">
+                Chaque anneau s'illumine lorsque la phase est validée dans l'onglet Parcours. Le centre représente le Postulat Central.
+              </div>
+              <div class="field-group" style="margin-top:16px;">
+                <label class="field-label">Intention du Mandala</label>
+                <textarea class="field-input" id="mandala-intention" rows="3" onchange="saveProfileField('mandalaIntention',this.value)" placeholder="L'intention posée par le participant au début du parcours..."></textarea>
+              </div>
             </div>
           </div>
-          <div class="ibox"><span>◎</span><span>Pour accéder au Niveau 3 — Superviseur ORIA : 20 participants accompagnés, 24 mois de pratique, et recommandation de deux superviseurs existants.</span></div>
         </div>
-      </div>
 
-    </main>
+        <!-- ARCHÉTYPE -->
+        <div class="tab-panel" id="panel-archetype">
+          <div id="archetype-lock-msg" class="archetype-lock" style="display:none;">
+            L'attribution de l'archétype est réservée aux Phases 5 et suivantes.<br>
+            Elle requiert la présence du praticien et, selon le niveau de complexité, une supervision.<br><br>
+            <em>"L'archétype n'est pas un rôle qu'on assigne — c'est une reconnaissance qui émerge."</em>
+          </div>
+          <div id="archetype-content">
+            <div class="section-title">Référentiel des 12 Archétypes ORIA</div>
+            <p style="font-size:.85rem;color:var(--muted);margin-bottom:20px;line-height:1.6;">Sélectionnez l'archétype principal (puis cliquez un second pour le secondaire). L'attribution est toujours provisoire et dialoguée.</p>
+            <div class="archetype-grid" id="archetype-grid"></div>
+            <div class="archetype-assignment">
+              <div class="section-title">Attribution et notes</div>
+              <div class="field-row">
+                <div class="field-group"><label class="field-label">Archétype principal</label><input class="field-input" id="arch-principal" readonly placeholder="Cliquez sur un archétype"></div>
+                <div class="field-group"><label class="field-label">Archétype secondaire</label><input class="field-input" id="arch-secondaire" readonly placeholder="Optionnel — 2e clic"></div>
+              </div>
+              <div class="field-group"><label class="field-label">Justification praticien</label><textarea class="field-input" id="arch-justif" rows="4" placeholder="Éléments observés justifiant cette attribution..." onchange="saveProfileField('archJustif',this.value)"></textarea></div>
+              <div class="field-row">
+                <div class="field-group"><label class="field-label">Date d'attribution</label><input type="date" class="field-input" id="arch-date" onchange="saveProfileField('archDate',this.value)"></div>
+                <div class="field-group"><label class="field-label">Supervision réalisée</label>
+                  <select class="field-input" id="arch-supervision" onchange="saveProfileField('archSupervision',this.value)">
+                    <option value="">— À préciser —</option>
+                    <option value="oui">Oui — supervision réalisée</option>
+                    <option value="non">Non — cas simple</option>
+                    <option value="prevue">En cours — supervision prévue</option>
+                  </select>
+                </div>
+              </div>
+              <button class="btn-save" onclick="saveArchetype()">Enregistrer l'attribution</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- DOSSIER D'ÂME -->
+        <div class="tab-panel" id="panel-dossier">
+          <div id="dossier-lock-msg" class="da-lock" style="display:none;">
+            Le Dossier d'Âme est généré à partir de la Phase 6 validée.<br>
+            Il rassemble et sanctionne l'ensemble du parcours du participant.<br><br>
+            <em>Il est remis lors d'une cérémonie de clôture en présence du praticien.</em>
+          </div>
+          <div id="dossier-content">
+            <div class="print-header">
+              <div style="font-size:2rem;letter-spacing:.4em;color:#C4A44A;">ORIA</div>
+              <div style="font-size:.8rem;letter-spacing:.2em;color:#9A7860;margin-top:4px;text-transform:uppercase;">Dossier d'Âme</div>
+              <div style="margin-top:8px;font-size:.9rem;" id="da-print-name">—</div>
+            </div>
+            <div class="section-title">Dossier d'Âme — Document de clôture de parcours</div>
+            <p style="font-size:.85rem;color:var(--muted);margin-bottom:20px;line-height:1.6;">Ce document est confidentiel. Il appartient au participant. Complétez chaque section puis générez la version imprimable.</p>
+            <div class="da-section">
+              <div class="da-section-title">1. Identité et intention initiale</div>
+              <div class="field-group"><label class="field-label">Nom complet</label><input class="field-input" id="da-nom" onchange="saveProfileField('daNom',this.value)"></div>
+              <div class="field-group"><label class="field-label">Intention posée au début du parcours</label><textarea class="field-input" id="da-intention" rows="3" onchange="saveProfileField('daIntention',this.value)"></textarea></div>
+              <div class="field-group"><label class="field-label">Période du parcours</label><input class="field-input" id="da-dates" onchange="saveProfileField('daDates',this.value)" placeholder="Ex: 10 janv. 2025 — 10 juin 2025"></div>
+            </div>
+            <div class="da-section">
+              <div class="da-section-title">2. Le Nom Fondateur</div>
+              <div class="field-group"><label class="field-label">Nom Fondateur reçu au cours du parcours</label><input class="field-input" id="da-nom-fondateur" onchange="saveProfileField('daNomFondateur',this.value)"></div>
+              <div class="field-group"><label class="field-label">Signification et résonance pour le participant</label><textarea class="field-input" id="da-nom-sens" rows="3" onchange="saveProfileField('daNomSens',this.value)"></textarea></div>
+            </div>
+            <div class="da-section">
+              <div class="da-section-title">3. Archétype principal et secondaire</div>
+              <div class="field-row">
+                <div class="field-group"><label class="field-label">Archétype principal</label><input class="field-input" id="da-arch-principal" onchange="saveProfileField('daArchPrincipal',this.value)"></div>
+                <div class="field-group"><label class="field-label">Archétype secondaire</label><input class="field-input" id="da-arch-secondaire" onchange="saveProfileField('daArchSecondaire',this.value)"></div>
+              </div>
+              <div class="field-group"><label class="field-label">Description narrative de l'archétype pour ce participant</label><textarea class="field-input" id="da-arch-narr" rows="4" onchange="saveProfileField('daArchNarr',this.value)"></textarea></div>
+            </div>
+            <div class="da-section">
+              <div class="da-section-title">4. Les Voiles traversés</div>
+              <div class="field-group"><label class="field-label">Voiles identifiés et traversés</label><textarea class="field-input" id="da-voiles" rows="4" onchange="saveProfileField('daVoiles',this.value)" placeholder="Décrire comment chaque voile s'est manifesté et comment le participant l'a traversé..."></textarea></div>
+            </div>
+            <div class="da-section">
+              <div class="da-section-title">5. Les Forces déployées</div>
+              <div class="field-group"><label class="field-label">Forces identifiées et cultivées</label><textarea class="field-input" id="da-forces" rows="4" onchange="saveProfileField('daForces',this.value)" placeholder="Forces manifestées, moments clés où elles sont apparues..."></textarea></div>
+            </div>
+            <div class="da-section">
+              <div class="da-section-title">6. Les Lois Fondatrices intégrées</div>
+              <div class="field-group"><label class="field-label">Expérience des 4 Lois au cours du parcours</label><textarea class="field-input" id="da-lois" rows="4" onchange="saveProfileField('daLois',this.value)" placeholder="Loi de l'Ancrage, Loi du Mouvement, Loi de la Transformation, Loi de la Transmission..."></textarea></div>
+            </div>
+            <div class="da-section">
+              <div class="da-section-title">7. Le Postulat Central</div>
+              <div class="field-group"><label class="field-label">Formulation personnelle du Postulat Central</label><textarea class="field-input" id="da-postulat" rows="3" onchange="saveProfileField('daPostulat',this.value)" placeholder="Dans les mots du participant..."></textarea></div>
+            </div>
+            <div class="da-section">
+              <div class="da-section-title">8. Transmissions et héritages</div>
+              <div class="field-group"><label class="field-label">Ce que le participant a reçu, transformé, et transmet</label><textarea class="field-input" id="da-transmissions" rows="4" onchange="saveProfileField('daTransmissions',this.value)"></textarea></div>
+            </div>
+            <div class="da-section">
+              <div class="da-section-title">9. Message du praticien</div>
+              <div class="field-group"><label class="field-label">Message personnel lu lors de la remise cérémonielle</label><textarea class="field-input" id="da-message" rows="5" onchange="saveProfileField('daMessage',this.value)" placeholder="Ce texte sera lu à voix haute lors de la cérémonie de remise..."></textarea></div>
+            </div>
+            <div class="da-actions">
+              <button class="btn-save" onclick="printDossier()">Imprimer le Dossier d'Âme</button>
+              <button class="btn-sm" onclick="autofillDossier()">Pré-remplir depuis le profil</button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- tab-panels -->
+    </div><!-- workspace -->
+
+  </div><!-- main -->
+</div><!-- layout -->
+</div><!-- app -->
+
+<!-- MODAL: Nouveau participant -->
+<div class="modal-overlay" id="modal-add">
+  <div class="modal">
+    <h3>Nouveau participant</h3>
+    <div class="field-group"><label class="field-label">Prénom</label><input class="field-input" id="new-prenom" placeholder="Prénom"></div>
+    <div class="field-group"><label class="field-label">Nom</label><input class="field-input" id="new-nom" placeholder="Nom de famille"></div>
+    <div class="field-group"><label class="field-label">Date de début</label><input type="date" class="field-input" id="new-start"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modal-add')">Annuler</button>
+      <button class="btn-gold" onclick="addClient()">Créer le participant</button>
+    </div>
   </div>
-</div><!-- /app -->
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
 <script>
-// ─── STATE ───────────────────────────────────────────────
-const SK = 'oria_v2';
+const STORAGE_KEY = 'oria_prat_v1';
+let state = { practitioner:null, clients:[], currentClientId:null, currentTab:'profil', currentSessionPhase:0 };
+
+function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function loadState(){ const r=localStorage.getItem(STORAGE_KEY); if(r){try{state=JSON.parse(r);}catch(e){}} }
+function client(){ return state.clients.find(c=>c.id===state.currentClientId); }
+
+// ── PHASES ────────────────────────────────────────────────────────
 const PHASES = [
-  {n:0, name:'Le Témoin', desc:'Observation sans jugement · Posture de présence'},
-  {n:1, name:"L'Origine", desc:'Cartographie de l\'héritage familial · Génosociogramme'},
-  {n:2, name:'La Reconnaissance', desc:'Identifier les loyautés et répétitions'},
-  {n:'2.5', name:'Le Désert Identitaire', desc:'Phase de vide et de transition · Si nécessaire'},
-  {n:3, name:"L'Intégration", desc:'Réconciliation avec l\'héritage'},
-  {n:4, name:"Le Projet d'Âme", desc:'Découverte de la vocation profonde'},
-  {n:5, name:"L'Archétype", desc:'Attribution du rôle mythique par le praticien'},
-  {n:6, name:'Le Mythe Personnel', desc:'Construction du récit transformé'},
-  {n:7, name:"L'Alignement", desc:'Engagement dans la contribution'},
+  { num:0, label:'Phase 0', name:'Le Seuil',
+    essence:"Le participant arrive avec ce qu'il croit être sa demande. Le praticien accueille sans saisir, sans orienter. Le Seuil n'est pas franchi — il est reconnu.",
+    exercises:[
+      {title:'La carte et le territoire',text:"Invitez le participant à décrire en trois mots ce qu'il espère de cet accompagnement. Sans relancer, sans commenter. Observez les mots choisis : sont-ils orientés vers un avoir, un être, ou un faire ? Notez en silence."},
+      {title:"L'objet du seuil",text:"Demandez au participant d'apporter un objet qui le représente aujourd'hui. Accordez dix minutes à la description de cet objet : sa texture, son histoire, pourquoi il a choisi celui-ci et pas un autre. L'objet est le premier miroir."},
+      {title:'La première question',text:"Posez une unique question : « Qu'est-ce qui vous a amené ici maintenant, et non il y a six mois ? ». Laissez le silence après la réponse. Ne remplissez pas. Ce qui émerge dans ce silence appartient au parcours."}
+    ],
+    questions:["Qu'est-ce que le participant nomme comme problème — et qu'est-ce que vous, praticien, percevez comme enjeu réel ?","Quel est le registre émotionnel dominant à l'entrée ?","Y a-t-il des éléments qui nécessitent une orientation vers un professionnel de santé ?","Quelle est la qualité de présence du participant ?"] },
+  { num:1, label:'Phase 1', name:"L'Ancrage",
+    essence:"Avant tout voyage, une racine. Cette phase pose les fondations corporelles et sensorielles du participant. Le sol doit être senti avant que la carte soit dépliée.",
+    exercises:[
+      {title:'La colonne de vie',text:"Guidez le participant dans une visualisation debout : sentir ses pieds sur le sol, remonter l'attention vers les genoux, le bassin, le ventre, le cœur, la gorge, le sommet du crâne. Nommer chaque zone à voix haute. L'exercice dure au minimum sept minutes. Terminez par : « Où ressentez-vous le plus de vie en ce moment ? »"},
+      {title:'La ligne du temps sensorielle',text:"Tracez avec le participant une ligne du temps non pas d'événements, mais de sensations marquantes. Non pas « j'ai déménagé à 7 ans » mais « à 7 ans, j'ai senti le froid du nouveau carrelage ». L'entrée par le corps ouvre ce que la narration intellectuelle referme."},
+      {title:'Le territoire intérieur',text:"Demandez au participant de dessiner, sans habileté requise, une carte de son monde intérieur : où sont les zones connues, les zones d'ombre, les frontières. Ce dessin est conservé et revisité en Phase 7."}
+    ],
+    questions:["Le participant est-il dans son corps ou dans sa tête pendant les exercices ?","Quelles zones corporelles sont évitées ou semblent absentes ?","Y a-t-il une dissociation visible lors des exercices sensoriels ?","Quel est le rapport du participant à l'enfance dans son évocation corporelle ?"] },
+  { num:2, label:'Phase 2', name:'La Cartographie',
+    essence:"La carte n'est pas le territoire — mais sans carte, on ne part pas. Cette phase donne des mots, des formes, des structures à ce qui était ressenti sans langage.",
+    exercises:[
+      {title:'Le génosociogramme vivant',text:"Construisez ensemble le génosociogramme en commençant non par les noms, mais par les qualités attribuées. Qui était « le fort », « le silencieux », « celle qui souffrait » ? Les étiquettes familiales sont les premières cartes transmises. Identifiez lesquelles portent encore leur poids."},
+      {title:'Les héritages nommés',text:"Invitez le participant à lister trois choses reçues de sa famille et trois choses décidées de ne pas reproduire. Le « ne pas reproduire » révèle souvent ce qui est encore actif. Ce qu'on fuit structure autant que ce qu'on chérit."},
+      {title:'La signature du non-dit',text:"Y a-t-il un événement dont on ne parle pas dans la famille ? Un deuil non fait, une honte transmise, un secret ? Nommez l'espace de ce non-dit sans chercher à le remplir. L'exercice consiste à reconnaître son existence, pas à le résoudre."}
+    ],
+    questions:["Quelles loyautés invisibles le participant porte-t-il encore ?","Y a-t-il des répétitions de schéma sur plusieurs générations ?","Quelle place le participant occupait-il dans le système familial ?","Quel Voile semble le plus actif à ce stade ?"] },
+  { num:2.5, label:'Phase 2·5', name:"L'Œil du Cyclone",
+    essence:"Ce n'est pas une phase de progression — c'est une phase d'immobilité consentie. Le participant est au centre de la tempête. L'œil est calme non par absence de tempête, mais parce qu'il en est le centre.",
+    exercises:[
+      {title:'La pause sans agenda',text:"Cette séance ne comporte aucun exercice structuré. Vous rencontrez le participant là où il est. Proposez un silence de dix minutes en début de séance. Observez ce qu'il fait de ce silence. Ce qu'on fait du vide révèle comment on habite sa propre intériorité."},
+      {title:"L'inventaire du moment",text:"Demandez : « Si vous deviez décrire exactement où vous en êtes, sans chercher à progresser, sans chercher à changer quelque chose — que diriez-vous ? » Écoutez sans orienter. Cette phase est diagnostique autant que thérapeutique."},
+      {title:'Le miroir de mi-parcours',text:"Relisez avec le participant ses premières notes de cahier (Phase 0–2). Qu'est-ce qui a changé — et qu'est-ce qui n'a pas encore bougé ? Cette relecture est une reconnaissance de chemin parcouru, non un bilan de progression."}
+    ],
+    questions:["Le participant est-il dans la résistance, l'intégration, ou la régression ?","Faut-il ralentir le rythme des séances ?","Y a-t-il des éléments qui nécessitent une supervision ?","Le participant a-t-il un espace de soutien en dehors des séances ?"] },
+  { num:3, label:'Phase 3', name:'La Traversée',
+    essence:"Ce qui devait rester caché remonte. Le participant rencontre ses zones d'ombre — non pour les vaincre, mais pour les reconnaître comme siennes. La Traversée n'est pas un combat.",
+    exercises:[
+      {title:'La lettre non envoyée',text:"Invitez le participant à écrire une lettre à quelqu'un envers qui il porte une blessure non résolue. Cette lettre ne sera jamais envoyée. Elle sera lue à voix haute en séance suivante, puis rituellement brûlée ou enterrée. L'intention est la mise en mots, non la confrontation."},
+      {title:"Le dialogue avec l'ombre",text:"Guidez le participant dans un dialogue imaginaire avec la partie de lui qu'il rejette le plus. « Qu'est-ce que tu veux que je sache ? Qu'est-ce que tu as essayé de me protéger ? » Le praticien tient l'espace de sécurité."},
+      {title:'La ressource de la Traversée',text:"Identifiez avec le participant une ressource intérieure — une qualité, un souvenir, une figure bienveillante — qu'il peut activer pendant les périodes de turbulence entre les séances. Nommez-la. Donnez-lui une ancre sensorielle concrète."}
+    ],
+    questions:["Le participant a-t-il les ressources suffisantes pour traverser ce qui remonte ?","Y a-t-il des signes de décompensation nécessitant une orientation clinique ?","Quelle est la qualité du soutien extérieur (entourage, thérapeute parallèle) ?","Quel Voile est traversé — et comment se manifeste-t-il concrètement ?"] },
+  { num:4, label:'Phase 4', name:"L'Intégration",
+    essence:"Ce qui a été traversé demande maintenant à être intégré. L'intégration n'est pas une conclusion — c'est un processus de tissage. Les fragments deviennent structure.",
+    exercises:[
+      {title:'Le récit recomposé',text:"Invitez le participant à raconter son histoire depuis le début — mais avec les nouvelles lunettes du parcours. Non pas « j'étais comme ça », mais « je comprends maintenant que... ». Observez les glissements : du subi à l'assumé, du passif à l'actif."},
+      {title:"Le mandala d'intégration",text:"Proposez au participant de revisiter le dessin du territoire intérieur (Phase 1) et de le redessiner. Quelles zones ont été éclairées ? Quelles frontières ont bougé ? Ce n'est pas une évaluation — c'est un état des lieux vivant."},
+      {title:'Les trois décisions',text:"Demandez : « Qu'est-ce que vous choisissez de garder ? Qu'est-ce que vous choisissez de déposer ? Qu'est-ce que vous choisissez de transformer ? » Ces trois questions constituent le cœur de l'acte d'intégration. Chaque réponse est notée et signée dans le cahier."}
+    ],
+    questions:["Le participant parle-t-il de lui avec plus de nuance qu'en Phase 0 ?","Y a-t-il encore des zones de résistance ou d'évitement ?","Le participant peut-il nommer ce qui a changé dans sa vie quotidienne ?","Est-il prêt pour l'attribution de l'archétype ?"] },
+  { num:5, label:'Phase 5', name:'La Révélation',
+    essence:"L'archétype émerge. Ce n'est pas une attribution intellectuelle — c'est une reconnaissance. Le participant se voit, parfois pour la première fois, dans toute sa singularité.",
+    exercises:[
+      {title:"L'enquête sur l'archétype",text:"Avant toute attribution, explorez les figures mythiques, historiques, ou fictionnelles auxquelles le participant s'identifie spontanément. Pourquoi celles-là ? Ce qu'elles incarnent révèle le registre archétypal dominant. L'attribution praticien viendra confirmer ou nuancer."},
+      {title:'Le portrait archétypal',text:"Une fois l'archétype identifié, invitez le participant à écrire un portrait de lui-même à la troisième personne, comme s'il décrivait un personnage dans un roman. « Il est quelqu'un qui... Elle est fondamentalement... » Ce portrait sera inclus dans le Dossier d'Âme."},
+      {title:"L'ombre de l'archétype",text:"Chaque archétype porte une ombre. Nommez-la avec le participant sans l'esquiver. « La force de cet archétype, c'est X. Sa vigilance, c'est Y. » L'intégration de l'ombre est la condition de la transmission."}
+    ],
+    questions:["L'archétype identifié résonne-t-il pour le participant — ou seulement pour vous ?","Y a-t-il un archétype secondaire en tension avec le principal ?","L'ombre de l'archétype est-elle visible et assumée, ou encore projetée ?","Une supervision est-elle indiquée avant la formalisation de l'attribution ?"] },
+  { num:6, label:'Phase 6', name:"L'Émergence",
+    essence:"Le participant n'est plus seulement en processus — il devient. L'Émergence est le moment où l'identité réintégrée commence à se manifester dans la vie réelle, au-delà des séances.",
+    exercises:[
+      {title:"L'acte fondateur",text:"Demandez au participant d'identifier un acte concret dans sa vie quotidienne qui incarne ce qu'il est devenu. Pas un grand geste — un acte ordinaire mais symboliquement chargé. L'écrire, le nommer, le dater. Ce sera mentionné dans le Dossier d'Âme."},
+      {title:'Le nom fondateur',text:"Guidez le participant dans l'exploration d'un nom, un mot, une phrase qui nomme son essence telle qu'il la comprend maintenant. Ce Nom Fondateur émerge du participant — le praticien accompagne l'émergence, ne la prescrit pas."},
+      {title:"La lettre à l'explorateur du Seuil",text:"Invitez le participant à écrire une lettre à lui-même au moment de la Phase 0 — à celui ou celle qui arrivait au Seuil. Cette lettre sera lue lors de la cérémonie de remise du Dossier d'Âme."}
+    ],
+    questions:["Le changement se manifeste-t-il dans la vie quotidienne du participant ?","Y a-t-il encore une dépendance à la validation extérieure ?","Le participant peut-il nommer ce qu'il transmet à son entourage ?","Est-il prêt pour la phase de transmission et de clôture ?"] },
+  { num:7, label:'Phase 7', name:'La Transmission',
+    essence:"Le cercle se ferme — et s'ouvre. Ce qui a été reçu, transformé, intégré, est maintenant transmis. Non comme une fin, mais comme un recommencement.",
+    exercises:[
+      {title:'La cérémonie de remise',text:"Préparez un espace rituel pour la remise du Dossier d'Âme. Bougies, silence, présence pleine. Le praticien lit d'abord son message personnel (section 9 du Dossier). Le participant lit sa lettre à l'explorateur du Seuil. Puis le Dossier est remis physiquement. Prévoyez un temps de silence après."},
+      {title:'Le mandala final',text:"Imprimez le Mandala Vivant avec tous les anneaux illuminés. Il est remis avec le Dossier d'Âme — représentation visuelle du chemin accompli."},
+      {title:"L'après-parcours",text:"Discutez avec le participant de ce qu'il souhaite maintenant : reprendre une pratique personnelle autonome, rejoindre un groupe, entamer un nouveau cycle ORIA à un niveau plus profond. La transmission ne ferme pas la porte — elle l'ouvre différemment."}
+    ],
+    questions:["Le participant est-il en capacité de recevoir la remise sans la minimiser ?","Y a-t-il des éléments non résolus qui méritent un suivi après-parcours ?","Le Dossier d'Âme est-il complet et fidèle au vécu du participant ?","Qu'est-ce que ce parcours vous a appris, à vous, praticien ?"] }
 ];
-const PHASE_NAMES = ['Le Témoin',"L'Origine",'La Reconnaissance','Le Désert Identitaire',"L'Intégration","Le Projet d'Âme","L'Archétype",'Le Mythe Personnel',"L'Alignement"];
+
+// ── ARCHETYPES ────────────────────────────────────────────────────
 const ARCHETYPES = [
-  {id:'passeur', ico:'🜂', name:'Le Passeur', desc:'Traverse les mondes, guide les autres'},
-  {id:'gardien', ico:'🜁', name:'Le Gardien', desc:'Protège et maintient la mémoire'},
-  {id:'batisseur', ico:'🜃', name:'Le Bâtisseur', desc:'Construit du durable avec l\'héritage'},
-  {id:'nomade', ico:'🜄', name:'Le Nomade', desc:'Cherche et défriche les territoires'},
-  {id:'tisseuse', ico:'☽', name:'La Tisseuse', desc:'Relie, répare les liens rompus'},
-  {id:'revelateur', ico:'☀', name:'Le Révélateur', desc:'Voit ce que les autres n\'osent pas nommer'},
-  {id:'oracle', ico:'✦', name:"L'Oracle", desc:'Porte la vision et l\'intuition ancestrale'},
-  {id:'heraut', ico:'⚡', name:'Le Héraut', desc:'Annonce et initie les transformations'},
-];
-const EXERCISES = [
-  {phase:0, title:'Le regard du témoin', body:"La posture du Témoin est la première chose à cultiver dans la méthode ORIA. Avant de vouloir comprendre ou changer quoi que ce soit, nous devons apprendre à observer.", q:"Fermez les yeux 2 minutes. Observez ce qui se passe en vous — pensées, sensations, émotions — sans rien juger. Ensuite, décrivez ce que vous avez observé, comme si vous étiez un témoin bienveillant de votre propre intériorité."},
-  {phase:1, title:"La carte de l'héritage", body:"Toute histoire personnelle s'inscrit dans une histoire familiale plus large. Avant de transformer, nous devons voir d'où nous venons.", q:"Dessinez ou décrivez les grandes figures de votre histoire familiale sur deux générations (parents, grands-parents). Quels traits de caractère, quelles situations, quels métiers ou vocations se répètent ?"},
-  {phase:2, title:'La loyauté invisible', body:"Toute répétition dans notre vie porte une loyauté. Nous répétons ce que nous n'avons pas encore reconnu comme appartenant à l'histoire qui nous a précédés.", q:"Quelle situation dans votre vie actuelle ressemble à une situation que vous avez observée dans votre histoire familiale ? Décrivez-la sans chercher à l'expliquer — juste l'observer, comme un témoin."},
-  {phase:3, title:"Le mouvement de réconciliation", body:"Reconnaître ne suffit pas. L'intégration demande un acte intérieur : accueillir l'héritage, même ce qui est douloureux, comme une partie de notre histoire qui a cherché à nous protéger.", q:"Choisissez un élément de votre héritage que vous avez longtemps rejeté ou tenté d'ignorer. Que cherchait-il à vous dire ou à vous protéger ? Écrivez une lettre à cette partie de votre histoire."},
-  {phase:4, title:'La question de l\'âme', body:"Le Projet d'Âme n'est pas une ambition ni un plan. C'est la vocation profonde qui a toujours été là, sous les répétitions et les voiles.", q:"Si votre histoire de vie — avec toutes ses difficultés et ses répétitions — cherchait à vous préparer à quelque chose, à quelle contribution vous préparerait-elle ? Laissez venir la réponse sans censure."},
+  {name:'Le Gardien',pole:'Protection · Présence',desc:"Présence stable et enracinée, il assure la continuité dans les transitions. Sa force est sa constance — mais sa vigilance est de ne pas confondre protection et contrôle.",shadow:"Vigilance : Tend-il à protéger les autres pour ne pas affronter sa propre vulnérabilité ?"},
+  {name:"L'Explorateur",pole:'Quête · Liberté',desc:"Mû par la nécessité de connaître et d'expérimenter, il ne peut rester longtemps en territoire connu. Sa force est l'ouverture — sa vigilance est l'incapacité à habiter pleinement ce qu'il trouve.",shadow:"Vigilance : La quête est-elle une avancée ou une fuite ?"},
+  {name:'Le Tisserand',pole:'Lien · Création',desc:"Il perçoit les connexions invisibles entre les êtres et les choses. Sa force est la vision systémique — sa vigilance est de ne pas se dissoudre dans les liens qu'il tisse.",shadow:"Vigilance : Ses liens nourrissent-ils — ou capturent-ils ?"},
+  {name:'Le Passeur',pole:'Transition · Médiation',desc:"Il accompagne les seuils, les transformations, les passages entre deux états. Sa force est de tenir l'espace du entre-deux — sa vigilance est de ne jamais franchir lui-même ce qu'il aide les autres à traverser.",shadow:"Vigilance : Qui l'accompagne lui lorsqu'il franchit ses propres seuils ?"},
+  {name:"L'Architecte",pole:'Structure · Vision',desc:"Il construit des cadres, des systèmes, des structures qui durent. Sa force est la capacité à ordonner le chaos — sa vigilance est la rigidité qui peut faire du cadre une prison.",shadow:"Vigilance : Ses structures servent-elles la vie — ou la contiennent-elles ?"},
+  {name:'Le Veilleur',pole:'Conscience · Présence silencieuse',desc:"Il observe sans juger, perçoit sans anticiper, reste présent au bord du visible. Sa force est la conscience claire — sa vigilance est l'isolement que peut produire cette distance.",shadow:"Vigilance : Sa présence au bord reste-t-elle un choix — ou une incapacité à s'engager ?"},
+  {name:'Le Semeur',pole:'Initiation · Transmission',desc:"Il pose des germes, initie des processus, transmet sans chercher à en voir les fruits. Sa force est la générosité temporelle — sa vigilance est l'attachement aux résultats qu'il prétend avoir dépassé.",shadow:"Vigilance : Sème-t-il par abondance — ou pour contrôler ce qui pousse ?"},
+  {name:'La Source',pole:'Origine · Régénération',desc:"Il est un lieu de ressourcement pour lui-même et pour les autres. Sa force est la capacité régénératrice — sa vigilance est d'être tari par ceux qui viennent y puiser.",shadow:"Vigilance : Se régénère-t-il lui-même — ou attend-il que les autres le fassent ?"},
+  {name:'Le Nomade',pole:'Mouvement · Adaptation',desc:"Il habite le mouvement comme d'autres habitent un foyer. Sa force est l'adaptabilité — sa vigilance est l'incapacité à s'établir assez longtemps pour être réellement connu.",shadow:"Vigilance : Son mouvement est-il une danse — ou une fuite en avant ?"},
+  {name:'Le Scribe',pole:'Mémoire · Sens',desc:"Il nomme, consigne, met en forme ce qui risquerait de disparaître. Sa force est la capacité à conférer une forme au vécu — sa vigilance est de confondre la carte avec le territoire.",shadow:"Vigilance : Documente-t-il la vie — ou se substitue-t-il à l'expérience directe ?"},
+  {name:"L'Alchimiste",pole:'Transformation · Transmutation',desc:"Il entre dans les matières brutes et en fait quelque chose d'autre. Sa force est la capacité de transmutation — sa vigilance est l'orgueil de croire que toute chose peut et doit être transformée.",shadow:"Vigilance : Accepte-t-il que certaines matières ne soient pas à transformer ?"},
+  {name:'Le Témoin',pole:'Présence · Non-jugement',desc:"Il est présence pure, sans agenda, sans projection. Sa force est la capacité à voir sans filtrer — sa vigilance est la passivité qui peut devenir complice de ce qu'il observe.",shadow:"Vigilance : Quand sa présence exige-t-elle d'être plus qu'un regard ?"}
 ];
 
-function defaultState(){
-  return {
-    session: null,
-    participants: {
-      p1:{id:'p1',name:'Jonathan G.',email:'jonathan@oria.com',initial:'J',phase:2,progress:60,sessions:7,since:'10 mars 2026',archetype:''},
-      p2:{id:'p2',name:'Sophie M.',email:'sophie@oria-demo.com',initial:'S',phase:3,progress:80,sessions:14,since:'15 jan 2026',archetype:'tisseuse'},
-      p3:{id:'p3',name:'Lucas P.',email:'lucas@oria-demo.com',initial:'L',phase:1,progress:40,sessions:4,since:'20 avr 2026',archetype:''},
-      p4:{id:'p4',name:'Claire D.',email:'claire@oria-demo.com',initial:'C',phase:4,progress:20,sessions:18,since:'5 fév 2026',archetype:'batisseur'},
-      p5:{id:'p5',name:'Marc T.',email:'marc@oria-demo.com',initial:'M',phase:0,progress:30,sessions:3,since:'1er mai 2026',archetype:''},
-    },
-    journals:{},
-    exercises:{},
-    notes:{
-      p1:[{date:'13 juin 2026',text:'Forte résistance au début, puis ouverture progressive. Connexion avec la figure paternelle clairement émergente. Proposer exercice sur la loyauté.'}],
-    },
-    archetypes:{p2:'tisseuse',p4:'batisseur'},
-    dossiers:{},
+const VOILES = ['Voile de la Peur','Voile du Doute','Voile de la Honte','Voile de la Culpabilité','Voile de la Colère','Voile du Deuil','Voile de la Trahison',"Voile de l'Abandon","Voile de l'Illusion"];
+
+const MANDALA_RINGS = [
+  {phase:0, label:'Le Seuil', r:180, color:'#C4A44A'},
+  {phase:1, label:"L'Ancrage", r:152, color:'#B8936A'},
+  {phase:2, label:'La Cartographie', r:124, color:'#A07840'},
+  {phase:3, label:'La Traversée', r:96, color:'#8B6B20'},
+  {phase:4, label:"L'Intégration", r:72, color:'#C4A44A'},
+  {phase:5, label:'La Révélation', r:50, color:'#D4B460'},
+  {phase:6, label:"L'Émergence", r:30, color:'#E0C480'},
+  {phase:7, label:'La Transmission', r:14, color:'#F0D890'},
+  {phase:7, label:'Postulat Central', r:5, center:true}
+];
+
+// ── INIT ──────────────────────────────────────────────────────────
+function initPractitioner(){
+  const name=document.getElementById('setup-name').value.trim();
+  const level=document.getElementById('setup-level').value;
+  if(!name){showToast('Veuillez entrer votre nom.');return;}
+  state.practitioner={name,level};
+  saveState();
+  launchApp();
+}
+
+function launchApp(){
+  document.getElementById('setup').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('pract-label').textContent=state.practitioner.name+' · '+state.practitioner.level;
+  document.getElementById('dash-welcome').textContent='Bonjour, '+state.practitioner.name;
+  renderClientList();
+  updateDashStats();
+  showDashboard();
+}
+
+// ── CLIENT MANAGEMENT ─────────────────────────────────────────────
+function openAddClient(){
+  document.getElementById('new-prenom').value='';
+  document.getElementById('new-nom').value='';
+  document.getElementById('new-start').value=new Date().toISOString().split('T')[0];
+  openModal('modal-add');
+  setTimeout(()=>document.getElementById('new-prenom').focus(),50);
+}
+
+function addClient(){
+  const prenom=document.getElementById('new-prenom').value.trim();
+  const nom=document.getElementById('new-nom').value.trim();
+  const start=document.getElementById('new-start').value;
+  if(!prenom){showToast('Le prénom est requis.');return;}
+  const id=Date.now().toString();
+  const c={
+    id,prenom,nom,startDate:start,
+    motif:'',obs:'',genoFigures:'',genoLoyautes:'',genoPatterns:'',supervision:'',
+    dob:'',validatedPhases:[],phaseHistory:[],sessions:[],voiles:[],
+    archPrincipal:'',archSecondaire:'',archJustif:'',archDate:'',archSupervision:'',
+    mandalaIntention:'',
+    daNom:'',daIntention:'',daDates:'',daNomFondateur:'',daNomSens:'',
+    daArchPrincipal:'',daArchSecondaire:'',daArchNarr:'',
+    daVoiles:'',daForces:'',daLois:'',daPostulat:'',daTransmissions:'',daMessage:''
   };
+  state.clients.push(c);
+  saveState();
+  closeModal('modal-add');
+  renderClientList();
+  updateDashStats();
+  selectClient(id);
 }
 
-var S = {};
-function load(){
-  try{ var r=localStorage.getItem(SK); S=r?JSON.parse(r):defaultState(); }
-  catch(e){ S=defaultState(); }
-}
-function save(){ localStorage.setItem(SK,JSON.stringify(S)); }
-load();
-
-// ─── UTILS ────────────────────────────────────────────────
-function toast(msg,type){
-  var d=document.createElement('div');
-  d.className='toast'+(type==='gold'?' gold':'');
-  d.textContent=msg;
-  document.getElementById('toasts').appendChild(d);
-  setTimeout(()=>d.classList.add('show'),10);
-  setTimeout(()=>{d.classList.remove('show');setTimeout(()=>d.remove(),400);},3000);
-}
-function today(){
-  return new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
-}
-function phaseIdx(n){ return typeof n==='number'?n:parseFloat(n); }
-function getParticipantByEmail(email){
-  return Object.values(S.participants).find(p=>p.email===email);
-}
-
-// ─── LAUNCHER ────────────────────────────────────────────
-function lgo(id){
-  document.querySelectorAll('.ls,.ls-split').forEach(s=>s.classList.remove('on'));
-  document.getElementById(id).classList.add('on');
-}
-function selC(el){
-  document.querySelectorAll('.ccrd').forEach(c=>{c.classList.remove('sel');c.querySelector('.cchk').style.color='transparent'});
-  el.classList.add('sel');el.querySelector('.cchk').style.color='var(--gold)';
-}
-function submitCertif(){
-  var e=document.getElementById('certif-email').value.trim();
-  if(!e){toast('Veuillez entrer votre email.');return;}
-  lgo('l-certif-ok');
-}
-
-function loginParticipant(){
-  var name=document.getElementById('p-name').value.trim();
-  var email=document.getElementById('p-email').value.trim();
-  var err=document.getElementById('p-err');
-  if(!name||!email){err.classList.add('show');return;}
-  err.classList.remove('show');
-  // Find or create participant
-  var p=getParticipantByEmail(email)||getParticipantByEmail('jonathan@oria.com');
-  if(!p){
-    // create new participant
-    var id='p'+Date.now();
-    S.participants[id]={id,name:name+' (nouveau)',email,initial:name[0].toUpperCase(),phase:0,progress:0,sessions:0,since:today(),archetype:''};
-    p=S.participants[id];
+function renderClientList(){
+  const el=document.getElementById('client-list');
+  el.innerHTML='';
+  if(!state.clients.length){
+    el.innerHTML='<div style="padding:16px 12px;font-size:.8rem;color:rgba(255,255,255,.25);line-height:1.6;">Aucun participant.<br>Créez votre premier profil.</div>';
+    return;
   }
-  S.session={role:'participant',name,email,participantId:p.id};
-  save();
-  enterApp('participant');
+  state.clients.forEach(c=>{
+    const maxPhase=c.validatedPhases&&c.validatedPhases.length?Math.max(...c.validatedPhases):null;
+    const phaseLabel=maxPhase!==null?'Phase '+(maxPhase===2.5?'2·5':maxPhase)+' validée':'Phase 0';
+    const div=document.createElement('div');
+    div.className='client-item'+(c.id===state.currentClientId?' active':'');
+    div.innerHTML=`<div class="client-name">${c.prenom} ${c.nom||''}</div><div class="client-phase">${phaseLabel}</div>`;
+    div.onclick=()=>selectClient(c.id);
+    el.appendChild(div);
+  });
 }
 
-function loginPraticien(){
-  var name=document.getElementById('pr-name').value.trim();
-  var email=document.getElementById('pr-email').value.trim();
-  var err=document.getElementById('pr-err');
-  if(!name||!email){err.classList.add('show');return;}
-  err.classList.remove('show');
-  S.session={role:'praticien',name,email};
-  save();
-  enterApp('praticien');
+function selectClient(id){
+  state.currentClientId=id;
+  saveState();
+  renderClientList();
+  showWorkspace();
+  loadClientData();
 }
 
-function enterApp(role){
-  var l=document.getElementById('launcher');
-  l.classList.add('out');
-  setTimeout(()=>{
-    l.style.display='none';
-    document.getElementById('app').classList.add('on');
-    if(!S.session) S.session={role,name:role==='participant'?'Jonathan':'Marie',email:role==='participant'?'jonathan@oria.com':'marie@oria.com',participantId:'p1'};
-    switchRole(role);
-  },400);
+function deleteCurrentClient(){
+  const c=client();
+  if(!c)return;
+  if(!confirm('Supprimer définitivement '+c.prenom+' '+(c.nom||'')+' ? Action irréversible.'))return;
+  state.clients=state.clients.filter(x=>x.id!==c.id);
+  state.currentClientId=null;
+  saveState();
+  renderClientList();
+  updateDashStats();
+  showDashboard();
 }
 
-// ─── APP NAV ──────────────────────────────────────────────
-var currentRole='participant';
-var selectedParticipantId='p1';
-var selectedArchetype='';
-
-function nav(pageId,label){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
-  document.getElementById(pageId).classList.add('on');
-  document.getElementById('hdr-ctx').textContent=label;
-  var nav=document.getElementById('nav-'+currentRole);
-  if(nav){nav.querySelectorAll('.ni').forEach(i=>i.classList.remove('on'));
-    nav.querySelectorAll('.ni').forEach(i=>{if(i.getAttribute('onclick')&&i.getAttribute('onclick').indexOf("'"+pageId+"'")>-1)i.classList.add('on');});}
-  // Lazy render per page
-  if(pageId==='dash-p') renderDashP();
-  if(pageId==='mandala-p') renderMandalaP();
-  if(pageId==='phases-p') renderPhasesP();
-  if(pageId==='exercice-p') renderExerciseP();
-  if(pageId==='journal-p') renderJournal();
-  if(pageId==='dossier-p') renderDossier();
-  if(pageId==='dash-pr') renderDashPr();
-  if(pageId==='participants') renderParticipants();
-  if(pageId==='participant-detail') renderParticipantDetail();
-  if(pageId==='session') renderSession();
-  if(pageId==='archetypes') renderArchetypes();
-  if(pageId==='mandala-pr') renderPraticienMandala();
-  if(pageId==='certif-pr') renderCertifPr();
+// ── NAVIGATION ────────────────────────────────────────────────────
+function showDashboard(){
+  document.getElementById('dashboard').style.display='flex';
+  document.getElementById('workspace').style.display='none';
+  state.currentClientId=null;
+  renderClientList();
+  updateDashStats();
 }
 
-function switchRole(role){
-  currentRole=role;
-  document.getElementById('nav-participant').style.display=role==='participant'?'flex':'none';
-  document.getElementById('nav-praticien').style.display=role==='praticien'?'flex':'none';
-  document.getElementById('tog-p').classList.toggle('on',role==='participant');
-  document.getElementById('tog-pr').classList.toggle('on',role==='praticien');
-  var sess=S.session||{};
-  var name=sess.name||'';
-  document.getElementById('hdr-av').textContent=name?name[0].toUpperCase():'?';
-  document.getElementById('av-name-item').textContent=name;
-  document.getElementById('av-role-item').textContent=role==='participant'?'Participant ORIA':'Praticien ORIA Certifié';
-  if(role==='participant') nav('dash-p','Tableau de bord');
-  else nav('dash-pr','Tableau de bord');
+function showWorkspace(){
+  document.getElementById('dashboard').style.display='none';
+  document.getElementById('workspace').style.display='flex';
 }
 
-function toggleMenu(){
-  document.getElementById('av-menu').classList.toggle('open');
+function updateDashStats(){
+  document.getElementById('stat-total').textContent=state.clients.length;
+  let sessions=0,dossiers=0;
+  state.clients.forEach(c=>{
+    sessions+=(c.sessions||[]).length;
+    if(c.validatedPhases&&c.validatedPhases.includes(7))dossiers++;
+  });
+  document.getElementById('stat-sessions').textContent=sessions;
+  document.getElementById('stat-dossiers').textContent=dossiers;
 }
-document.addEventListener('click',function(e){
-  if(!e.target.closest('.av')) document.getElementById('av-menu').classList.remove('open');
+
+// ── TABS ──────────────────────────────────────────────────────────
+function switchTab(tab){
+  const c=client();
+  if(tab==='archetype'&&c&&!c.validatedPhases.includes(4)){showToast('Disponible à partir de la Phase 4 validée.');return;}
+  if(tab==='dossier'&&c&&!c.validatedPhases.includes(6)){showToast('Disponible à partir de la Phase 6 validée.');return;}
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  const tabEl=document.querySelector(`.tab[onclick="switchTab('${tab}')"]`);
+  if(tabEl)tabEl.classList.add('active');
+  const panelEl=document.getElementById('panel-'+tab);
+  if(panelEl)panelEl.classList.add('active');
+  state.currentTab=tab;
+  if(tab==='mandala')renderMandala();
+  if(tab==='parcours')renderParcours();
+  if(tab==='archetype')renderArchetype();
+  if(tab==='seance')renderSessionGuide();
+  if(tab==='dossier')renderDossierLock();
+}
+
+// ── LOAD CLIENT ───────────────────────────────────────────────────
+function loadClientData(){
+  const c=client();if(!c)return;
+  document.getElementById('ws-name').textContent=c.prenom+' '+(c.nom||'');
+  const maxPhase=c.validatedPhases&&c.validatedPhases.length?Math.max(...c.validatedPhases):0;
+  document.getElementById('ws-phase-badge').textContent='Phase '+(maxPhase===2.5?'2·5':maxPhase);
+  document.getElementById('p-prenom').value=c.prenom||'';
+  document.getElementById('p-nom').value=c.nom||'';
+  document.getElementById('p-dob').value=c.dob||'';
+  document.getElementById('p-start').value=c.startDate||'';
+  document.getElementById('p-motif').value=c.motif||'';
+  document.getElementById('p-obs').value=c.obs||'';
+  document.getElementById('p-geno-figures').value=c.genoFigures||'';
+  document.getElementById('p-geno-loyautes').value=c.genoLoyautes||'';
+  document.getElementById('p-geno-patterns').value=c.genoPatterns||'';
+  document.getElementById('p-supervision').value=c.supervision||'';
+  renderVoilesChecklist();
+  updateTabLocks();
+  switchTab('profil');
+}
+
+function saveProfileField(field,value){
+  const c=client();if(!c)return;
+  c[field]=value;saveState();
+}
+
+function updateTabLocks(){
+  const c=client();if(!c)return;
+  const p4=c.validatedPhases&&c.validatedPhases.includes(4);
+  const p6=c.validatedPhases&&c.validatedPhases.includes(6);
+  document.getElementById('tab-archetype').style.opacity=p4?'1':'.45';
+  document.getElementById('tab-dossier').style.opacity=p6?'1':'.45';
+}
+
+// ── VOILES ────────────────────────────────────────────────────────
+function renderVoilesChecklist(){
+  const c=client();const el=document.getElementById('voiles-checklist');el.innerHTML='';
+  VOILES.forEach(v=>{
+    const checked=c.voiles&&c.voiles.includes(v);
+    const div=document.createElement('div');
+    div.style.cssText='display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);';
+    div.innerHTML=`<input type="checkbox" id="v-${v}" ${checked?'checked':''} onchange="toggleVoile('${v.replace(/'/g,"\\'")}',this.checked)" style="accent-color:var(--gold);width:16px;height:16px;cursor:pointer;"><label for="v-${v}" style="font-size:.88rem;color:var(--brown);cursor:pointer;">${v}</label>`;
+    el.appendChild(div);
+  });
+}
+
+function toggleVoile(voile,checked){
+  const c=client();if(!c.voiles)c.voiles=[];
+  if(checked){if(!c.voiles.includes(voile))c.voiles.push(voile);}
+  else{c.voiles=c.voiles.filter(v=>v!==voile);}
+  saveState();
+}
+
+// ── SESSION GUIDE ─────────────────────────────────────────────────
+function renderSessionGuide(){
+  const selector=document.getElementById('phase-selector');
+  selector.innerHTML='';
+  PHASES.forEach(p=>{
+    const btn=document.createElement('button');
+    btn.className='phase-btn'+(state.currentSessionPhase===p.num?' active':'');
+    btn.textContent=p.label;
+    btn.onclick=()=>{state.currentSessionPhase=p.num;renderSessionGuide();};
+    selector.appendChild(btn);
+  });
+  const phase=PHASES.find(p=>p.num===state.currentSessionPhase)||PHASES[0];
+  document.getElementById('session-guide-content').innerHTML=`
+    <div class="session-guide">
+      <div class="guide-phase-label">${phase.label}</div>
+      <div class="guide-phase-name">${phase.name}</div>
+      <div class="guide-phase-essence">${phase.essence}</div>
+      <div class="guide-section">
+        <div class="guide-section-title">Exercices de séance</div>
+        ${phase.exercises.map((ex,i)=>`<div class="exercise-block"><div class="exercise-num">Exercice ${i+1}</div><div class="exercise-title">${ex.title}</div><div class="exercise-text">${ex.text}</div></div>`).join('')}
+      </div>
+      <div class="guide-section">
+        <div class="guide-section-title">Questions d'observation praticien</div>
+        <ul class="question-list">${phase.questions.map(q=>`<li>${q}</li>`).join('')}</ul>
+      </div>
+    </div>`;
+  renderSessionHistory();
+}
+
+function saveSession(){
+  const c=client();if(!c)return;
+  const notes=document.getElementById('session-notes').value.trim();
+  const pageRef=document.getElementById('journal-page-ref').value.trim();
+  if(!notes){showToast('Ajoutez des notes avant d\'enregistrer.');return;}
+  const phase=PHASES.find(p=>p.num===state.currentSessionPhase);
+  const session={id:Date.now().toString(),date:new Date().toISOString().split('T')[0],phase:phase?phase.label:'',notes,pageRef};
+  if(!c.sessions)c.sessions=[];
+  c.sessions.unshift(session);
+  saveState();
+  document.getElementById('session-notes').value='';
+  document.getElementById('journal-page-ref').value='';
+  updateDashStats();
+  renderSessionHistory();
+  showToast('Séance enregistrée.');
+}
+
+function renderSessionHistory(){
+  const c=client();const el=document.getElementById('session-history-list');
+  if(!c||!c.sessions||!c.sessions.length){el.innerHTML='<div style="font-size:.82rem;color:var(--muted);padding:12px 0;">Aucune séance enregistrée.</div>';return;}
+  el.innerHTML=c.sessions.map(s=>`
+    <div class="session-entry">
+      <div class="session-entry-meta">
+        <span class="session-entry-date">${formatDate(s.date)}</span>
+        <span class="session-entry-phase">${s.phase}</span>
+        <button class="session-entry-delete" onclick="deleteSession('${s.id}',event)">✕</button>
+      </div>
+      ${s.pageRef?`<div style="font-size:.75rem;color:var(--gold-d);margin-bottom:4px;">Journal : ${s.pageRef}</div>`:''}
+      <div class="session-entry-excerpt">${s.notes}</div>
+    </div>`).join('');
+}
+
+function deleteSession(id,e){
+  e.stopPropagation();const c=client();
+  if(!confirm('Supprimer cette note de séance ?'))return;
+  c.sessions=c.sessions.filter(s=>s.id!==id);
+  saveState();updateDashStats();renderSessionHistory();
+}
+
+// ── PARCOURS ──────────────────────────────────────────────────────
+function renderParcours(){
+  const c=client();if(!c)return;
+  document.getElementById('p-supervision').value=c.supervision||'';
+  const el=document.getElementById('phase-timeline');el.innerHTML='';
+  PHASES.forEach(p=>{
+    const done=c.validatedPhases&&c.validatedPhases.includes(p.num);
+    const hist=(c.phaseHistory||[]).find(h=>h.phase===p.num);
+    const row=document.createElement('div');row.className='phase-row';
+    row.innerHTML=`
+      <div class="phase-num${done?' done':''}">${done?'✓':(p.num===2.5?'2½':p.num)}</div>
+      <div class="phase-info">
+        <div class="phase-name">${p.label} — ${p.name}</div>
+        <div class="phase-desc">${p.essence.substring(0,115)}…</div>
+        ${hist?`<div class="phase-date">Validée le ${formatDate(hist.date)}</div>`:''}
+      </div>
+      <div class="phase-actions">
+        ${done
+          ?`<button class="btn-unvalidate" onclick="unvalidatePhase(${p.num})">Annuler</button>`
+          :`<button class="btn-validate" onclick="validatePhase(${p.num})">Valider</button>`}
+      </div>`;
+    el.appendChild(row);
+  });
+}
+
+function validatePhase(num){
+  const c=client();if(!c.validatedPhases)c.validatedPhases=[];
+  if(!c.validatedPhases.includes(num)){
+    c.validatedPhases.push(num);
+    if(!c.phaseHistory)c.phaseHistory=[];
+    c.phaseHistory.push({phase:num,date:new Date().toISOString().split('T')[0]});
+  }
+  saveState();renderParcours();updatePhaseUI();
+  showToast('Phase '+(num===2.5?'2·5':num)+' validée.');
+}
+
+function unvalidatePhase(num){
+  const c=client();
+  if(!confirm('Annuler la validation de cette phase ?'))return;
+  c.validatedPhases=(c.validatedPhases||[]).filter(p=>p!==num);
+  c.phaseHistory=(c.phaseHistory||[]).filter(h=>h.phase!==num);
+  saveState();renderParcours();updatePhaseUI();
+}
+
+function updatePhaseUI(){
+  const c=client();if(!c)return;
+  const maxPhase=c.validatedPhases&&c.validatedPhases.length?Math.max(...c.validatedPhases):0;
+  document.getElementById('ws-phase-badge').textContent='Phase '+(maxPhase===2.5?'2·5':maxPhase);
+  updateTabLocks();
+  if(state.currentTab==='mandala')renderMandala();
+}
+
+// ── MANDALA ───────────────────────────────────────────────────────
+function renderMandala(){
+  const c=client();const svg=document.getElementById('mandala-svg');
+  const validated=c?(c.validatedPhases||[]):[];
+  const cx=200,cy=200;let out='';
+  out+=`<circle cx="${cx}" cy="${cy}" r="198" fill="#FAF6EE" stroke="#E0D5C0" stroke-width="1"/>`;
+  // Spokes
+  for(let a=0;a<360;a+=22.5){
+    const r=a*Math.PI/180;
+    const x1=cx+14*Math.cos(r),y1=cy+14*Math.sin(r);
+    const x2=cx+182*Math.cos(r),y2=cy+182*Math.sin(r);
+    out+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#D4C5A0" stroke-width=".4" opacity=".6"/>`;
+  }
+  // Rings outside-in
+  [...MANDALA_RINGS].reverse().forEach(ring=>{
+    if(ring.center){
+      const lit=validated.includes(7);
+      out+=`<circle cx="${cx}" cy="${cy}" r="${ring.r}" fill="${lit?ring.color:'#C4A44A'}" opacity="${lit?1:.25}"/>`;
+    } else {
+      const lit=validated.includes(ring.phase);
+      out+=`<circle cx="${cx}" cy="${cy}" r="${ring.r}" fill="${lit?ring.color:'none'}" fill-opacity="${lit?.3:0}" stroke="${lit?ring.color:'#D4C5A0'}" stroke-width="${lit?2:1}"/>`;
+    }
+  });
+  // Phase numbers
+  MANDALA_RINGS.filter(r=>!r.center&&r.r>20).forEach(ring=>{
+    const lit=validated.includes(ring.phase);
+    const textR=ring.r-10;
+    out+=`<text x="${cx}" y="${cy-textR+4}" text-anchor="middle" font-family="Georgia,serif" font-size="${ring.r>120?9:8}" fill="${lit?'#6B4D2F':'#9A7860'}" opacity="${lit?1:.6}">${ring.phase===2.5?'2·5':ring.phase}</text>`;
+  });
+  // Center glyph
+  out+=`<text x="${cx}" y="${cy+4}" text-anchor="middle" font-family="Georgia,serif" font-size="9" fill="${validated.includes(7)?'#3C2415':'#9A7860'}" opacity=".8">✦</text>`;
+  svg.innerHTML=out;
+
+  const legend=document.getElementById('mandala-legend-list');
+  legend.innerHTML=MANDALA_RINGS.filter(r=>!r.center).map(ring=>{
+    const lit=validated.includes(ring.phase);
+    return `<div class="mandala-legend-item">
+      <div class="legend-dot" style="background:${lit?ring.color:'transparent'};border-color:${lit?ring.color:'var(--border)'};"></div>
+      <span style="color:${lit?'var(--brown)':'var(--muted)'};font-size:.85rem;">${ring.label}</span>
+      ${lit?'<span style="margin-left:auto;font-size:.7rem;color:var(--gold-d);">✓</span>':''}
+    </div>`;
+  }).join('');
+
+  document.getElementById('mandala-intention').value=c?(c.mandalaIntention||''):'';
+}
+
+function exportMandala(){
+  const svg=document.getElementById('mandala-svg');
+  const data=new XMLSerializer().serializeToString(svg);
+  const canvas=document.createElement('canvas');canvas.width=800;canvas.height=800;
+  const ctx=canvas.getContext('2d');const img=new Image();
+  img.onload=()=>{ctx.fillStyle='#FAF6EE';ctx.fillRect(0,0,800,800);ctx.drawImage(img,0,0,800,800);const a=document.createElement('a');a.download='mandala-oria.png';a.href=canvas.toDataURL();a.click();};
+  img.src='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(data)));
+}
+
+// ── ARCHETYPE ─────────────────────────────────────────────────────
+function renderArchetype(){
+  const c=client();if(!c)return;
+  const p4=c.validatedPhases&&c.validatedPhases.includes(4);
+  document.getElementById('archetype-lock-msg').style.display=p4?'none':'block';
+  document.getElementById('archetype-content').style.display=p4?'block':'none';
+  if(!p4)return;
+  document.getElementById('archetype-grid').innerHTML=ARCHETYPES.map(a=>`
+    <div class="archetype-card${c.archPrincipal===a.name?' selected':''}" onclick="selectArchetype('${a.name.replace(/'/g,"\\'")}')">
+      <div class="arch-name">${a.name}</div><div class="arch-pole">${a.pole}</div>
+      <div class="arch-desc">${a.desc}</div><div class="arch-shadow">${a.shadow}</div>
+    </div>`).join('');
+  document.getElementById('arch-principal').value=c.archPrincipal||'';
+  document.getElementById('arch-secondaire').value=c.archSecondaire||'';
+  document.getElementById('arch-justif').value=c.archJustif||'';
+  document.getElementById('arch-date').value=c.archDate||'';
+  document.getElementById('arch-supervision').value=c.archSupervision||'';
+}
+
+function selectArchetype(name){
+  const c=client();
+  if(!c.archPrincipal||c.archPrincipal===name){
+    c.archPrincipal=name;document.getElementById('arch-principal').value=name;
+  } else {
+    c.archSecondaire=name;document.getElementById('arch-secondaire').value=name;
+  }
+  document.querySelectorAll('.archetype-card').forEach(card=>{
+    card.classList.toggle('selected',card.querySelector('.arch-name').textContent===c.archPrincipal);
+  });
+  saveState();
+}
+
+function saveArchetype(){
+  const c=client();if(!c)return;
+  c.archJustif=document.getElementById('arch-justif').value;
+  c.archDate=document.getElementById('arch-date').value;
+  c.archSupervision=document.getElementById('arch-supervision').value;
+  saveState();showToast('Attribution archétypale enregistrée.');
+}
+
+// ── DOSSIER D'AME ─────────────────────────────────────────────────
+function renderDossierLock(){
+  const c=client();if(!c)return;
+  const p6=c.validatedPhases&&c.validatedPhases.includes(6);
+  document.getElementById('dossier-lock-msg').style.display=p6?'none':'block';
+  document.getElementById('dossier-content').style.display=p6?'block':'none';
+  if(!p6)return;
+  const fields={
+    'da-nom':'daNom','da-intention':'daIntention','da-dates':'daDates',
+    'da-nom-fondateur':'daNomFondateur','da-nom-sens':'daNomSens',
+    'da-arch-principal':'daArchPrincipal','da-arch-secondaire':'daArchSecondaire',
+    'da-arch-narr':'daArchNarr','da-voiles':'daVoiles','da-forces':'daForces',
+    'da-lois':'daLois','da-postulat':'daPostulat','da-transmissions':'daTransmissions','da-message':'daMessage'
+  };
+  Object.entries(fields).forEach(([elId,field])=>{const el=document.getElementById(elId);if(el)el.value=c[field]||'';});
+}
+
+function autofillDossier(){
+  const c=client();if(!c)return;
+  const nom=document.getElementById('da-nom');if(!nom.value)nom.value=c.prenom+' '+(c.nom||'');
+  const ap=document.getElementById('da-arch-principal');if(!ap.value&&c.archPrincipal)ap.value=c.archPrincipal;
+  const as=document.getElementById('da-arch-secondaire');if(!as.value&&c.archSecondaire)as.value=c.archSecondaire;
+  const dates=document.getElementById('da-dates');if(!dates.value&&c.startDate)dates.value=c.startDate+' — '+new Date().toISOString().split('T')[0];
+  const voiles=document.getElementById('da-voiles');if(!voiles.value&&c.voiles&&c.voiles.length)voiles.value=c.voiles.join(', ');
+  ['daNom','daArchPrincipal','daArchSecondaire','daDates','daVoiles'].forEach(f=>{
+    const map={'daNom':'da-nom','daArchPrincipal':'da-arch-principal','daArchSecondaire':'da-arch-secondaire','daDates':'da-dates','daVoiles':'da-voiles'};
+    const el=document.getElementById(map[f]);if(el)c[f]=el.value;
+  });
+  saveState();showToast('Données pré-remplies.');
+}
+
+function printDossier(){
+  const c=client();if(!c)return;
+  const fields={'da-nom':'daNom','da-intention':'daIntention','da-dates':'daDates','da-nom-fondateur':'daNomFondateur','da-nom-sens':'daNomSens','da-arch-principal':'daArchPrincipal','da-arch-secondaire':'daArchSecondaire','da-arch-narr':'daArchNarr','da-voiles':'daVoiles','da-forces':'daForces','da-lois':'daLois','da-postulat':'daPostulat','da-transmissions':'daTransmissions','da-message':'daMessage'};
+  Object.entries(fields).forEach(([elId,field])=>{const el=document.getElementById(elId);if(el)c[field]=el.value;});
+  document.getElementById('da-print-name').textContent=c.daNom||(c.prenom+' '+(c.nom||''));
+  saveState();window.print();
+}
+
+// ── MODALS ────────────────────────────────────────────────────────
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+// ── TOAST ─────────────────────────────────────────────────────────
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────
+function formatDate(iso){
+  if(!iso)return '—';const[y,m,d]=iso.split('-');
+  const months=['jan.','fév.','mars','avr.','mai','juin','juil.','août','sep.','oct.','nov.','déc.'];
+  return d+' '+months[parseInt(m)-1]+' '+y;
+}
+
+// ── KEYBOARD ──────────────────────────────────────────────────────
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open'));
+  if(e.key==='Enter'&&document.getElementById('modal-add').classList.contains('open'))addClient();
 });
 
-function logout(){
-  S.session=null; save();
-  document.getElementById('app').classList.remove('on');
-  document.getElementById('launcher').style.display='flex';
-  document.getElementById('launcher').classList.remove('out');
-  lgo('l-hero');
-}
-
-// ─── MANDALA RENDER ───────────────────────────────────────
-function drawMandala(svgId, phase, size){
-  var svg=document.getElementById(svgId);
-  var cx=size/2,cy=size/2;
-  var radii=[size*.47,size*.39,size*.31,size*.23,size*.16,size*.095];
-  var fills=['none','none','none','none','none','none'];
-  var strokes=['#E0D5C0','#E0D5C0','#E0D5C0','#E0D5C0','#E0D5C0','#E0D5C0'];
-  var widths=[1,1,1,1,1,1];
-  var dashes=['4 3','4 3','4 3','4 3','4 3','4 3'];
-  // ring 6=phase7, ring5=phase5-6, ring4=phase4, ring3=phase3, ring2=phase2, ring1=phase0-1
-  var thresholds=[1,2,3,4,5,7]; // phase needed to light ring (index 0=innermost ring)
-  for(var i=0;i<6;i++){
-    if(phase>=thresholds[i]){
-      var intensity=Math.min(1,(phase-thresholds[i]+1));
-      fills[i]=i===0?'rgba(196,164,74,0.18)':'rgba(196,164,74,0.08)';
-      strokes[i]=i===0?'#B8943A':'#C4A44A';
-      widths[i]=i===0?3:2;
-      dashes[i]='none';
-    }
-  }
-  var html='<g transform="translate('+cx+','+cy+')">';
-  // Radial lines
-  for(var a=0;a<8;a++) html+='<line x1="0" y1="-'+(size*.47)+'" x2="0" y2="-'+(size*.095)+'" stroke="#D4C4A8" stroke-width="0.5" opacity="0.35" transform="rotate('+(a*45)+')"/>';
-  // Rings (outer to inner)
-  for(var i=5;i>=0;i--) html+='<circle cx="0" cy="0" r="'+radii[i]+'" fill="'+fills[i]+'" stroke="'+strokes[i]+'" stroke-width="'+widths[i]+'"'+(dashes[i]!=='none'?' stroke-dasharray="'+dashes[i]+'"':'')+'/>';
-  // Center
-  html+='<circle cx="0" cy="0" r="'+(size*.038)+'" fill="#3C2415"/>';
-  html+='<text x="0" y="'+(size*.015)+'" text-anchor="middle" font-size="'+(size*.04)+'" fill="#C4A44A" font-family="serif">✦</text>';
-  html+='</g>';
-  svg.innerHTML=html;
-}
-
-// ─── PARTICIPANT PAGES ────────────────────────────────────
-function getMyParticipant(){
-  var sess=S.session||{};
-  return S.participants[sess.participantId]||Object.values(S.participants)[0];
-}
-
-function renderDashP(){
-  var p=getMyParticipant();
-  var phase=p.phase;
-  var pname=PHASES.find(x=>x.n===phase)||PHASES[phase]||PHASES[2];
-  document.getElementById('dp-welcome').textContent='Bienvenue, '+(S.session&&S.session.name||p.name.split(' ')[0]);
-  document.getElementById('dp-sub').textContent='Phase '+phase+' — '+pname.name+' · Votre parcours est en cours';
-  document.getElementById('dp-cards').innerHTML=
-    card('Phase actuelle',phase,pname.name)+
-    card('Sessions complétées',p.sessions,'depuis le '+p.since)+
-    card('Entrées journal',(S.journals[p.id]||[]).length,'entrées sauvegardées')+
-    card('Praticien','Marie L.','Praticien ORIA Certifié N2');
-  var ex=EXERCISES.find(e=>e.phase===phase)||EXERCISES[EXERCISES.length-1];
-  document.getElementById('dp-infobox').innerHTML='<span>◎</span><span>Vous êtes en Phase '+phase+' — '+pname.name+'. Un exercice vous attend.</span>';
-  document.getElementById('dp-ex-title').textContent=ex.title;
-  document.getElementById('dp-ex-sub').textContent='Phase '+phase+' · Exercice disponible';
-}
-
-function card(lbl,val,hint){
-  return '<div class="card"><div class="card-lbl">'+lbl+'</div><div class="card-val">'+val+'</div><div class="card-hint">'+hint+'</div></div>';
-}
-
-function renderMandalaP(){
-  var p=getMyParticipant();
-  drawMandala('mandala-svg-p',p.phase,260);
-  var pname=PHASES.find(x=>x.n===p.phase)||PHASES[2];
-  document.getElementById('mandala-p-caption').innerHTML='Phase '+p.phase+' — <strong>'+pname.name+'</strong><br><span style="color:var(--gold-d)">'+p.progress+'% en cours</span>';
-  var html='';
-  var ringDefs=[
-    {ring:6,phase:'7',name:"L'Alignement",thresh:7},
-    {ring:5,phase:'5-6',name:"L'Archétype & Le Mythe",thresh:5},
-    {ring:4,phase:'4',name:"Le Projet d'Âme",thresh:4},
-    {ring:3,phase:'3',name:"L'Intégration",thresh:3},
-    {ring:2,phase:'2',name:'La Reconnaissance',thresh:2},
-    {ring:1,phase:'0-1',name:'Le Témoin & L\'Origine',thresh:1},
-    {ring:0,phase:'Noyau',name:'Le Noyau — votre identité essentielle',thresh:0},
-  ];
-  ringDefs.forEach(function(r){
-    var done=p.phase>r.thresh;
-    var active=p.phase===r.thresh;
-    var locked=p.phase<r.thresh;
-    var color=done?'#B8943A':active?'#C4A44A':'#E0D5C0';
-    var badge=done?'<span class="badge b-done">Validé</span>':active?'<span class="badge b-active">En cours</span>':'<span class="badge b-lock">Verrouillé</span>';
-    var op=locked?'opacity:.45;':'';
-    html+='<div class="leg" style="'+op+'"><div class="leg-dot" style="background:'+color+'"></div><div><div class="leg-name">'+r.name+'</div><div class="leg-ph">Phase '+r.phase+'</div></div>'+badge+'</div>';
-  });
-  document.getElementById('mandala-legend-p').innerHTML=html;
-}
-
-function renderPhasesP(){
-  var p=getMyParticipant();
-  var html='';
-  PHASES.forEach(function(ph){
-    var phN=typeof ph.n==='number'?ph.n:parseFloat(ph.n);
-    var done=p.phase>phN;
-    var active=p.phase===phN;
-    var locked=p.phase<phN;
-    var cls=done?'ph-done':active?'ph-act':'ph-lock';
-    var rowCls='prow'+(active?' current':locked?'':' clickable');
-    var op=locked&&phN>p.phase+0.5?' style="opacity:.45"':'';
-    var pct=done?100:active?p.progress:0;
-    var pctLabel=done?'Validée':active?(p.progress+'%'):'Verrouillée';
-    html+='<div class="'+rowCls+'"'+op+'><div class="pnum '+cls+'">'+ph.n+'</div><div class="p-info"><div class="p-name">'+ph.name+'</div><div class="p-desc">'+ph.desc+'</div></div><div class="prog-wrap"><div class="prog-pct">'+pctLabel+'</div><div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%"></div></div></div></div>';
-  });
-  document.getElementById('phases-list-p').innerHTML=html;
-}
-
-function renderExerciseP(){
-  var p=getMyParticipant();
-  var ex=EXERCISES.find(e=>e.phase===p.phase)||EXERCISES[Math.min(p.phase,EXERCISES.length-1)];
-  var saved=(S.exercises[p.id]||{})[p.phase]||{text:'',sent:false};
-  document.getElementById('ex-sub-p').textContent='Phase '+p.phase+' — '+ex.title;
-  var sentHtml=saved.sent?'<div class="sent-badge">✓ Envoyé à votre praticien</div>':'<div style="display:flex;gap:10px;margin-top:8px"><button class="btn-g" style="flex:1;max-width:180px" onclick="saveExercise(false)">Sauvegarder</button><button class="btn-o" style="flex:1;max-width:180px" onclick="saveExercise(true)">Envoyer au praticien</button></div>';
-  document.getElementById('ex-content-p').innerHTML=
-    '<div class="ex-ph">Phase '+p.phase+' · '+PHASES.find(x=>x.n===p.phase).name+'</div>'+
-    '<div class="ex-title">'+ex.title+'</div>'+
-    '<div class="ex-body">'+ex.body+'</div>'+
-    '<div class="ex-q">'+ex.q+'</div>'+
-    '<textarea class="ta" id="ex-ta" rows="6"'+(saved.sent?' readonly':'')+'>'+(saved.text||'')+'</textarea>'+
-    sentHtml;
-}
-
-function saveExercise(send){
-  var p=getMyParticipant();
-  var text=document.getElementById('ex-ta').value.trim();
-  if(!text){toast('Écrivez quelque chose d\'abord.');return;}
-  if(!S.exercises[p.id]) S.exercises[p.id]={};
-  S.exercises[p.id][p.phase]={text,sent:send};
-  save();
-  if(send){toast('Exercice envoyé à votre praticien ✓','gold');renderExerciseP();}
-  else toast('Réponse sauvegardée.');
-}
-
-function renderJournal(){
-  var p=getMyParticipant();
-  var entries=S.journals[p.id]||[];
-  document.getElementById('j-today-label').textContent='Nouvelle entrée — '+today();
-  document.getElementById('j-input').value='';
-  var html=entries.length===0?'<div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">Votre journal est vide. Écrivez votre première entrée ci-dessus.</div>':'';
-  [...entries].reverse().forEach(function(e){
-    html+='<div class="j-entry"><div class="j-date">'+e.date+'</div><div class="j-text">'+e.text+'</div></div>';
-  });
-  document.getElementById('journal-list').innerHTML=html;
-}
-
-function saveJournal(){
-  var p=getMyParticipant();
-  var text=document.getElementById('j-input').value.trim();
-  if(!text){toast('Écrivez quelque chose d\'abord.');return;}
-  if(!S.journals[p.id]) S.journals[p.id]=[];
-  S.journals[p.id].push({date:today(),text});
-  save();
-  toast('Entrée enregistrée ✓','gold');
-  renderJournal();
-}
-
-function renderDossier(){
-  var p=getMyParticipant();
-  var hasDossier=S.dossiers&&S.dossiers[p.id];
-  var container=document.getElementById('dossier-container');
-  if(hasDossier){
-    container.innerHTML='<div class="dossier-ready"><div style="font-size:48px;margin-bottom:14px">⬡</div><div style="font-size:18px;font-weight:500;color:var(--brown);margin-bottom:8px">Dossier d\'Âme généré</div><div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px">Votre praticien a généré votre Dossier d\'Âme.<br>Il synthétise l\'intégralité de votre parcours ORIA.</div><button class="btn-g" style="max-width:240px" onclick="toast(\'Téléchargement simulé — PDF disponible en version réelle.\')">Télécharger le PDF</button></div>';
-  } else {
-    var pct=Math.round((p.phase/7)*100);
-    container.innerHTML='<div class="dossier-locked"><div style="font-size:48px;margin-bottom:14px;opacity:.4">⬡</div><div style="font-size:16px;font-weight:500;color:var(--brown);margin-bottom:8px">Votre dossier se révèle</div><div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px">Phase actuelle : <strong>'+p.phase+'</strong> sur 7<br>Le Dossier d\'Âme sera généré par votre praticien à la completion de la Phase 7.</div><div class="prog-bar" style="max-width:300px;margin:0 auto"><div class="prog-fill" style="width:'+pct+'%"></div></div><div style="font-size:11px;color:var(--muted);margin-top:8px">'+pct+'% du parcours accompli</div></div>';
-  }
-}
-
-// ─── PRATICIEN PAGES ──────────────────────────────────────
-function renderDashPr(){
-  var name=S.session&&S.session.name||'Marie';
-  var parts=Object.values(S.participants);
-  document.getElementById('dpr-welcome').textContent='Tableau de bord';
-  document.getElementById('dpr-sub').textContent=name+' · Plan PRO · Praticien ORIA Certifié N2';
-  var totalSessions=parts.reduce(function(a,p){return a+p.sessions;},0);
-  var pending=parts.filter(function(p){return p.progress>=100&&p.phase<7;}).length;
-  document.getElementById('dpr-cards').innerHTML=
-    card('Participants actifs',parts.length,'sur 30 inclus (Plan PRO)')+
-    card('Sessions totales',totalSessions,'tous participants')+
-    card('Dossiers générés',Object.keys(S.dossiers||{}).length,'illimités sur PRO')+
-    card('Validations en attente',pending,'phases à 100%');
-  var html='';
-  parts.slice(0,4).forEach(function(p){
-    var pname=PHASES.find(x=>x.n===p.phase)||PHASES[2];
-    html+='<div class="p-row" onclick="selectedParticipantId=\''+p.id+'\';nav(\'participant-detail\',\''+p.name+'\')"><div class="p-av">'+p.initial+'</div><div><div style="font-size:14px;font-weight:500;color:var(--brown)">'+p.name+'</div><div style="font-size:12px;color:var(--muted)">'+p.sessions+' sessions · Phase '+p.phase+'</div></div><div class="p-ph">Phase '+p.phase+'</div></div>';
-  });
-  document.getElementById('dpr-activity').innerHTML=html;
-}
-
-function renderParticipants(){
-  var parts=Object.values(S.participants);
-  document.getElementById('part-sub').textContent=parts.length+' participants actifs · Cliquez pour accéder au dossier';
-  var html='';
-  parts.forEach(function(p){
-    var pname=PHASES.find(x=>x.n===p.phase)||PHASES[2];
-    html+='<div class="p-row" onclick="selectedParticipantId=\''+p.id+'\';nav(\'participant-detail\',\''+p.name+'\')"><div class="p-av">'+p.initial+'</div><div style="flex:1"><div style="font-size:14px;font-weight:500;color:var(--brown)">'+p.name+'</div><div style="font-size:12px;color:var(--muted)">Depuis le '+p.since+' · '+p.sessions+' sessions</div></div><div class="p-ph">Phase '+p.phase+'</div></div>';
-  });
-  document.getElementById('part-list').innerHTML=html;
-}
-
-function genInvite(){
-  var code='ORIA-'+Math.random().toString(36).substr(2,4).toUpperCase()+'-'+Math.random().toString(36).substr(2,4).toUpperCase();
-  toast('Code d\'invitation généré : '+code,'gold');
-}
-
-function renderParticipantDetail(){
-  var p=S.participants[selectedParticipantId];
-  if(!p) return;
-  var pname=PHASES.find(x=>x.n===p.phase)||PHASES[2];
-  var arch=ARCHETYPES.find(a=>a.id===(S.archetypes[p.id]||p.archetype));
-  document.getElementById('pd-hdr').innerHTML=
-    '<div class="p-big-av">'+p.initial+'</div><div><div style="font-size:17px;font-weight:500;color:var(--brown)">'+p.name+'</div><div style="font-size:12px;color:var(--muted);margin-top:3px">Participant depuis le '+p.since+' · '+p.sessions+' sessions</div>'+(arch?'<div style="margin-top:6px;font-size:12px;color:var(--gold-d)">Archétype : '+arch.ico+' '+arch.name+'</div>':'')+'</div>';
-  document.getElementById('pd-cards').innerHTML=
-    card('Phase actuelle',p.phase,pname.name)+
-    card('Progression',p.progress+'%','sur la phase en cours')+
-    card('Sessions',p.sessions,'complétées')+
-    card('Journal',(S.journals[p.id]||[]).length+' entrées','rédigées');
-  // Phases
-  var html='';
-  PHASES.slice(0,5).forEach(function(ph){
-    var phN=typeof ph.n==='number'?ph.n:parseFloat(ph.n);
-    var done=p.phase>phN;
-    var active=p.phase===phN;
-    var locked=p.phase<phN;
-    var cls=done?'ph-done':active?'ph-act':'ph-lock';
-    var pct=done?100:active?p.progress:0;
-    var op=locked?' style="opacity:.45"':'';
-    html+='<div class="prow"'+op+'><div class="pnum '+cls+'">'+ph.n+'</div><div class="p-info"><div class="p-name">'+ph.name+'</div><div class="p-desc">'+ph.desc+'</div></div><div class="prog-wrap"><div class="prog-pct">'+(done?'Validée':active?p.progress+'%':'—')+'</div><div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%"></div></div></div></div>';
-  });
-  document.getElementById('pd-phases').innerHTML=html;
-  var btn=document.getElementById('pd-validate-btn');
-  btn.textContent=p.phase>=7?'Parcours complet':'Valider la Phase '+p.phase;
-  btn.disabled=p.phase>=7;
-  document.getElementById('pd-dossier-btn').textContent=p.phase>=7?'Générer Dossier d\'Âme':'Dossier d\'Âme (Phase 7 requise)';
-}
-
-function validatePhase(){
-  var p=S.participants[selectedParticipantId];
-  if(!p||p.phase>=7){toast('Parcours déjà complet.');return;}
-  p.phase=Math.min(p.phase+1,7);
-  p.progress=0;
-  p.sessions++;
-  save();
-  toast('Phase '+(p.phase)+' validée pour '+p.name+' ✓','gold');
-  renderParticipantDetail();
-}
-
-function generateDossier(){
-  var p=S.participants[selectedParticipantId];
-  if(!p){return;}
-  if(p.phase<7){toast('La Phase 7 doit être complétée pour générer le Dossier d\'Âme.');return;}
-  if(!S.dossiers) S.dossiers={};
-  S.dossiers[p.id]=true;
-  save();
-  toast('Dossier d\'Âme généré pour '+p.name+' ✓','gold');
-}
-
-function renderSession(){
-  var parts=Object.values(S.participants);
-  var sel=document.getElementById('session-select');
-  sel.innerHTML=parts.map(p=>'<option value="'+p.id+'">'+p.name+'</option>').join('');
-  loadSessionNotes();
-}
-
-function loadSessionNotes(){
-  var id=document.getElementById('session-select').value;
-  var p=S.participants[id];
-  if(!p){document.getElementById('note-wrap').style.display='none';return;}
-  document.getElementById('note-wrap').style.display='block';
-  document.getElementById('note-hdr').innerHTML='<div class="p-av" style="width:36px;height:36px;font-size:12px">'+p.initial+'</div><div><div style="font-size:14px;font-weight:500;color:var(--brown)">'+p.name+'</div><div style="font-size:12px;color:var(--muted)">Phase '+p.phase+' · '+p.sessions+' sessions</div></div><div style="margin-left:auto;font-size:12px;color:var(--muted)">'+today()+'</div>';
-  var notes=S.notes[id]||[];
-  var lastNote=notes[notes.length-1];
-  document.getElementById('note-ta').value=lastNote?lastNote.text:'';
-  selectedParticipantId=id;
-}
-
-function saveNote(){
-  var id=document.getElementById('session-select').value;
-  var text=document.getElementById('note-ta').value.trim();
-  if(!text){toast('Rien à sauvegarder.');return;}
-  if(!S.notes) S.notes={};
-  if(!S.notes[id]) S.notes[id]=[];
-  S.notes[id].push({date:today(),text});
-  S.participants[id].sessions++;
-  save();
-  toast('Note sauvegardée ✓','gold');
-}
-
-function renderArchetypes(){
-  var parts=Object.values(S.participants);
-  var sel=document.getElementById('arch-select');
-  sel.innerHTML=parts.map(p=>'<option value="'+p.id+'">'+p.name+'</option>').join('');
-  selectedArchetype=S.archetypes[sel.value]||'';
-  var html='';
-  ARCHETYPES.forEach(function(a){
-    var isSel=selectedArchetype===a.id||(S.archetypes[sel.value]===a.id);
-    html+='<div class="arch-card'+(isSel?' sel':'')+'" onclick="selectArch(this,\''+a.id+'\')">'+'<div class="arch-ico">'+a.ico+'</div><div class="arch-name">'+a.name+'</div><div class="arch-desc">'+a.desc+'</div></div>';
-  });
-  document.getElementById('arch-grid').innerHTML=html;
-}
-
-function selectArch(el,id){
-  document.querySelectorAll('.arch-card').forEach(c=>c.classList.remove('sel'));
-  el.classList.add('sel');
-  selectedArchetype=id;
-}
-
-function confirmArchetype(){
-  if(!selectedArchetype){toast('Sélectionnez un archétype.');return;}
-  var id=document.getElementById('arch-select').value;
-  if(!S.archetypes) S.archetypes={};
-  S.archetypes[id]=selectedArchetype;
-  S.participants[id].archetype=selectedArchetype;
-  save();
-  var arch=ARCHETYPES.find(a=>a.id===selectedArchetype);
-  toast('Archétype '+arch.ico+' '+arch.name+' attribué ✓','gold');
-}
-
-function renderPraticienMandala(){
-  var parts=Object.values(S.participants);
-  var sel=document.getElementById('mandala-pr-select');
-  if(!sel.innerHTML) sel.innerHTML=parts.map(p=>'<option value="'+p.id+'">'+p.name+'</option>').join('');
-  var id=sel.value||parts[0].id;
-  var p=S.participants[id];
-  if(!p) return;
-  selectedParticipantId=id;
-  drawMandala('mandala-svg-pr',p.phase,240);
-  var pname=PHASES.find(x=>x.n===p.phase)||PHASES[2];
-  document.getElementById('mandala-pr-caption').innerHTML=p.name+' · Phase '+p.phase+' — '+pname.name;
-  var html='';
-  PHASES.slice(0,6).forEach(function(ph){
-    var phN=typeof ph.n==='number'?ph.n:parseFloat(ph.n);
-    var done=p.phase>phN;var active=p.phase===phN;var locked=p.phase<phN;
-    var color=done?'#B8943A':active?'#C4A44A':'#E0D5C0';
-    var badge=done?'<span class="badge b-done">✓</span>':active?'<span class="badge b-active">En cours</span>':'<span class="badge b-lock">—</span>';
-    html+='<div class="leg" style="'+(locked?'opacity:.4;':'')+'"><div class="leg-dot" style="background:'+color+'"></div><div><div class="leg-name">Phase '+ph.n+' — '+ph.name+'</div></div>'+badge+'</div>';
-  });
-  document.getElementById('mandala-legend-pr').innerHTML=html;
-}
-
-function validatePhaseFromMandala(){
-  var p=S.participants[selectedParticipantId];
-  if(!p||p.phase>=7){toast('Parcours déjà complet.');return;}
-  p.phase=Math.min(p.phase+1,7);p.progress=0;p.sessions++;
-  save();
-  toast('Phase validée pour '+p.name+' ✓','gold');
-  renderPraticienMandala();
-}
-
-function generateDossierFromMandala(){
-  var p=S.participants[selectedParticipantId];
-  if(!p) return;
-  if(p.phase<7){toast('La Phase 7 doit être complétée.');return;}
-  if(!S.dossiers) S.dossiers={};
-  S.dossiers[p.id]=true;
-  save();
-  toast('Dossier d\'Âme généré pour '+p.name+' ✓','gold');
-}
-
-function renderCertifPr(){
-  var name=S.session&&S.session.name||'Marie';
-  var parts=Object.values(S.participants);
-  document.getElementById('certif-pr-sub').textContent=name+' · Praticien ORIA Certifié';
-  document.getElementById('certif-level-val').textContent='Praticien ORIA Certifié — N2';
-  document.getElementById('certif-level-hint').textContent='Certifié·e depuis le 10 sept 2025 · Superviseur : Dr. A. Fontaine';
-  var pct=Math.round((parts.length/20)*100);
-  document.getElementById('certif-part-count').textContent=parts.length+' / 20';
-  document.getElementById('certif-part-fill').style.width=pct+'%';
-}
-
-// ─── INIT ────────────────────────────────────────────────
-(function init(){
-  if(S.session){
-    document.getElementById('launcher').style.display='none';
-    document.getElementById('app').classList.add('on');
-    switchRole(S.session.role);
-  }
-})();
+// ── BOOT ──────────────────────────────────────────────────────────
+loadState();
+if(state.practitioner){launchApp();}
+else{document.getElementById('setup').style.display='flex';document.getElementById('app').style.display='none';}
 </script>
 </body>
 </html>
