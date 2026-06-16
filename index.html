@@ -176,9 +176,16 @@ textarea.field-input{resize:vertical;min-height:90px;line-height:1.6;}
 .da-section.featured .da-num{background:var(--gold);color:var(--brown);border-color:var(--gold);box-shadow:0 0 0 2px rgba(196,164,74,.22);}
 .da-section.filled .da-num{border-color:var(--ok);color:var(--ok);}
 .da-section.filled.featured .da-num{background:var(--gold);color:var(--brown);border-color:var(--gold);box-shadow:0 0 0 2px rgba(196,164,74,.22);}
-.da-actions{display:flex;gap:12px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);}
+.da-hint{font-size:.72rem;color:var(--muted);line-height:1.55;font-style:italic;margin-bottom:14px;padding:8px 12px;background:var(--ivory-d);border-left:2px solid var(--border);}
+.da-section-body textarea.field-input{resize:none;overflow:hidden;min-height:72px;transition:height .1s;}
+.da-actions{display:flex;gap:10px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);flex-wrap:wrap;align-items:center;}
+.da-actions-right{margin-left:auto;display:flex;gap:8px;}
 .btn-generate{background:var(--brown);color:var(--gold);border:1px solid var(--brown);padding:10px 22px;font-family:Georgia,serif;font-size:.8rem;letter-spacing:.12em;cursor:pointer;border-radius:2px;text-transform:uppercase;}
 .btn-generate:hover{background:#2a1a0d;border-color:#2a1a0d;}
+.btn-pdf{background:var(--gold);color:var(--brown);border:1px solid var(--gold-d);padding:10px 22px;font-family:Georgia,serif;font-size:.8rem;letter-spacing:.12em;cursor:pointer;border-radius:2px;text-transform:uppercase;}
+.btn-pdf:hover{background:var(--gold-d);color:#fff;border-color:var(--gold-d);}
+.da-autofill-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;padding:10px 12px;background:var(--ivory-d);border-radius:2px;}
+.da-autofill-label{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);align-self:center;margin-right:4px;}
 
 /* ── ORACLE ───────────────────────────────────────────────────── */
 .oracle-layout{display:flex;gap:0;height:100%;overflow:hidden;flex-direction:column;}
@@ -505,6 +512,14 @@ textarea.field-input{resize:vertical;min-height:90px;line-height:1.6;}
               <div class="da-header-ornament" style="margin-top:14px;margin-bottom:0;">✦ ─────── ✦ ─────── ✦</div>
             </div>
 
+            <!-- Barre autofill rapide -->
+            <div class="da-autofill-bar">
+              <span class="da-autofill-label">Pré-remplir</span>
+              <button class="btn-sm" onclick="autofillDossier()">Profil + dates</button>
+              <button class="btn-sm" onclick="autofillLois()">Structure des 4 Lois</button>
+              <button class="btn-sm" onclick="autofillVoilesForces()">Voiles + Forces</button>
+            </div>
+
             <!-- I — Identité -->
             <div class="da-section" data-key="da-intention">
               <div class="da-section-header">
@@ -512,9 +527,10 @@ textarea.field-input{resize:vertical;min-height:90px;line-height:1.6;}
                 <div class="da-section-title">Identité et intention initiale</div>
               </div>
               <div class="da-section-body">
-                <div class="field-group"><label class="field-label">Nom complet</label><input class="field-input" id="da-nom" oninput="onDaField('daNom',this.value)" onchange="saveProfileField('daNom',this.value)"></div>
-                <div class="field-group"><label class="field-label">Intention posée au début du parcours</label><textarea class="field-input" id="da-intention" rows="3" oninput="onDaField('daIntention',this.value)" onchange="saveProfileField('daIntention',this.value)"></textarea></div>
-                <div class="field-group"><label class="field-label">Période du parcours</label><input class="field-input" id="da-dates" oninput="onDaField('daDates',this.value)" onchange="saveProfileField('daDates',this.value)" placeholder="Ex : 10 janv. 2025 — 10 juin 2025"></div>
+                <div class="da-hint">L’intention telle que formulée lors de la Phase 0 — si possible dans les mots exacts du participant, pas une reformulation.</div>
+                <div class="field-group"><label class="field-label">Nom complet</label><input class="field-input" id="da-nom" oninput="onDaField(‘daNom’,this.value)" onchange="saveProfileField(‘daNom’,this.value)"></div>
+                <div class="field-group"><label class="field-label">Intention posée au seuil du parcours</label><textarea class="field-input" id="da-intention" rows="2" oninput="onDaField(‘daIntention’,this.value);daAutoResize(this)" onchange="saveProfileField(‘daIntention’,this.value)" placeholder="Ce qui m’a amené ici maintenant, et non il y a six mois..."></textarea></div>
+                <div class="field-group"><label class="field-label">Période du parcours</label><input class="field-input" id="da-dates" oninput="onDaField(‘daDates’,this.value)" onchange="saveProfileField(‘daDates’,this.value)" placeholder="Ex : 10 janv. 2025 — 10 juin 2025"></div>
               </div>
             </div>
 
@@ -525,8 +541,9 @@ textarea.field-input{resize:vertical;min-height:90px;line-height:1.6;}
                 <div class="da-section-title">Le Nom Fondateur</div>
               </div>
               <div class="da-section-body">
-                <div class="field-group"><label class="field-label">Nom Fondateur reçu au cours du parcours</label><input class="field-input" id="da-nom-fondateur" style="font-size:1.1rem;letter-spacing:.06em;color:var(--brown);" oninput="onDaField('daNomFondateur',this.value)" onchange="saveProfileField('daNomFondateur',this.value)"></div>
-                <div class="field-group"><label class="field-label">Signification et résonance pour le participant</label><textarea class="field-input" id="da-nom-sens" rows="3" oninput="onDaField('daNomSens',this.value)" onchange="saveProfileField('daNomSens',this.value)"></textarea></div>
+                <div class="da-hint">Le nom n’est pas choisi — il est reconnu. Il émerge souvent en Phase 5 ou lors d’un moment de silence intense. Inscrivez-le exactement tel qu’il s’est révélé.</div>
+                <div class="field-group"><label class="field-label">Nom Fondateur</label><input class="field-input" id="da-nom-fondateur" style="font-size:1.1rem;letter-spacing:.06em;color:var(--brown);" oninput="onDaField(‘daNomFondateur’,this.value)" onchange="saveProfileField(‘daNomFondateur’,this.value)" placeholder="Le nom tel qu’il est apparu..."></div>
+                <div class="field-group"><label class="field-label">Signification et résonance</label><textarea class="field-input" id="da-nom-sens" rows="2" oninput="onDaField(‘daNomSens’,this.value);daAutoResize(this)" onchange="saveProfileField(‘daNomSens’,this.value)" placeholder="Qu’est-ce que ce nom touche en lui ? Quelle image ou sensation émerge quand il l’entend ?"></textarea></div>
               </div>
             </div>
 
@@ -537,11 +554,12 @@ textarea.field-input{resize:vertical;min-height:90px;line-height:1.6;}
                 <div class="da-section-title">Archétype principal et secondaire</div>
               </div>
               <div class="da-section-body">
+                <div class="da-hint">Portrait à la troisième personne — comme si vous décriviez un personnage dans un roman. Utilisez les mots du participant, ses images, ses métaphores.</div>
                 <div class="field-row">
-                  <div class="field-group"><label class="field-label">Archétype principal</label><input class="field-input" id="da-arch-principal" oninput="onDaField('daArchPrincipal',this.value)" onchange="saveProfileField('daArchPrincipal',this.value)"></div>
-                  <div class="field-group"><label class="field-label">Archétype secondaire</label><input class="field-input" id="da-arch-secondaire" oninput="onDaField('daArchSecondaire',this.value)" onchange="saveProfileField('daArchSecondaire',this.value)"></div>
+                  <div class="field-group"><label class="field-label">Archétype principal</label><input class="field-input" id="da-arch-principal" oninput="onDaField(‘daArchPrincipal’,this.value)" onchange="saveProfileField(‘daArchPrincipal’,this.value)"></div>
+                  <div class="field-group"><label class="field-label">Archétype secondaire</label><input class="field-input" id="da-arch-secondaire" oninput="onDaField(‘daArchSecondaire’,this.value)" onchange="saveProfileField(‘daArchSecondaire’,this.value)"></div>
                 </div>
-                <div class="field-group"><label class="field-label">Description narrative de l'archétype pour ce participant</label><textarea class="field-input" id="da-arch-narr" rows="4" oninput="onDaField('daArchNarr',this.value)" onchange="saveProfileField('daArchNarr',this.value)"></textarea></div>
+                <div class="field-group"><label class="field-label">Portrait archétypal</label><textarea class="field-input" id="da-arch-narr" rows="3" oninput="onDaField(‘daArchNarr’,this.value);daAutoResize(this)" onchange="saveProfileField(‘daArchNarr’,this.value)" placeholder="Il est quelqu’un qui... Sa force fondamentale est... Ce qui le met en mouvement, c’est..."></textarea></div>
               </div>
             </div>
 
@@ -552,7 +570,8 @@ textarea.field-input{resize:vertical;min-height:90px;line-height:1.6;}
                 <div class="da-section-title">Les Voiles traversés</div>
               </div>
               <div class="da-section-body">
-                <div class="field-group"><label class="field-label">Voiles identifiés et traversés</label><textarea class="field-input" id="da-voiles" rows="4" oninput="onDaField('daVoiles',this.value)" onchange="saveProfileField('daVoiles',this.value)" placeholder="Décrire comment chaque voile s'est manifesté et comment le participant l'a traversé..."></textarea></div>
+                <div class="da-hint">Un voile par paragraphe. Nommez-le, décrivez comment il s’est manifesté dans la vie du participant, puis comment il a été traversé.</div>
+                <div class="field-group"><label class="field-label">Voiles identifiés et traversés</label><textarea class="field-input" id="da-voiles" rows="3" oninput="onDaField(‘daVoiles’,this.value);daAutoResize(this)" onchange="saveProfileField(‘daVoiles’,this.value)" placeholder="Le Voile du Contrôle — manifesté comme... traversé par...&#10;Le Voile de la Honte — manifesté comme... traversé par..."></textarea></div>
               </div>
             </div>
 
@@ -563,7 +582,8 @@ textarea.field-input{resize:vertical;min-height:90px;line-height:1.6;}
                 <div class="da-section-title">Les Forces déployées</div>
               </div>
               <div class="da-section-body">
-                <div class="field-group"><label class="field-label">Forces identifiées et cultivées</label><textarea class="field-input" id="da-forces" rows="4" oninput="onDaField('daForces',this.value)" onchange="saveProfileField('daForces',this.value)" placeholder="Forces manifestées, moments clés où elles sont apparues..."></textarea></div>
+                <div class="da-hint">Nommez chaque Force et le moment précis du parcours où elle s’est révélée — une image, une séance, une phrase du participant.</div>
+                <div class="field-group"><label class="field-label">Forces identifiées et cultivées</label><textarea class="field-input" id="da-forces" rows="3" oninput="onDaField(‘daForces’,this.value);daAutoResize(this)" onchange="saveProfileField(‘daForces’,this.value)" placeholder="La Force de l’Ancrage — apparue en Phase 1 lorsque...&#10;La Force de la Traversée — révélée quand..."></textarea></div>
               </div>
             </div>
 
@@ -574,7 +594,8 @@ textarea.field-input{resize:vertical;min-height:90px;line-height:1.6;}
                 <div class="da-section-title">Les Lois Fondatrices intégrées</div>
               </div>
               <div class="da-section-body">
-                <div class="field-group"><label class="field-label">Expérience des 4 Lois au cours du parcours</label><textarea class="field-input" id="da-lois" rows="4" oninput="onDaField('daLois',this.value)" onchange="saveProfileField('daLois',this.value)" placeholder="Loi de l'Ancrage, Loi du Mouvement, Loi de la Transformation, Loi de la Transmission..."></textarea></div>
+                <div class="da-hint">Comment chacune des 4 Lois s’est incarnée dans ce parcours spécifique — avec un exemple concret si possible. Cliquez "Structure des 4 Lois" pour pré-remplir le cadre.</div>
+                <div class="field-group"><label class="field-label">Expérience des 4 Lois</label><textarea class="field-input" id="da-lois" rows="4" oninput="onDaField(‘daLois’,this.value);daAutoResize(this)" onchange="saveProfileField(‘daLois’,this.value)" placeholder="Cliquez ‘Structure des 4 Lois’ pour démarrer..."></textarea></div>
               </div>
             </div>
 
@@ -585,7 +606,8 @@ textarea.field-input{resize:vertical;min-height:90px;line-height:1.6;}
                 <div class="da-section-title">Le Postulat Central</div>
               </div>
               <div class="da-section-body">
-                <div class="field-group"><label class="field-label">Formulation personnelle du Postulat Central</label><textarea class="field-input" id="da-postulat" rows="3" oninput="onDaField('daPostulat',this.value)" onchange="saveProfileField('daPostulat',this.value)" placeholder="Dans les mots du participant..."></textarea></div>
+                <div class="da-hint">Une vérité courte et puissante — pas une belle phrase, mais celle qui résonne comme vraie. Dans les mots du participant, pas dans les vôtres.</div>
+                <div class="field-group"><label class="field-label">Formulation personnelle</label><textarea class="field-input" id="da-postulat" rows="2" oninput="onDaField(‘daPostulat’,this.value);daAutoResize(this)" onchange="saveProfileField(‘daPostulat’,this.value)" placeholder="Je suis... / Je viens de... / Ma vérité fondamentale est..."></textarea></div>
               </div>
             </div>
 
@@ -596,7 +618,8 @@ textarea.field-input{resize:vertical;min-height:90px;line-height:1.6;}
                 <div class="da-section-title">Transmissions et héritages</div>
               </div>
               <div class="da-section-body">
-                <div class="field-group"><label class="field-label">Ce que le participant a reçu, transformé, et transmet</label><textarea class="field-input" id="da-transmissions" rows="4" oninput="onDaField('daTransmissions',this.value)" onchange="saveProfileField('daTransmissions',this.value)"></textarea></div>
+                <div class="da-hint">Ce que le participant a reçu de son lignage, ce qu’il a choisi de transformer, ce qu’il commence à transmettre consciemment à son tour.</div>
+                <div class="field-group"><label class="field-label">Ce qui a été reçu, transformé, transmis</label><textarea class="field-input" id="da-transmissions" rows="3" oninput="onDaField(‘daTransmissions’,this.value);daAutoResize(this)" onchange="saveProfileField(‘daTransmissions’,this.value)" placeholder="Reçu : ...&#10;Transformé : ...&#10;Transmis : ..."></textarea></div>
               </div>
             </div>
 
@@ -607,13 +630,14 @@ textarea.field-input{resize:vertical;min-height:90px;line-height:1.6;}
                 <div class="da-section-title">Message du praticien</div>
               </div>
               <div class="da-section-body">
-                <div class="field-group"><label class="field-label">Message personnel lu lors de la remise cérémonielle</label><textarea class="field-input" id="da-message" rows="5" oninput="onDaField('daMessage',this.value)" onchange="saveProfileField('daMessage',this.value)" placeholder="Ce texte sera lu à voix haute lors de la cérémonie de remise..."></textarea></div>
+                <div class="da-hint">Ce message sera lu à voix haute lors de la cérémonie de remise. Parlez à la personne directement — pas à son parcours, pas à ses progrès. À elle.</div>
+                <div class="field-group"><label class="field-label">Message pour la cérémonie de remise</label><textarea class="field-input" id="da-message" rows="4" oninput="onDaField(‘daMessage’,this.value);daAutoResize(this)" onchange="saveProfileField(‘daMessage’,this.value)" placeholder="Ce que j’ai perçu en vous, ce que ce parcours m’a appris sur vous, ce que je veux que vous emportiez..."></textarea></div>
               </div>
             </div>
 
             <div class="da-actions">
-              <button class="btn-generate" onclick="printDossier()">Générer le Dossier d’Âme</button>
-              <button class="btn-sm" onclick="autofillDossier()">Pré-remplir depuis le profil</button>
+              <button class="btn-pdf" onclick="downloadDossierPDF()">&#8595; Télécharger le PDF</button>
+              <button class="btn-generate" onclick="printDossier()">Aperçu &amp; Impression</button>
             </div>
           </div>
         </div>
@@ -1474,6 +1498,14 @@ function saveArchetype(){
 }
 
 // ── DOSSIER D'AME ─────────────────────────────────────────────────
+function daAutoResize(ta){ta.style.height='auto';ta.style.height=(ta.scrollHeight+2)+'px';}
+
+function initDossierTextareas(){
+  document.querySelectorAll('#panel-dossier textarea.field-input').forEach(ta=>{
+    daAutoResize(ta);
+  });
+}
+
 function renderDossierLock(){
   const c=client();if(!c)return;
   const p6=c.validatedPhases&&c.validatedPhases.includes(6);
@@ -1491,6 +1523,7 @@ function renderDossierLock(){
   const hn=document.getElementById('da-header-name');
   if(hn)hn.textContent=c.daNom||(c.prenom+' '+(c.nom||''))||'—';
   updateDossierCompletion();
+  setTimeout(initDossierTextareas,0);
 }
 
 function onDaField(field,value){
@@ -1520,19 +1553,56 @@ function updateDossierCompletion(){
 
 function autofillDossier(){
   const c=client();if(!c)return;
-  const nom=document.getElementById('da-nom');if(!nom.value){nom.value=c.prenom+' '+(c.nom||'');c.daNom=nom.value;const hn=document.getElementById('da-header-name');if(hn)hn.textContent=nom.value||'—';}
+  const nomEl=document.getElementById('da-nom');
+  if(!nomEl.value){nomEl.value=c.prenom+' '+(c.nom||'');c.daNom=nomEl.value;const hn=document.getElementById('da-header-name');if(hn)hn.textContent=nomEl.value||'—';}
   const ap=document.getElementById('da-arch-principal');if(!ap.value&&c.archPrincipal){ap.value=c.archPrincipal;c.daArchPrincipal=ap.value;}
   const as=document.getElementById('da-arch-secondaire');if(!as.value&&c.archSecondaire){as.value=c.archSecondaire;c.daArchSecondaire=as.value;}
-  const dates=document.getElementById('da-dates');if(!dates.value&&c.startDate){dates.value=c.startDate+' — '+new Date().toISOString().split('T')[0];c.daDates=dates.value;}
-  const voiles=document.getElementById('da-voiles');if(!voiles.value&&c.voiles&&c.voiles.length){voiles.value=c.voiles.join(', ');c.daVoiles=voiles.value;}
-  saveState();updateDossierCompletion();showToast('Données pré-remplies.');
+  const datesEl=document.getElementById('da-dates');
+  if(!datesEl.value){
+    const end=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+    const start=c.startDate?new Date(c.startDate).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}):'';
+    datesEl.value=start?(start+' — '+end):end;
+    c.daDates=datesEl.value;
+  }
+  saveState();updateDossierCompletion();showToast('Profil et dates importés.');
 }
 
-function printDossier(){
+function autofillLois(){
+  const el=document.getElementById('da-lois');if(!el)return;
+  if(el.value.trim()){showToast('Section déjà remplie — effacez-la d\'abord.');return;}
+  el.value='Loi de l\'Ancrage :\n\n\nLoi du Mouvement :\n\n\nLoi de la Transformation :\n\n\nLoi de la Transmission :';
+  const c=client();if(c){c.daLois=el.value;saveState();}
+  daAutoResize(el);updateDossierCompletion();showToast('Structure des 4 Lois insérée.');
+}
+
+function autofillVoilesForces(){
+  const c=client();if(!c)return;
+  let changed=false;
+  const vEl=document.getElementById('da-voiles');
+  if(vEl&&!vEl.value.trim()){
+    if(c.voiles&&c.voiles.length){
+      vEl.value=c.voiles.map(v=>v+' :\n').join('\n');
+    } else {
+      vEl.value='Voile 1 :\n\n\nVoile 2 :\n\n\nVoile 3 :';
+    }
+    c.daVoiles=vEl.value;daAutoResize(vEl);changed=true;
+  }
+  const fEl=document.getElementById('da-forces');
+  if(fEl&&!fEl.value.trim()){
+    fEl.value='La Force de l\'Ancrage :\n\n\nLa Force de la Traversée :\n\n\nLa Force de la Révélation :';
+    c.daForces=fEl.value;daAutoResize(fEl);changed=true;
+  }
+  if(changed){saveState();updateDossierCompletion();showToast('Voiles et Forces pré-remplis.');}
+  else{showToast('Ces sections sont déjà remplies.');}
+}
+
+function printDossier(autoDownload){
   const c=client();if(!c)return;
   const fmap={'da-nom':'daNom','da-intention':'daIntention','da-dates':'daDates','da-nom-fondateur':'daNomFondateur','da-nom-sens':'daNomSens','da-arch-principal':'daArchPrincipal','da-arch-secondaire':'daArchSecondaire','da-arch-narr':'daArchNarr','da-voiles':'daVoiles','da-forces':'daForces','da-lois':'daLois','da-postulat':'daPostulat','da-transmissions':'daTransmissions','da-message':'daMessage'};
   Object.entries(fmap).forEach(([elId,field])=>{const el=document.getElementById(elId);if(el)c[field]=el.value;});
   saveState();
+  const nom=c.daNom||(c.prenom+' '+(c.nom||''));
+  const safeNom=(nom||'participant').replace(/[^a-zA-ZÀ-ɏ0-9 -]/g,'').trim().replace(/\s+/g,'-')||'participant';
 
   function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
   function nl(s){
@@ -1540,7 +1610,6 @@ function printDossier(){
     return s.split('\n').filter(l=>l.trim()).map(l=>'<p>'+esc(l)+'</p>').join('');
   }
 
-  const nom=c.daNom||(c.prenom+' '+(c.nom||''));
   const dates=c.daDates||'—';
   const pratNom=state.practitioner.nom||'—';
   const pratLvl=state.practitioner.level||'';
@@ -1622,7 +1691,7 @@ function printDossier(){
   +'@page{margin:18mm 22mm;size:A4;}'
   +'} '
   +'@media screen{body{padding-bottom:70px;}}'
-  +'</style></head><body><div class="page">'
+  +'</style><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></' + 'script></head><body><div class="page">'
 
   /* COVER */
   +'<div class="cover"><div class="cover-frame"></div>'
@@ -1711,10 +1780,22 @@ function printDossier(){
 
   +'</div>'
 
-  +'<div class="pbar"><span class="pbar-lbl">Dossier d’Âme — '+esc(nom)+'</span>'
-  +'<button class="pbar-btn" onclick="window.print()">Imprimer</button>'
+  +'<div class="pbar">'
+  +'<span id="pdf-st" class="pbar-lbl" style="min-width:160px;"></span>'
+  +'<button class="pbar-btn" onclick="triggerPDF()">&#8595; T&#233;l&#233;charger PDF</button>'
+  +'<button class="pbar-btn" style="background:#5a3e28;border-color:#5a3e28;" onclick="window.print()">Imprimer</button>'
   +'<button class="pbar-close" onclick="window.close()">Fermer</button>'
   +'</div>'
+  +'<script>'
+  +'var PDF_FILENAME="Dossier-Ame-'+safeNom+'.pdf";'
+  +'function triggerPDF(){'
+  +'var s=document.getElementById("pdf-st");'
+  +'if(s)s.textContent="Génération...";'
+  +'html2pdf().set({margin:[8,8,8,8],filename:PDF_FILENAME,image:{type:"jpeg",quality:.97},html2canvas:{scale:2,logging:false,useCORS:true},jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},pagebreak:{mode:"css",before:[".nom-feat",".post-feat",".closing"]}})'
+  +'.from(document.querySelector(".page")).save().then(function(){if(s)s.textContent="Téléchargé ✓";});'
+  +'}'
+  +(autoDownload?'window.addEventListener("load",function(){setTimeout(triggerPDF,1200);});':'')
+  +'</' + 'script>'
   +'</body></html>';
 
   const w=window.open('','_blank');
@@ -1722,6 +1803,8 @@ function printDossier(){
   w.document.write(doc);
   w.document.close();
 }
+
+function downloadDossierPDF(){printDossier(true);}
 
 // ── MODALS ────────────────────────────────────────────────────────
 function openModal(id){document.getElementById(id).classList.add('open');}
