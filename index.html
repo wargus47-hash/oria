@@ -282,60 +282,73 @@ textarea.field-input{resize:vertical;min-height:90px;line-height:1.6;}
 
 /* ─── GÉNOSOCIOGRAMME ────────────────────────────────────────────── */
 #panel-geno{padding:0;display:flex;flex-direction:column;height:calc(100vh - 148px);min-height:460px;}
-.geno-hint{font-size:.64rem;color:var(--muted);font-style:italic;padding:6px 14px;background:var(--ivory-d);border-bottom:1px solid var(--border);flex-shrink:0;}
-.geno-toolbar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:var(--ivory);border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap;}
-.geno-sep{width:1px;height:26px;background:var(--border);margin:0 3px;flex-shrink:0;}
-.geno-lbl{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);flex-shrink:0;}
-.geno-tool{width:34px;height:34px;border:1px solid var(--border);background:var(--white);color:var(--brown);cursor:pointer;border-radius:2px;font-size:1rem;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;transition:all .12s;flex-shrink:0;}
+.geno-toolbar{display:flex;align-items:center;gap:4px;padding:7px 10px;background:var(--ivory);border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap;}
+.geno-sep{width:1px;height:24px;background:var(--border);margin:0 3px;flex-shrink:0;}
+.geno-lbl{font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);flex-shrink:0;}
+.geno-tool{height:30px;min-width:32px;padding:0 8px;border:1px solid var(--border);background:var(--white);color:var(--brown);cursor:pointer;border-radius:2px;font-size:.78rem;display:flex;align-items:center;justify-content:center;gap:3px;font-family:Georgia,serif;transition:all .12s;flex-shrink:0;white-space:nowrap;}
 .geno-tool:hover{background:var(--gold-ll);border-color:var(--gold);}
 .geno-tool.active{background:var(--brown);color:var(--gold);border-color:var(--brown);}
-.geno-area{flex:1;overflow:hidden;position:relative;}
-.geno-wrap{position:absolute;inset:0;overflow:hidden;cursor:default;
-  background-color:var(--ivory-dd);
-  background-image:linear-gradient(rgba(196,164,74,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(196,164,74,.12) 1px,transparent 1px);
-  background-size:44px 44px;}
-.geno-svg{position:absolute;top:0;left:0;width:100%;height:100%;overflow:visible;z-index:1;pointer-events:none;}
-.geno-canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:2;}
-.geno-node{position:absolute;transform:translate(-50%,-50%);user-select:none;cursor:pointer;box-sizing:border-box;}
-.geno-node-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;padding:3px 5px;box-sizing:border-box;}
-.geno-node-name{font-family:Georgia,serif;font-size:.67rem;color:var(--brown);text-align:center;line-height:1.2;word-break:break-word;max-width:58px;}
-.geno-node-year{font-size:.57rem;color:var(--muted);margin-top:1px;}
-.geno-node.male{width:66px;height:50px;border:2px solid var(--brown);background:var(--white);}
-.geno-node.female{width:60px;height:60px;border:2px solid var(--brown);background:var(--white);border-radius:50%;}
-.geno-node.neutral{width:54px;height:54px;border:2px solid var(--brown);background:var(--white);transform:translate(-50%,-50%) rotate(45deg);}
+.geno-mode-bar{font-size:.61rem;color:var(--muted);padding:4px 12px;background:rgba(196,164,74,.05);border-bottom:1px solid rgba(196,164,74,.15);flex-shrink:0;min-height:22px;line-height:1.4;}
+.geno-body{flex:1;display:flex;overflow:hidden;}
+.geno-cvw{flex:1;position:relative;overflow:hidden;cursor:grab;background-color:#f5f0e6;background-image:linear-gradient(rgba(196,164,74,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(196,164,74,.09) 1px,transparent 1px);background-size:40px 40px;}
+.geno-cvw.adding{cursor:cell;}
+.geno-cvw.deleting{cursor:crosshair;}
+.geno-inner{position:absolute;top:0;left:0;width:3200px;height:2200px;transform-origin:0 0;}
+.geno-svg{position:absolute;top:0;left:0;width:3200px;height:2200px;overflow:visible;z-index:1;pointer-events:none;}
+.geno-canvas{position:absolute;top:0;left:0;width:3200px;height:2200px;z-index:2;}
+.geno-node{position:absolute;transform:translate(-50%,-50%);user-select:none;cursor:grab;box-sizing:border-box;transition:box-shadow .1s;}
+.geno-node:active{cursor:grabbing;}
+.geno-node-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;padding:4px 6px;box-sizing:border-box;}
+.geno-node-name{font-family:Georgia,serif;font-size:.72rem;font-weight:bold;color:var(--brown);text-align:center;line-height:1.2;word-break:break-word;max-width:84px;}
+.geno-node-meta{font-size:.54rem;color:var(--muted);margin-top:2px;text-align:center;line-height:1.3;max-width:84px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.geno-node-tag{font-size:.49rem;padding:1px 4px;background:rgba(196,164,74,.18);border-radius:2px;color:var(--gold-d);margin-top:2px;max-width:84px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.geno-node.male{width:90px;height:68px;border:2px solid var(--brown);background:#fff;}
+.geno-node.female{width:76px;height:76px;border:2px solid var(--brown);background:#fff;border-radius:50%;}
+.geno-node.neutral{width:68px;height:68px;border:2px solid var(--brown);background:#fff;transform:translate(-50%,-50%) rotate(45deg);}
 .geno-node.neutral .geno-node-inner{transform:rotate(-45deg);}
-.geno-node.proband{border-width:3px;border-color:var(--gold);background:var(--gold-ll);}
-.geno-node.proband .geno-node-name{color:var(--gold-d);font-weight:bold;}
+.geno-node.proband{border-width:3px;border-color:var(--gold);background:rgba(196,164,74,.07);}
+.geno-node.proband .geno-node-name{color:var(--gold-d);}
 .geno-node.deceased{opacity:.5;}
-.geno-node.deceased::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom right,transparent calc(50% - 1px),rgba(60,36,21,.5) calc(50% - 1px),rgba(60,36,21,.5) calc(50% + 1px),transparent calc(50% + 1px));}
-.geno-node.selected{outline:2.5px solid var(--gold);outline-offset:4px;}
-.geno-node.connecting{outline:2.5px dashed var(--gold);outline-offset:4px;animation:gConnPulse 1s ease-in-out infinite;}
-@keyframes gConnPulse{0%,100%{outline-color:var(--gold-d);}50%{outline-color:var(--gold);}}
-.geno-node[data-c="gold"]{background:rgba(196,164,74,.14)!important;border-color:var(--gold-d)!important;}
+.geno-node.deceased::after{content:'';position:absolute;inset:2px;background:linear-gradient(to bottom right,transparent calc(50% - 1px),rgba(60,36,21,.4) calc(50% - 1px),rgba(60,36,21,.4) calc(50% + 1px),transparent calc(50% + 1px));pointer-events:none;}
+.geno-node.sel{box-shadow:0 0 0 3px var(--gold),0 2px 14px rgba(196,164,74,.3);}
+.geno-node.gcon{box-shadow:0 0 0 3px #C4A44A;animation:gConnPulse .85s ease-in-out infinite;}
+@keyframes gConnPulse{0%,100%{box-shadow:0 0 0 3px #C4A44A;}50%{box-shadow:0 0 0 6px rgba(196,164,74,.35);}}
+.geno-node[data-c="gold"]{background:rgba(196,164,74,.13)!important;border-color:var(--gold-d)!important;}
 .geno-node[data-c="red"]{background:#fff5f3!important;border-color:#8B3A2A!important;}
 .geno-node[data-c="blue"]{background:#f0f4ff!important;border-color:#3a5a8b!important;}
 .geno-node[data-c="green"]{background:#f0f8f0!important;border-color:#3a7a4a!important;}
-/* Inspector */
-.geno-insp{position:absolute;right:0;top:0;bottom:0;width:186px;background:var(--ivory);border-left:1px solid var(--border);padding:12px 10px;overflow-y:auto;z-index:10;display:none;flex-direction:column;gap:7px;}
-.geno-insp-hd{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);padding-bottom:7px;border-bottom:1px solid var(--border);margin-bottom:1px;}
-.geno-if{margin-bottom:5px;}
-.geno-il{display:block;font-size:.59rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
-.geno-ii{width:100%;padding:4px 6px;border:1px solid var(--border);background:var(--white);font-family:Georgia,serif;font-size:.75rem;color:var(--brown);border-radius:1px;box-sizing:border-box;}
-.geno-swatches{display:flex;gap:4px;flex-wrap:wrap;margin-top:2px;}
-.geno-sw{width:17px;height:17px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:border-color .12s;}
-.geno-sw.on,.geno-sw:hover{border-color:var(--brown);}
-.geno-edge-list{max-height:88px;overflow-y:auto;margin-top:3px;}
-.geno-ei{display:flex;align-items:center;justify-content:space-between;font-size:.66rem;color:var(--brown);padding:3px 0;border-bottom:1px solid var(--ivory-dd);}
-.geno-ei-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.72rem;padding:0 2px;}
-.geno-ei-del:hover{color:var(--danger);}
-/* Relation chooser */
-.geno-rc{position:absolute;background:var(--ivory);border:1px solid var(--border);border-radius:3px;padding:8px;box-shadow:0 4px 18px rgba(60,36,21,.15);z-index:20;min-width:170px;display:none;}
-.geno-rc-hd{font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
-.geno-ro{display:flex;align-items:center;gap:8px;padding:5px 6px;cursor:pointer;border-radius:2px;font-size:.75rem;color:var(--brown);}
+.geno-node[data-c="purple"]{background:#f8f0ff!important;border-color:#6b3a8b!important;}
+.geno-node[data-c="orange"]{background:#fff8f0!important;border-color:#8b5a2a!important;}
+.geno-insp{width:248px;flex-shrink:0;border-left:1px solid var(--border);background:var(--ivory);overflow-y:auto;display:flex;flex-direction:column;}
+.geno-insp-empty{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:var(--muted);font-size:.74rem;font-style:italic;text-align:center;padding:20px;opacity:.7;}
+.geno-insp-body{padding:12px 11px;display:flex;flex-direction:column;gap:7px;flex:1;}
+.geno-insp-hd{font-size:.57rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding-bottom:6px;border-bottom:1px solid var(--border);margin-bottom:1px;}
+.geno-if{display:flex;flex-direction:column;gap:2px;}
+.geno-if-row{display:flex;gap:5px;}
+.geno-if-row>.geno-if{flex:1;}
+.geno-il{font-size:.55rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);}
+.geno-ii{width:100%;padding:4px 7px;border:1px solid var(--border);background:var(--white);font-family:Georgia,serif;font-size:.74rem;color:var(--brown);border-radius:1px;box-sizing:border-box;}
+.geno-ii:focus{outline:none;border-color:var(--gold);}
+.geno-ita{width:100%;padding:5px 7px;border:1px solid var(--border);background:var(--white);font-family:Georgia,serif;font-size:.71rem;color:var(--brown);border-radius:1px;box-sizing:border-box;resize:vertical;min-height:54px;line-height:1.45;}
+.geno-ita:focus{outline:none;border-color:var(--gold);}
+.geno-swatches{display:flex;gap:5px;flex-wrap:wrap;margin-top:3px;}
+.geno-sw{width:19px;height:19px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:border-color .1s;flex-shrink:0;}
+.geno-sw.on,.geno-sw:hover{border-color:var(--brown) !important;}
+.geno-cbs{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:2px;}
+.geno-cb{display:flex;align-items:center;gap:4px;font-size:.7rem;color:var(--brown);cursor:pointer;}
+.geno-edge-list{margin-top:3px;max-height:110px;overflow-y:auto;}
+.geno-ei{display:flex;align-items:center;gap:4px;font-size:.63rem;color:var(--brown);padding:4px 0;border-bottom:1px solid var(--ivory-dd);}
+.geno-ei-rel{flex-shrink:0;font-size:.57rem;color:var(--muted);min-width:56px;}
+.geno-ei-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.68rem;padding:0 2px;margin-left:auto;flex-shrink:0;}
+.geno-ei-del:hover{color:#8B3A2A;}
+.geno-danger{width:100%;padding:6px;background:none;border:1px solid rgba(139,58,42,.3);color:#8B3A2A;border-radius:2px;cursor:pointer;font-size:.69rem;font-family:Georgia,serif;transition:all .12s;margin-top:6px;}
+.geno-danger:hover{background:#8B3A2A;color:#fff;}
+.geno-rc{position:absolute;background:var(--ivory);border:1px solid var(--border);border-radius:3px;padding:8px;box-shadow:0 4px 20px rgba(60,36,21,.18);z-index:30;min-width:200px;display:none;}
+.geno-rc-hd{font-size:.57rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.geno-ro{display:flex;align-items:center;gap:8px;padding:5px 7px;cursor:pointer;border-radius:2px;font-size:.72rem;color:var(--brown);}
 .geno-ro:hover{background:var(--gold-ll);}
-/* Legend */
-.geno-legend{display:flex;flex-wrap:wrap;gap:8px 16px;padding:7px 12px;background:var(--ivory);border-top:1px solid var(--border);font-size:.63rem;color:var(--muted);flex-shrink:0;align-items:center;}
-.geno-li{display:flex;align-items:center;gap:4px;}</style>
+.geno-legend{display:flex;flex-wrap:wrap;gap:5px 13px;padding:5px 12px;background:var(--ivory);border-top:1px solid var(--border);font-size:.59rem;color:var(--muted);flex-shrink:0;align-items:center;}
+.geno-li{display:flex;align-items:center;gap:3px;}</style>
 </head>
 <body>
 
@@ -764,49 +777,60 @@ textarea.field-input{resize:vertical;min-height:90px;line-height:1.6;}
       
         <!-- GÉNOSOCIOGRAMME -->
         <div class="tab-panel" id="panel-geno">
-          <div class="geno-hint">Outil &#8598; pour sélectionner / déplacer &#8212; Cliquez sur le fond pour poser un membre &#8212; &#8741; pour relier deux personnes</div>
           <div class="geno-toolbar">
-            <span class="geno-lbl">Outil</span>
-            <button class="geno-tool active" data-tool="select" onclick="genoSetTool('select')" title="Sélectionner / Déplacer">&#8598;</button>
+            <span class="geno-lbl">Mode</span>
+            <button class="geno-tool active" data-tool="select" onclick="genoSetTool('select')" title="S&#233;lectionner / D&#233;placer">&#8598; Select</button>
             <div class="geno-sep"></div>
             <span class="geno-lbl">Ajouter</span>
-            <button class="geno-tool" data-tool="male" onclick="genoSetTool('male')" title="Homme">&#9632;</button>
-            <button class="geno-tool" data-tool="female" onclick="genoSetTool('female')" title="Femme">&#9679;</button>
-            <button class="geno-tool" data-tool="neutral" onclick="genoSetTool('neutral')" title="Non défini">&#9670;</button>
+            <button class="geno-tool" data-tool="male" onclick="genoSetTool('male')" title="Homme (rectangle)">&#9632; Homme</button>
+            <button class="geno-tool" data-tool="female" onclick="genoSetTool('female')" title="Femme (cercle)">&#9679; Femme</button>
+            <button class="geno-tool" data-tool="neutral" onclick="genoSetTool('neutral')" title="Non d&#233;fini (losange)">&#9670; ?</button>
             <div class="geno-sep"></div>
-            <button class="geno-tool" data-tool="connect" onclick="genoSetTool('connect')" title="Relier deux membres" style="font-size:.8rem;letter-spacing:.04em;">&#8741;</button>
-            <button class="geno-tool" data-tool="delete" onclick="genoSetTool('delete')" title="Supprimer" style="font-size:.8rem;">&#10005;</button>
+            <button class="geno-tool" data-tool="connect" onclick="genoSetTool('connect')" title="Relier deux membres">&#8741; Relier</button>
+            <button class="geno-tool" data-tool="delete" onclick="genoSetTool('delete')" title="Supprimer membre ou lien">&#10005; Suppr.</button>
             <div class="geno-sep"></div>
-            <button class="btn-sm" onclick="genoAddProband()">+ Participant</button>
-            <button class="btn-sm" style="margin-left:auto;" onclick="clearGeno()">Effacer tout</button>
-            <button class="btn-sm" onclick="printGeno()">Imprimer</button>
+            <button class="geno-tool" onclick="genoAddProband()" title="Ajouter le participant ORIA au centre">&#9733; Participant</button>
+            <button class="geno-tool" onclick="genoAutoLayout()" title="R&#233;organiser par g&#233;n&#233;ration">&#8853; Ordonner</button>
+            <button class="geno-tool" style="margin-left:auto;" onclick="clearGeno()">&#8635; Vider</button>
+            <button class="geno-tool" onclick="printGeno()">&#9113; Imprimer</button>
           </div>
-          <div class="geno-area">
-            <div class="geno-wrap" id="geno-wrap">
-              <svg class="geno-svg" id="geno-svg" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <marker id="arrowGold" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-                    <polygon points="0 0, 6 3, 0 6" fill="#C4A44A"/>
-                  </marker>
-                </defs>
-              </svg>
-              <div class="geno-canvas" id="geno-canvas"></div>
+          <div class="geno-mode-bar" id="geno-mode-bar">&#8598; Mode s&#233;lection &#8212; cliquez sur un membre pour le modifier, glissez pour le d&#233;placer, glissez le fond pour naviguer</div>
+          <div class="geno-body">
+            <div class="geno-cvw" id="geno-cvw">
+              <div class="geno-inner" id="geno-inner">
+                <svg class="geno-svg" id="geno-svg" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <marker id="arrowGold" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                      <polygon points="0 0, 6 3, 0 6" fill="#C4A44A"/>
+                    </marker>
+                  </defs>
+                </svg>
+                <div class="geno-canvas" id="geno-canvas"></div>
+              </div>
               <div class="geno-rc" id="geno-rc"></div>
-              <div class="geno-insp" id="geno-insp" style="display:none;"></div>
+            </div>
+            <div class="geno-insp" id="geno-insp">
+              <div class="geno-insp-empty" id="geno-insp-empty">
+                <span style="font-size:1.6rem;opacity:.25;">&#9711;</span>
+                <span>Cliquez sur un membre<br>pour voir sa fiche</span>
+                <span style="font-size:.6rem;margin-top:4px;">ou utilisez &#9733; Participant<br>pour commencer</span>
+              </div>
+              <div class="geno-insp-body" id="geno-insp-body" style="display:none;"></div>
             </div>
           </div>
           <div class="geno-legend">
-            <span style="font-size:.59rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:6px;">Légende</span>
-            <span class="geno-li"><svg width="22" height="18"><rect x="1" y="2" width="20" height="14" fill="none" stroke="#3C2415" stroke-width="2"/></svg>Homme</span>
-            <span class="geno-li"><svg width="20" height="18"><circle cx="10" cy="9" r="8" fill="none" stroke="#3C2415" stroke-width="2"/></svg>Femme</span>
-            <span class="geno-li"><svg width="20" height="18"><polygon points="10,1 19,9 10,17 1,9" fill="none" stroke="#3C2415" stroke-width="2"/></svg>Non défini</span>
+            <span style="font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:3px;">L&#233;gende</span>
+            <span class="geno-li"><svg width="22" height="16"><rect x="1" y="1" width="20" height="14" fill="none" stroke="#3C2415" stroke-width="2"/></svg>Homme</span>
+            <span class="geno-li"><svg width="18" height="18"><circle cx="9" cy="9" r="8" fill="none" stroke="#3C2415" stroke-width="2"/></svg>Femme</span>
+            <span class="geno-li"><svg width="18" height="18"><polygon points="9,1 17,9 9,17 1,9" fill="none" stroke="#3C2415" stroke-width="2"/></svg>Non d&#233;fini</span>
+            <span class="geno-li"><svg width="22" height="16"><rect x="1" y="1" width="20" height="14" fill="none" stroke="#C4A44A" stroke-width="2.5"/></svg>Participant</span>
             <span style="color:var(--border);">|</span>
-            <span class="geno-li"><svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#3C2415" stroke-width="2"/></svg>Filiation</span>
-            <span class="geno-li"><svg width="26" height="10"><line x1="0" y1="3" x2="26" y2="3" stroke="#3C2415" stroke-width="2"/><line x1="0" y1="7" x2="26" y2="7" stroke="#3C2415" stroke-width="2"/></svg>Union</span>
-            <span class="geno-li"><svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#8B5E30" stroke-width="2" stroke-dasharray="6 3"/></svg>Séparation</span>
-            <span class="geno-li"><svg width="26" height="12"><path d="M0,6 L5,2 L10,10 L15,2 L20,10 L26,6" fill="none" stroke="#8B3A2A" stroke-width="2"/></svg>Conflit</span>
-            <span class="geno-li"><svg width="26" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="#C4A44A" stroke-width="2" stroke-dasharray="7 4"/><polygon points="22,1 26,4 22,7" fill="#C4A44A"/></svg>Transmission</span>
-            <span class="geno-li"><svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#3C2415" stroke-width="5"/></svg>Fusion</span>
+            <span class="geno-li"><svg width="24" height="8"><line x1="0" y1="4" x2="24" y2="4" stroke="#3C2415" stroke-width="2"/></svg>Filiation</span>
+            <span class="geno-li"><svg width="24" height="10"><line x1="0" y1="3" x2="24" y2="3" stroke="#3C2415" stroke-width="2"/><line x1="0" y1="7" x2="24" y2="7" stroke="#3C2415" stroke-width="2"/></svg>Union</span>
+            <span class="geno-li"><svg width="24" height="8"><line x1="0" y1="4" x2="24" y2="4" stroke="#8B5E30" stroke-width="2" stroke-dasharray="5 3"/></svg>S&#233;paration</span>
+            <span class="geno-li"><svg width="24" height="12"><path d="M0,6 L5,2 L10,10 L15,2 L20,10 L24,6" fill="none" stroke="#8B3A2A" stroke-width="2"/></svg>Conflit</span>
+            <span class="geno-li"><svg width="24" height="8"><line x1="0" y1="4" x2="20" y2="4" stroke="#C4A44A" stroke-width="2" stroke-dasharray="6 3"/><polygon points="20,1 24,4 20,7" fill="#C4A44A"/></svg>Transm.</span>
+            <span class="geno-li"><svg width="24" height="8"><line x1="0" y1="4" x2="24" y2="4" stroke="#3C2415" stroke-width="5"/></svg>Fusion</span>
           </div>
         </div>
       </div><!-- tab-panels -->
@@ -1942,130 +1966,234 @@ if(state.practitioner){launchApp();}
 else{document.getElementById('setup').style.display='flex';document.getElementById('app').style.display='none';}
 
 // ── GÉNOSOCIOGRAMME ───────────────────────────────────────────────
-var genoTool='select',genoNodes=[],genoEdges=[],genoSelected=null,genoConnecting=null,genoDrag=null,genoNextId=1;
+// ── GÉNOSOCIOGRAMME ────────────────────────────────────────────────
+var genoTool='select';
+var genoNodes=[],genoEdges=[],genoNextId=1;
+var genoSelected=null;
+var genoConnecting=null;
+var genoDrag=null,genoPan=null;
+var genoOffset={x:60,y:60};
+var genoListenerAdded=false;
 
 var GENO_RELS=[
-  {key:'filiation',label:'Filiation (parent ↔ enfant)'},
-  {key:'union',label:'Union / Mariage'},
-  {key:'sep',label:'Séparation / Divorce'},
-  {key:'conflict',label:'Conflit'},
-  {key:'rupture',label:'Rupture / Coupure'},
-  {key:'distance',label:'Éloignement'},
-  {key:'fusion',label:'Fusion / Dépendance'},
-  {key:'transmission',label:'Transmission ORIA'}
+  {key:'filiation',    label:'Filiation (parent ↔ enfant)'},
+  {key:'union',        label:'Union / Mariage'},
+  {key:'sep',          label:'S\xe9paration / Divorce'},
+  {key:'conflict',     label:'Conflit'},
+  {key:'rupture',      label:'Rupture / Coupure'},
+  {key:'distance',     label:'\xc9loignement'},
+  {key:'fusion',       label:'Fusion / D\xe9pendance'},
+  {key:'transmission', label:'Transmission ORIA'}
 ];
+
+var GENO_HINTS={
+  select:'▘ Mode s\xe9lection — cliquez pour s\xe9lectionner, glissez pour d\xe9placer, glissez le fond pour naviguer',
+  male:'■ Mode ajout Homme — cliquez sur le fond pour poser un membre masculin',
+  female:'● Mode ajout Femme — cliquez sur le fond pour poser un membre f\xe9minin',
+  neutral:'◆ Mode ajout Non d\xe9fini — cliquez sur le fond pour poser un membre',
+  connect:'∥ Mode liaison — cliquez sur le 1er membre, puis sur le 2e pour cr\xe9er un lien',
+  delete:'✕ Mode suppression — cliquez sur un membre pour le supprimer (avec ses liens)'
+};
 
 function genoLoad(){
   var cc=client();
-  genoNodes=[];genoEdges=[];genoNextId=1;genoSelected=null;genoConnecting=null;genoDrag=null;
+  genoNodes=[];genoEdges=[];genoNextId=1;
+  genoSelected=null;genoConnecting=null;genoDrag=null;genoPan=null;
+  genoOffset={x:60,y:60};
   if(cc&&cc.geno){
     genoNodes=JSON.parse(JSON.stringify(cc.geno.nodes||[]));
     genoEdges=JSON.parse(JSON.stringify(cc.geno.edges||[]));
     genoNextId=cc.geno.nextId||1;
+    if(cc.geno.offset)genoOffset={x:cc.geno.offset.x||60,y:cc.geno.offset.y||60};
+  }
+  if(!genoListenerAdded){
+    var cvw=document.getElementById('geno-cvw');
+    if(cvw){
+      cvw.addEventListener('mousedown',genoWrapMd);
+      cvw.addEventListener('wheel',genoWheel,{passive:false});
+      genoListenerAdded=true;
+    }
   }
   genoSetTool('select');
+  genoUpdateInner();
   renderGeno();
-  var canvas=document.getElementById('geno-canvas');
-  if(canvas)canvas.addEventListener('mousedown',genoCanvasMd);
 }
 
 function genoSave(){
   var cc=client();if(!cc)return;
-  cc.geno={nodes:JSON.parse(JSON.stringify(genoNodes)),edges:JSON.parse(JSON.stringify(genoEdges)),nextId:genoNextId};
+  cc.geno={
+    nodes:JSON.parse(JSON.stringify(genoNodes)),
+    edges:JSON.parse(JSON.stringify(genoEdges)),
+    nextId:genoNextId,
+    offset:{x:genoOffset.x,y:genoOffset.y}
+  };
   saveState();
 }
 
 function genoNid(){return 'g'+(genoNextId++);}
 
 function genoSetTool(t){
-  genoTool=t;genoConnecting=null;
+  genoTool=t;
+  if(t!=='connect')genoConnecting=null;
   var rc=document.getElementById('geno-rc');if(rc)rc.style.display='none';
-  document.querySelectorAll('.geno-tool').forEach(function(b){b.classList.toggle('active',b.dataset.tool===t);});
-  var canvas=document.getElementById('geno-canvas');
-  if(canvas)canvas.style.cursor=t==='delete'?'crosshair':t!=='select'?'cell':'default';
-  if(t!=='select'){genoSelected=null;renderGenoInsp();}
+  document.querySelectorAll('.geno-tool[data-tool]').forEach(function(b){
+    b.classList.toggle('active',b.dataset.tool===t);
+  });
+  var cvw=document.getElementById('geno-cvw');
+  if(cvw){cvw.className='geno-cvw'+(t==='delete'?' deleting':t!=='select'?' adding':'');}
+  var mb=document.getElementById('geno-mode-bar');
+  if(mb)mb.textContent=GENO_HINTS[t]||'';
   renderGenoNodes();
 }
 
-function genoCanvasMd(e){
-  var tgt=e.target;
-  if(tgt.id!=='geno-canvas'&&tgt.id!=='geno-wrap')return;
+function genoUpdateInner(){
+  var inner=document.getElementById('geno-inner');
+  if(inner)inner.style.transform='translate('+genoOffset.x+'px,'+genoOffset.y+'px)';
+}
+
+// ── Main mousedown dispatcher ─────────────────────────────────────
+function genoWrapMd(e){
+  if(e.button===1){e.preventDefault();genoStartPan(e);return;}
+  if(e.button!==0)return;
   var rc=document.getElementById('geno-rc');if(rc)rc.style.display='none';
-  var rect=document.getElementById('geno-canvas').getBoundingClientRect();
-  var x=e.clientX-rect.left,y=e.clientY-rect.top;
+  var nodeEl=e.target.closest('.geno-node');
+  if(nodeEl){genoNodeMd(nodeEl.dataset.id,e);return;}
   if(genoTool==='male'||genoTool==='female'||genoTool==='neutral'){
-    var n={id:genoNid(),type:genoTool,name:'',birth:'',death:'',x:x,y:y,color:'',deceased:false,proband:false};
+    var inner=document.getElementById('geno-inner');
+    var rect=inner.getBoundingClientRect();
+    var x=e.clientX-rect.left,y=e.clientY-rect.top;
+    var n={id:genoNid(),type:genoTool,name:'',birth:'',death:'',profession:'',lieu:'',role:'',notes:'',color:'',deceased:false,proband:false,x:x,y:y};
     genoNodes.push(n);genoSave();
     genoSelected={type:'node',id:n.id};
     renderGeno();
-    var ni=document.getElementById('ginsp-name');
-    if(ni)setTimeout(function(){ni.focus();ni.select();},60);
-  } else if(genoTool==='select'){
-    genoSelected=null;genoConnecting=null;renderGeno();
-  }
-}
-
-function genoNodeClick(id,e){
-  e.stopPropagation();
-  var rc=document.getElementById('geno-rc');if(rc)rc.style.display='none';
-  if(genoTool==='delete'){
-    genoNodes=genoNodes.filter(function(n){return n.id!==id;});
-    genoEdges=genoEdges.filter(function(ed){return ed.from!==id&&ed.to!==id;});
-    genoSelected=null;genoSave();renderGeno();return;
-  }
-  if(genoTool==='connect'){
-    if(!genoConnecting){genoConnecting=id;renderGenoNodes();}
-    else if(genoConnecting!==id){
-      var fromId=genoConnecting;genoConnecting=null;renderGenoNodes();
-      showGenoRc(fromId,id,e);
-    } else {genoConnecting=null;renderGenoNodes();}
+    setTimeout(function(){var ni=document.getElementById('ginsp-name');if(ni)ni.focus();},80);
     return;
   }
-  if(genoTool==='select'){genoSelected={type:'node',id:id};renderGeno();}
+  if(genoTool==='select'){
+    genoSelected=null;genoConnecting=null;
+    renderGenoInsp();renderGenoNodes();
+    genoStartPan(e);
+  } else if(genoTool==='connect'){
+    genoConnecting=null;renderGenoNodes();
+  }
 }
 
+// ── Pan ───────────────────────────────────────────────────────────
+function genoStartPan(e){
+  var cvw=document.getElementById('geno-cvw');if(cvw)cvw.style.cursor='grabbing';
+  genoPan={sx:e.clientX,sy:e.clientY,ox:genoOffset.x,oy:genoOffset.y};
+  document.addEventListener('mousemove',genoPanMm);
+  document.addEventListener('mouseup',genoPanMu);
+}
+function genoPanMm(e){
+  if(!genoPan)return;
+  genoOffset.x=genoPan.ox+(e.clientX-genoPan.sx);
+  genoOffset.y=genoPan.oy+(e.clientY-genoPan.sy);
+  genoUpdateInner();
+}
+function genoPanMu(){
+  genoPan=null;
+  var cvw=document.getElementById('geno-cvw');
+  if(cvw)cvw.className='geno-cvw'+(genoTool==='delete'?' deleting':genoTool!=='select'?' adding':'');
+  document.removeEventListener('mousemove',genoPanMm);
+  document.removeEventListener('mouseup',genoPanMu);
+  genoSave();
+}
+function genoWheel(e){
+  e.preventDefault();
+  genoOffset.x-=e.deltaX*0.8;
+  genoOffset.y-=e.deltaY*0.8;
+  genoUpdateInner();
+}
+
+// ── Node interaction ──────────────────────────────────────────────
 function genoNodeMd(id,e){
+  e.stopPropagation();
+  var rc=document.getElementById('geno-rc');if(rc)rc.style.display='none';
+  if(genoTool==='delete'){genoDelNode(id);return;}
+  if(genoTool==='connect'){
+    if(!genoConnecting){genoConnecting=id;renderGenoNodes();}
+    else if(genoConnecting===id){genoConnecting=null;renderGenoNodes();}
+    else{
+      var from=genoConnecting;genoConnecting=null;renderGenoNodes();
+      showGenoRc(from,id,e);
+    }
+    return;
+  }
   if(genoTool!=='select')return;
-  e.preventDefault();e.stopPropagation();
+  genoSelected={type:'node',id:id};
+  renderGenoInsp();renderGenoNodes();
   var n=genoNodes.find(function(nd){return nd.id===id;});if(!n)return;
   genoDrag={id:id,sx:e.clientX,sy:e.clientY,nx:n.x,ny:n.y,moved:false};
-  document.addEventListener('mousemove',genoMm);
-  document.addEventListener('mouseup',genoMu);
+  document.addEventListener('mousemove',genoNodeMm);
+  document.addEventListener('mouseup',genoNodeMu);
 }
-
-function genoMm(e){
+function genoNodeMm(e){
   if(!genoDrag)return;
   var dx=e.clientX-genoDrag.sx,dy=e.clientY-genoDrag.sy;
   if(Math.abs(dx)+Math.abs(dy)>3)genoDrag.moved=true;
   var n=genoNodes.find(function(nd){return nd.id===genoDrag.id;});if(!n)return;
-  n.x=Math.max(20,genoDrag.nx+dx);n.y=Math.max(20,genoDrag.ny+dy);
+  n.x=Math.max(10,genoDrag.nx+dx);n.y=Math.max(10,genoDrag.ny+dy);
   var el=document.querySelector('.geno-node[data-id="'+n.id+'"]');
   if(el){el.style.left=n.x+'px';el.style.top=n.y+'px';}
   renderGenoEdges();
 }
-
-function genoMu(){
+function genoNodeMu(){
   if(genoDrag&&genoDrag.moved)genoSave();
   genoDrag=null;
-  document.removeEventListener('mousemove',genoMm);
-  document.removeEventListener('mouseup',genoMu);
+  document.removeEventListener('mousemove',genoNodeMm);
+  document.removeEventListener('mouseup',genoNodeMu);
 }
 
+// ── Helpers ───────────────────────────────────────────────────────
 function genoAddProband(){
   var cc=client();
   var nm=cc?(cc.prenom+' '+(cc.nom||'')).trim():'Participant';
-  var wrap=document.getElementById('geno-wrap');
-  var cx=wrap?Math.round(wrap.offsetWidth/2):300,cy=wrap?Math.round(wrap.offsetHeight/2):200;
-  var n={id:genoNid(),type:'male',name:nm,birth:'',death:'',x:cx,y:cy,color:'',deceased:false,proband:true};
+  var cvw=document.getElementById('geno-cvw');
+  var cx=cvw?Math.round((cvw.offsetWidth/2)-genoOffset.x):400;
+  var cy=cvw?Math.round((cvw.offsetHeight/2)-genoOffset.y):300;
+  var n={id:genoNid(),type:'male',name:nm,birth:'',death:'',profession:'',lieu:'',role:'',notes:'',color:'gold',deceased:false,proband:true,x:cx,y:cy};
   genoNodes.push(n);genoSave();
-  genoSelected={type:'node',id:n.id};renderGeno();
+  genoSelected={type:'node',id:n.id};
+  genoSetTool('select');
+  renderGeno();
+}
+
+function genoAutoLayout(){
+  if(!genoNodes.length){showToast('Aucun membre \xe0 ordonner.');return;}
+  var hasParent={};
+  genoEdges.forEach(function(e){if(e.rel==='filiation')hasParent[e.to]=true;});
+  var roots=genoNodes.filter(function(n){return !hasParent[n.id];});
+  if(!roots.length)roots=[genoNodes[0]];
+  var cvw=document.getElementById('geno-cvw');
+  var W=cvw?cvw.offsetWidth:800,GH=140,CW=130,placed={};
+  function placeGen(nodes,genY){
+    var total=nodes.length,sx=(W/2)-(total*CW/2)-genoOffset.x;
+    nodes.forEach(function(n,i){if(!placed[n.id]){n.x=sx+i*CW+CW/2;n.y=genY;placed[n.id]=true;}});
+    var children=[];
+    nodes.forEach(function(n){
+      genoEdges.forEach(function(e){
+        if(e.rel==='filiation'&&e.from===n.id){
+          var ch=genoNodes.find(function(nd){return nd.id===e.to;});
+          if(ch&&!placed[ch.id]&&children.indexOf(ch)<0)children.push(ch);
+        }
+      });
+    });
+    if(children.length)placeGen(children,genY+GH);
+  }
+  placeGen(roots,80);
+  var remaining=genoNodes.filter(function(n){return !placed[n.id];});
+  remaining.forEach(function(n,i){n.x=80+i*CW;n.y=80+3*GH;});
+  genoSave();renderGeno();
 }
 
 function clearGeno(){
-  if(!confirm('Effacer tout le génosociogramme ?'))return;
-  genoNodes=[];genoEdges=[];genoNextId=1;genoSelected=null;genoSave();renderGeno();
+  if(!confirm('Effacer tout le g\xe9nosociogramme ?'))return;
+  genoNodes=[];genoEdges=[];genoNextId=1;genoSelected=null;genoOffset={x:60,y:60};
+  genoSave();genoUpdateInner();renderGeno();
 }
 
+// ── Render ────────────────────────────────────────────────────────
 function renderGeno(){renderGenoNodes();renderGenoEdges();renderGenoInsp();}
 
 function renderGenoNodes(){
@@ -2076,56 +2204,67 @@ function renderGenoNodes(){
     var cls='geno-node '+n.type;
     if(n.deceased)cls+=' deceased';
     if(n.proband)cls+=' proband';
-    if(genoSelected&&genoSelected.type==='node'&&genoSelected.id===n.id)cls+=' selected';
-    if(genoConnecting===n.id)cls+=' connecting';
+    if(genoSelected&&genoSelected.type==='node'&&genoSelected.id===n.id)cls+=' sel';
+    if(genoConnecting===n.id)cls+=' gcon';
     el.className=cls;
     if(n.color)el.dataset.c=n.color;
     el.style.left=n.x+'px';el.style.top=n.y+'px';
     el.dataset.id=n.id;
-    var yr=n.birth?(n.birth+(n.death?'–'+n.death:'')):'';
-    el.innerHTML='<div class="geno-node-inner"><div class="geno-node-name">'+escHtml(n.name||'?')+'</div>'+(yr?'<div class="geno-node-year">'+escHtml(yr)+'</div>':'')+'</div>';
-    el.addEventListener('click',function(e){genoNodeClick(n.id,e);});
-    el.addEventListener('mousedown',function(e){genoNodeMd(n.id,e);});
+    var yr=(n.birth||n.death)?((n.birth||'?')+(n.death?'–'+n.death:'')):'';
+    var meta=[yr,n.profession||'',n.lieu||''].filter(Boolean).join(' \xb7 ');
+    el.innerHTML='<div class="geno-node-inner">'
+      +'<div class="geno-node-name">'+escHtml(n.name||'—')+'</div>'
+      +(meta?'<div class="geno-node-meta">'+escHtml(meta)+'</div>':'')
+      +(n.role?'<div class="geno-node-tag">'+escHtml(n.role)+'</div>':'')
+      +'</div>';
     canvas.appendChild(el);
   });
 }
 
 function showGenoRc(fromId,toId,e){
-  var rc=document.getElementById('geno-rc');
+  var rc=document.getElementById('geno-rc');if(!rc)return;
   rc.innerHTML='<div class="geno-rc-hd">Type de lien</div>';
+  var existing=genoEdges.find(function(ed){
+    return (ed.from===fromId&&ed.to===toId)||(ed.from===toId&&ed.to===fromId);
+  });
   GENO_RELS.forEach(function(r){
     var d=document.createElement('div');
     d.className='geno-ro';
+    if(existing&&existing.rel===r.key)d.style.background='var(--gold-ll)';
     d.innerHTML='<svg width="34" height="12" style="flex-shrink:0">'+genoRelSvg(r.key)+'</svg>'+r.label;
     d.onclick=function(){genoAddEdge(fromId,toId,r.key);rc.style.display='none';};
     rc.appendChild(d);
   });
+  var sep=document.createElement('div');sep.style.cssText='border-top:1px solid var(--border);margin:4px 0;';
+  rc.appendChild(sep);
   var cancel=document.createElement('div');
   cancel.className='geno-ro';cancel.style.color='var(--muted)';cancel.textContent='Annuler';
   cancel.onclick=function(){rc.style.display='none';};rc.appendChild(cancel);
-  var wrap=document.getElementById('geno-wrap');
-  var wr=wrap.getBoundingClientRect();
-  var left=Math.min(Math.max(0,e.clientX-wr.left+12),wr.width-185);
-  var top=Math.min(Math.max(0,e.clientY-wr.top),wr.height-260);
-  rc.style.left=left+'px';rc.style.top=top+'px';rc.style.display='block';
+  var cvw=document.getElementById('geno-cvw');
+  var wr=cvw.getBoundingClientRect();
+  rc.style.left=Math.min(Math.max(0,e.clientX-wr.left+10),wr.width-215)+'px';
+  rc.style.top=Math.min(Math.max(0,e.clientY-wr.top-8),wr.height-300)+'px';
+  rc.style.display='block';
 }
 
 function genoRelSvg(key){
   switch(key){
-    case 'union': return '<line x1="0" y1="3" x2="34" y2="3" stroke="#3C2415" stroke-width="2"/><line x1="0" y1="9" x2="34" y2="9" stroke="#3C2415" stroke-width="2"/>';
-    case 'sep': return '<line x1="0" y1="6" x2="34" y2="6" stroke="#8B5E30" stroke-width="2" stroke-dasharray="6 3"/>';
-    case 'conflict': return '<path d="M0,6 L6,1 L12,11 L18,1 L24,11 L30,6 L34,6" fill="none" stroke="#8B3A2A" stroke-width="2"/>';
-    case 'rupture': return '<line x1="0" y1="6" x2="34" y2="6" stroke="#6B4D2F" stroke-width="2" stroke-dasharray="3 5"/>';
-    case 'distance': return '<line x1="0" y1="6" x2="34" y2="6" stroke="#9A7860" stroke-width="1.5" stroke-dasharray="2 5"/>';
-    case 'fusion': return '<line x1="0" y1="6" x2="34" y2="6" stroke="#3C2415" stroke-width="6"/>';
-    case 'transmission': return '<line x1="0" y1="6" x2="28" y2="6" stroke="#C4A44A" stroke-width="2.5" stroke-dasharray="7 4"/><polygon points="28,3 34,6 28,9" fill="#C4A44A"/>';
-    default: return '<line x1="0" y1="6" x2="34" y2="6" stroke="#3C2415" stroke-width="2"/>';
+    case 'union':return '<line x1="1" y1="3" x2="33" y2="3" stroke="#3C2415" stroke-width="1.8"/><line x1="1" y1="9" x2="33" y2="9" stroke="#3C2415" stroke-width="1.8"/>';
+    case 'sep':return '<line x1="1" y1="6" x2="33" y2="6" stroke="#8B5E30" stroke-width="2" stroke-dasharray="5 3"/><line x1="14" y1="1" x2="20" y2="11" stroke="#8B3A2A" stroke-width="1.5"/>';
+    case 'conflict':return '<path d="M0,6 L6,1 L12,11 L18,1 L24,11 L29,6 L34,6" fill="none" stroke="#8B3A2A" stroke-width="2"/>';
+    case 'rupture':return '<line x1="1" y1="6" x2="33" y2="6" stroke="#6B4D2F" stroke-width="2" stroke-dasharray="3 5"/>';
+    case 'distance':return '<line x1="1" y1="6" x2="33" y2="6" stroke="#9A7860" stroke-width="1.5" stroke-dasharray="2 5"/>';
+    case 'fusion':return '<line x1="1" y1="6" x2="33" y2="6" stroke="#3C2415" stroke-width="6"/>';
+    case 'transmission':return '<line x1="1" y1="6" x2="27" y2="6" stroke="#C4A44A" stroke-width="2.5" stroke-dasharray="7 4"/><polygon points="27,3 33,6 27,9" fill="#C4A44A"/>';
+    default:return '<line x1="1" y1="6" x2="33" y2="6" stroke="#3C2415" stroke-width="2"/>';
   }
 }
 
 function genoAddEdge(fromId,toId,rel){
-  var exists=genoEdges.some(function(e){return (e.from===fromId&&e.to===toId)||(e.from===toId&&e.to===fromId);});
-  if(!exists)genoEdges.push({id:genoNid(),from:fromId,to:toId,rel:rel});
+  var ex=genoEdges.find(function(e){
+    return (e.from===fromId&&e.to===toId)||(e.from===toId&&e.to===fromId);
+  });
+  if(ex){ex.rel=rel;}else{genoEdges.push({id:genoNid(),from:fromId,to:toId,rel:rel});}
   genoSave();renderGeno();
 }
 
@@ -2143,10 +2282,14 @@ function renderGenoEdges(){
 
 function genoDrawEdge(svg,ns,edge,x1,y1,x2,y2){
   var rel=edge.rel;
+  var isSel=genoSelected&&genoSelected.type==='edge'&&genoSelected.id===edge.id;
+  var sc='#C4A44A';
   if(rel==='conflict'){
     var path=document.createElementNS(ns,'path');
     path.setAttribute('d',genoZigzag(x1,y1,x2,y2));
-    path.setAttribute('fill','none');path.setAttribute('stroke','#8B3A2A');path.setAttribute('stroke-width','2.5');
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke',isSel?sc:'#8B3A2A');
+    path.setAttribute('stroke-width','2.5');
     svg.appendChild(path);
   } else if(rel==='union'){
     var dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy)||1;
@@ -2155,7 +2298,7 @@ function genoDrawEdge(svg,ns,edge,x1,y1,x2,y2){
       var ln=document.createElementNS(ns,'line');
       ln.setAttribute('x1',x1+px*sign);ln.setAttribute('y1',y1+py*sign);
       ln.setAttribute('x2',x2+px*sign);ln.setAttribute('y2',y2+py*sign);
-      ln.setAttribute('stroke','#3C2415');ln.setAttribute('stroke-width','2');
+      ln.setAttribute('stroke',isSel?sc:'#3C2415');ln.setAttribute('stroke-width','2');
       svg.appendChild(ln);
     });
   } else {
@@ -2163,42 +2306,44 @@ function genoDrawEdge(svg,ns,edge,x1,y1,x2,y2){
     el.setAttribute('x1',x1);el.setAttribute('y1',y1);
     el.setAttribute('x2',x2);el.setAttribute('y2',y2);
     switch(rel){
-      case 'sep':el.setAttribute('stroke','#8B5E30');el.setAttribute('stroke-width','2');el.setAttribute('stroke-dasharray','8 4');break;
-      case 'rupture':el.setAttribute('stroke','#6B4D2F');el.setAttribute('stroke-width','2');el.setAttribute('stroke-dasharray','3 6');break;
-      case 'distance':el.setAttribute('stroke','#9A7860');el.setAttribute('stroke-width','1.5');el.setAttribute('stroke-dasharray','2 5');break;
-      case 'fusion':el.setAttribute('stroke','#3C2415');el.setAttribute('stroke-width','6');break;
-      case 'transmission':el.setAttribute('stroke','#C4A44A');el.setAttribute('stroke-width','2.5');el.setAttribute('stroke-dasharray','10 5');el.setAttribute('marker-end','url(#arrowGold)');break;
-      default:el.setAttribute('stroke','#3C2415');el.setAttribute('stroke-width','2');
+      case 'sep':el.setAttribute('stroke',isSel?sc:'#8B5E30');el.setAttribute('stroke-width','2');el.setAttribute('stroke-dasharray','8 4');break;
+      case 'rupture':el.setAttribute('stroke',isSel?sc:'#6B4D2F');el.setAttribute('stroke-width','2');el.setAttribute('stroke-dasharray','3 6');break;
+      case 'distance':el.setAttribute('stroke',isSel?sc:'#9A7860');el.setAttribute('stroke-width','1.5');el.setAttribute('stroke-dasharray','2 6');break;
+      case 'fusion':el.setAttribute('stroke',isSel?sc:'#3C2415');el.setAttribute('stroke-width','6');break;
+      case 'transmission':el.setAttribute('stroke',isSel?sc:'#C4A44A');el.setAttribute('stroke-width','2.5');el.setAttribute('stroke-dasharray','10 5');el.setAttribute('marker-end','url(#arrowGold)');break;
+      default:el.setAttribute('stroke',isSel?sc:'#3C2415');el.setAttribute('stroke-width','2');
     }
     svg.appendChild(el);
     if(rel==='sep'){
-      var dx2=x2-x1,dy2=y2-y1,l2=Math.sqrt(dx2*dx2+dy2*dy2)||1;
+      var sdx=x2-x1,sdy=y2-y1,sl=Math.sqrt(sdx*sdx+sdy*sdy)||1;
       var mx=(x1+x2)/2,my=(y1+y2)/2;
-      var nx=-dy2/l2*9,ny=dx2/l2*9;
-      [[-9,0],[9,0]].forEach(function(off){
-        var sl=document.createElementNS(ns,'line');
-        var cx2=mx+dx2/l2*off[0],cy2=my+dy2/l2*off[0];
-        sl.setAttribute('x1',cx2+nx);sl.setAttribute('y1',cy2+ny);
-        sl.setAttribute('x2',cx2-nx);sl.setAttribute('y2',cy2-ny);
-        sl.setAttribute('stroke','#8B3A2A');sl.setAttribute('stroke-width','2');
-        svg.appendChild(sl);
+      var nx2=-sdy/sl*9,ny2=sdx/sl*9;
+      [-10,10].forEach(function(off){
+        var cx2=mx+sdx/sl*off,cy2=my+sdy/sl*off;
+        var sl2=document.createElementNS(ns,'line');
+        sl2.setAttribute('x1',cx2+nx2);sl2.setAttribute('y1',cy2+ny2);
+        sl2.setAttribute('x2',cx2-nx2);sl2.setAttribute('y2',cy2-ny2);
+        sl2.setAttribute('stroke','#8B3A2A');sl2.setAttribute('stroke-width','2');
+        svg.appendChild(sl2);
       });
     }
   }
-  var mx=(x1+x2)/2,my=(y1+y2)/2;
-  var lbls={sep:'sép.',conflict:'conf.',rupture:'rupt.',distance:'élgn.',fusion:'fus.',transmission:'transm.'};
+  var lx=(x1+x2)/2,ly=(y1+y2)/2;
+  var lbls={sep:'s\xe9p.',conflict:'conflit',rupture:'rupture',distance:'\xe9lgn.',fusion:'fusion',transmission:'transm.'};
   if(lbls[rel]){
     var txt=document.createElementNS(ns,'text');
-    txt.setAttribute('x',mx);txt.setAttribute('y',my-8);txt.setAttribute('text-anchor','middle');
-    txt.setAttribute('font-size','8');txt.setAttribute('font-family','Georgia,serif');txt.setAttribute('fill','#9A7860');
+    txt.setAttribute('x',lx);txt.setAttribute('y',ly-7);
+    txt.setAttribute('text-anchor','middle');txt.setAttribute('font-size','9');
+    txt.setAttribute('font-family','Georgia,serif');
+    txt.setAttribute('fill',isSel?sc:'#9A7860');
     txt.textContent=lbls[rel];svg.appendChild(txt);
   }
 }
 
 function genoZigzag(x1,y1,x2,y2){
   var dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy)||1;
-  var steps=Math.max(4,Math.floor(len/22));
-  var px=-dy/len,py=dx/len,amp=8;
+  var steps=Math.max(4,Math.floor(len/26));
+  var px=-dy/len,py=dx/len,amp=9;
   var d='M '+x1+' '+y1;
   for(var i=1;i<=steps;i++){
     var t=i/(steps+1),x=x1+dx*t,y=y1+dy*t,off=(i%2===0?1:-1)*amp;
@@ -2207,61 +2352,206 @@ function genoZigzag(x1,y1,x2,y2){
   return d+' L '+x2+' '+y2;
 }
 
+// ── Inspector built with DOM (no innerHTML quoting issues) ─────────
 function renderGenoInsp(){
-  var insp=document.getElementById('geno-insp');if(!insp)return;
-  if(!genoSelected){insp.style.display='none';return;}
-  insp.style.display='flex';
-  if(genoSelected.type==='node'){
-    var n=genoNodes.find(function(nd){return nd.id===genoSelected.id;});
-    if(!n){insp.style.display='none';return;}
-    var edges=genoEdges.filter(function(e){return e.from===n.id||e.to===n.id;});
-    var rlbl={filiation:'Filiation',union:'Union',sep:'Sép.',conflict:'Conflit',rupture:'Rupture',distance:'Élgn.',fusion:'Fusion',transmission:'Transm.'};
-    var sw=function(col,lbl,bg,bc){
-      return '<div class="geno-sw'+(n.color===col?' on':'')+'" style="background:'+bg+';border-color:'+bc+';" title="'+lbl+'" onclick="genoUpd(\''+n.id+'\',\'color\',\''+col+'\')"></div>';
-    };
-    insp.innerHTML='<div class="geno-insp-hd">Fiche membre</div>'
-      +'<div class="geno-if"><label class="geno-il">Nom</label>'
-      +'<input class="geno-ii" id="ginsp-name" value="'+escHtml(n.name||'')+'" placeholder="Prénom Nom" oninput="genoUpd(\''+n.id+'\',\'name\',this.value)"></div>'
-      +'<div class="geno-if" style="display:flex;gap:4px;">'
-      +'<div style="flex:1"><label class="geno-il">Naiss.</label><input class="geno-ii" value="'+escHtml(n.birth||'')+'" placeholder="1950" oninput="genoUpd(\''+n.id+'\',\'birth\',this.value)"></div>'
-      +'<div style="flex:1"><label class="geno-il">Déc.</label><input class="geno-ii" value="'+escHtml(n.death||'')+'" placeholder="1998" oninput="genoUpd(\''+n.id+'\',\'death\',this.value)"></div>'
-      +'</div>'
-      +'<div class="geno-if"><label class="geno-il">Forme</label>'
-      +'<select class="geno-ii" onchange="genoUpd(\''+n.id+'\',\'type\',this.value)">'
-      +'<option value="male"'+(n.type==='male'?' selected':'')+'>Homme ■</option>'
-      +'<option value="female"'+(n.type==='female'?' selected':'')+'>Femme ●</option>'
-      +'<option value="neutral"'+(n.type==='neutral'?' selected':'')+'>Non défini ◆</option>'
-      +'</select></div>'
-      +'<div class="geno-if"><label class="geno-il">Couleur</label>'
-      +'<div class="geno-swatches">'
-      +sw('','Défaut','#fff','#D4C5A0')
-      +sw('gold','Or','rgba(196,164,74,.2)','#C4A44A')
-      +sw('red','Tension','#ffeee8','#8B3A2A')
-      +sw('blue','Ressource','#eef0ff','#3a5a8b')
-      +sw('green','Ancrage','#eef5ee','#3a7a4a')
-      +'</div></div>'
-      +'<div class="geno-if"><label class="geno-il" style="display:flex;align-items:center;gap:5px;cursor:pointer;font-weight:normal;">'
-      +'<input type="checkbox"'+(n.deceased?' checked':'')+' onchange="genoUpd(\''+n.id+'\',\'deceased\',this.checked)"> Décédé(e)</label></div>'
-      +'<div class="geno-if"><label class="geno-il" style="display:flex;align-items:center;gap:5px;cursor:pointer;font-weight:normal;">'
-      +'<input type="checkbox"'+(n.proband?' checked':'')+' onchange="genoUpd(\''+n.id+'\',\'proband\',this.checked)"> Participant ORIA</label></div>'
-      +(edges.length?'<div class="geno-if"><label class="geno-il">Liens ('+edges.length+')</label>'
-        +'<div class="geno-edge-list">'
-        +edges.map(function(e){
-          var oid=e.from===n.id?e.to:e.from;
-          var other=genoNodes.find(function(nd){return nd.id===oid;});
-          return '<div class="geno-ei"><span>'+(rlbl[e.rel]||e.rel)+' — '+escHtml((other&&other.name)||'?')+'</span>'
-            +'<button class="geno-ei-del" onclick="genoDelEdge(\''+e.id+'\')">&#10005;</button></div>';
-        }).join('')
-        +'</div></div>':'')
-      +'<button class="btn-sm danger" style="width:100%;margin-top:6px;" onclick="genoDelNode(\''+n.id+'\')">Supprimer</button>';
-  }
+  var empty=document.getElementById('geno-insp-empty');
+  var body=document.getElementById('geno-insp-body');
+  if(!empty||!body)return;
+  if(!genoSelected){empty.style.display='flex';body.style.display='none';return;}
+  empty.style.display='none';body.style.display='flex';
+  body.innerHTML='';
+  if(genoSelected.type==='edge'){genoRenderEdgeInsp(body);}
+  else{genoRenderNodeInsp(body);}
 }
 
-function genoUpd(id,field,value){
+function genoMkIf(lbl,input){
+  var d=document.createElement('div');d.className='geno-if';
+  var l=document.createElement('label');l.className='geno-il';l.textContent=lbl;
+  d.appendChild(l);d.appendChild(input);return d;
+}
+function genoMkInput(val,placeholder,onInp){
+  var i=document.createElement('input');i.className='geno-ii';
+  i.value=val||'';i.placeholder=placeholder||'';
+  i.addEventListener('input',onInp);return i;
+}
+function genoMkSelect(options,current,onChange){
+  var s=document.createElement('select');s.className='geno-ii';
+  options.forEach(function(o){
+    var opt=document.createElement('option');
+    opt.value=o.v;opt.textContent=o.l;
+    if(o.v===current)opt.selected=true;
+    s.appendChild(opt);
+  });
+  s.addEventListener('change',onChange);return s;
+}
+function genoMkTextarea(val,placeholder,onInp){
+  var t=document.createElement('textarea');t.className='geno-ita';
+  t.rows=3;t.value=val||'';t.placeholder=placeholder||'';
+  t.addEventListener('input',onInp);return t;
+}
+
+function genoRenderNodeInsp(body){
+  var n=genoNodes.find(function(nd){return nd.id===genoSelected.id;});
+  if(!n){genoSelected=null;renderGenoInsp();return;}
+  var id=n.id;
+
+  // Section: Identité
+  var hd1=document.createElement('div');hd1.className='geno-insp-hd';hd1.textContent='Identit\xe9';
+  body.appendChild(hd1);
+
+  // Nom
+  var nameInp=genoMkInput(n.name,'Pr\xe9nom Nom',function(){genoUpdNode(id,'name',this.value);});
+  nameInp.id='ginsp-name';
+  body.appendChild(genoMkIf('Pr\xe9nom & Nom',nameInp));
+
+  // Naissance / Décès
+  var row1=document.createElement('div');row1.className='geno-if-row';
+  var birthInp=genoMkInput(n.birth,'1952',function(){genoUpdNode(id,'birth',this.value);});
+  var deathInp=genoMkInput(n.death,'2010',function(){genoUpdNode(id,'death',this.value);});
+  row1.appendChild(genoMkIf('N\xe9(e)',birthInp));
+  row1.appendChild(genoMkIf('D\xe9c.',deathInp));
+  body.appendChild(row1);
+
+  // Profession
+  body.appendChild(genoMkIf('Profession / R\xf4le social',
+    genoMkInput(n.profession,'ex: agriculteur, infirmi\xe8re…',function(){genoUpdNode(id,'profession',this.value);})));
+
+  // Lieu
+  body.appendChild(genoMkIf('Lieu d\'origine / vie',
+    genoMkInput(n.lieu,'ex: Alg\xe9rie, Bretagne…',function(){genoUpdNode(id,'lieu',this.value);})));
+
+  // Rôle familial
+  body.appendChild(genoMkIf('R\xf4le familial (syst\xe9mique)',
+    genoMkInput(n.role,'ex: le fort, la silencieuse…',function(){genoUpdNode(id,'role',this.value);})));
+
+  // Notes
+  body.appendChild(genoMkIf('\xc9v\xe9nements / Notes',
+    genoMkTextarea(n.notes,'\xe9v\xe9nements, maladies, secrets, ressources…',function(){genoUpdNode(id,'notes',this.value);})));
+
+  // Section: Représentation
+  var hd2=document.createElement('div');hd2.className='geno-insp-hd';hd2.textContent='Repr\xe9sentation';
+  body.appendChild(hd2);
+
+  // Type
+  body.appendChild(genoMkIf('Genre',genoMkSelect(
+    [{v:'male',l:'Homme ■'},{v:'female',l:'Femme ●'},{v:'neutral',l:'Non d\xe9fini ◆'}],
+    n.type, function(){genoUpdNode(id,'type',this.value);}
+  )));
+
+  // Couleur
+  var colIf=document.createElement('div');colIf.className='geno-if';
+  var colLbl=document.createElement('label');colLbl.className='geno-il';colLbl.textContent='Couleur de rep\xe8re';
+  colIf.appendChild(colLbl);
+  var swatches=document.createElement('div');swatches.className='geno-swatches';
+  var colors=[
+    {v:'',  l:'D\xe9faut',          bg:'#faf6ee', bc:'#D4C5A0'},
+    {v:'gold',  l:'Or — ressource', bg:'rgba(196,164,74,.25)', bc:'#C4A44A'},
+    {v:'red',   l:'Rouge — tension', bg:'#ffeee8', bc:'#8B3A2A'},
+    {v:'blue',  l:'Bleu — ressource',bg:'#eef0ff', bc:'#3a5a8b'},
+    {v:'green', l:'Vert — ancrage', bg:'#eef5ee', bc:'#3a7a4a'},
+    {v:'purple',l:'Violet — transmission',bg:'#f5eeff',bc:'#6b3a8b'},
+    {v:'orange',l:'Orange — r\xe9p\xe9tition',bg:'#fff5eb',bc:'#8b5a2a'}
+  ];
+  colors.forEach(function(col){
+    var sw=document.createElement('div');
+    sw.className='geno-sw'+(n.color===col.v?' on':'');
+    sw.title=col.l;
+    sw.style.background=col.bg;
+    sw.style.borderColor=col.bc;
+    sw.addEventListener('click',function(){genoUpdNode(id,'color',col.v);});
+    swatches.appendChild(sw);
+  });
+  colIf.appendChild(swatches);body.appendChild(colIf);
+
+  // Checkboxes
+  var cbsDiv=document.createElement('div');cbsDiv.className='geno-cbs';
+  function mkCb(lbl,checked,onChange){
+    var label=document.createElement('label');label.className='geno-cb';
+    var cb=document.createElement('input');cb.type='checkbox';cb.checked=!!checked;
+    cb.addEventListener('change',function(){onChange(this.checked);});
+    label.appendChild(cb);label.appendChild(document.createTextNode(' '+lbl));
+    return label;
+  }
+  cbsDiv.appendChild(mkCb('D\xe9c\xe9d\xe9(e)',n.deceased,function(v){genoUpdNode(id,'deceased',v);}));
+  cbsDiv.appendChild(mkCb('Participant ORIA',n.proband,function(v){genoUpdNode(id,'proband',v);}));
+  body.appendChild(cbsDiv);
+
+  // Liens
+  var edges=genoEdges.filter(function(e){return e.from===id||e.to===id;});
+  if(edges.length){
+    var hd3=document.createElement('div');hd3.className='geno-insp-hd';
+    hd3.textContent='Liens ('+edges.length+')';body.appendChild(hd3);
+    var edgeList=document.createElement('div');edgeList.className='geno-edge-list';
+    var rlbl={filiation:'Filiation',union:'Union',sep:'S\xe9par.',conflict:'Conflit',rupture:'Rupture',distance:'\xc9loign.',fusion:'Fusion',transmission:'Transm.'};
+    edges.forEach(function(e){
+      var oid=e.from===id?e.to:e.from;
+      var other=genoNodes.find(function(nd){return nd.id===oid;});
+      var row=document.createElement('div');row.className='geno-ei';
+      var relSpan=document.createElement('span');relSpan.className='geno-ei-rel';
+      relSpan.textContent=rlbl[e.rel]||e.rel;
+      var nameSpan=document.createElement('span');
+      nameSpan.style.cssText='flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
+      nameSpan.title=(other&&other.name)||'?';
+      nameSpan.textContent=(other&&other.name)||'—';
+      var delBtn=document.createElement('button');delBtn.className='geno-ei-del';
+      delBtn.title='Supprimer ce lien';delBtn.textContent='✕';
+      (function(eid){delBtn.addEventListener('click',function(){genoDelEdge(eid);});})(e.id);
+      row.appendChild(relSpan);row.appendChild(nameSpan);row.appendChild(delBtn);
+      edgeList.appendChild(row);
+    });
+    body.appendChild(edgeList);
+  }
+
+  // Delete node
+  var delBtn=document.createElement('button');delBtn.className='geno-danger';
+  delBtn.textContent='Supprimer ce membre';
+  delBtn.addEventListener('click',function(){genoDelNode(id);});
+  body.appendChild(delBtn);
+}
+
+function genoRenderEdgeInsp(body){
+  var e=genoEdges.find(function(ed){return ed.id===genoSelected.id;});
+  if(!e){genoSelected=null;renderGenoInsp();return;}
+  var fn=genoNodes.find(function(n){return n.id===e.from;});
+  var tn=genoNodes.find(function(n){return n.id===e.to;});
+  var eid=e.id;
+
+  var hd=document.createElement('div');hd.className='geno-insp-hd';hd.textContent='Lien';body.appendChild(hd);
+
+  var betweenDiv=document.createElement('div');betweenDiv.className='geno-ii';
+  betweenDiv.style.cssText='background:var(--ivory-d);cursor:default;';
+  betweenDiv.textContent=((fn&&fn.name)||'—')+' ↔ '+((tn&&tn.name)||'—');
+  body.appendChild(genoMkIf('Entre',betweenDiv));
+
+  body.appendChild(genoMkIf('Type de relation',genoMkSelect(
+    GENO_RELS.map(function(r){return {v:r.key,l:r.label};}),
+    e.rel, function(){genoUpdEdge(eid,'rel',this.value);}
+  )));
+
+  // Preview SVG
+  var prevIf=document.createElement('div');prevIf.className='geno-if';
+  var prevLbl=document.createElement('label');prevLbl.className='geno-il';prevLbl.textContent='Aper\xe7u';
+  var prevSvg=document.createElement('svg');prevSvg.setAttribute('width','200');prevSvg.setAttribute('height','18');
+  prevSvg.style.display='block';prevSvg.style.marginTop='2px';
+  prevSvg.innerHTML=genoRelSvg(e.rel);
+  prevIf.appendChild(prevLbl);prevIf.appendChild(prevSvg);body.appendChild(prevIf);
+
+  var delBtn=document.createElement('button');delBtn.className='geno-danger';
+  delBtn.textContent='Supprimer ce lien';
+  delBtn.addEventListener('click',function(){genoDelEdge(eid);});
+  body.appendChild(delBtn);
+}
+
+function genoUpdNode(id,field,value){
   var n=genoNodes.find(function(nd){return nd.id===id;});if(!n)return;
   n[field]=value;genoSave();
   renderGenoNodes();
-  if(field==='name'||field==='type')renderGenoInsp();
+  if(field==='type'||field==='name'||field==='color'||field==='deceased'||field==='proband')renderGenoInsp();
+}
+
+function genoUpdEdge(id,field,value){
+  var e=genoEdges.find(function(ed){return ed.id===id;});if(!e)return;
+  e[field]=value;genoSave();renderGenoEdges();renderGenoInsp();
 }
 
 function genoDelNode(id){
@@ -2272,49 +2562,57 @@ function genoDelNode(id){
 
 function genoDelEdge(id){
   genoEdges=genoEdges.filter(function(e){return e.id!==id;});
-  genoSave();renderGenoEdges();renderGenoInsp();
+  genoSelected=null;genoSave();renderGenoEdges();renderGenoInsp();
 }
 
 function printGeno(){
-  var wrap=document.getElementById('geno-wrap');
-  if(!wrap){showToast('Aucun génosociogramme.');return;}
+  var cc=client();
+  if(!genoNodes.length){showToast('Aucun membre dans le g\xe9nosociogramme.');return;}
   var w=window.open('','_blank');
   if(!w){showToast('Autorisez les popups pour imprimer.');return;}
-  var cc=client();
-  var title='Génosociogramme'+(cc?' — '+(cc.prenom+' '+(cc.nom||'')).trim():'');
+  var title='G\xe9nosociogramme'+(cc?' — '+(cc.prenom+' '+(cc.nom||'')).trim():'');
   var svgHtml=document.getElementById('geno-svg').outerHTML;
   var nodesHtml=document.getElementById('geno-canvas').innerHTML;
-  var ww=wrap.offsetWidth,wh=wrap.offsetHeight;
+  var minX=9999,minY=9999,maxX=0,maxY=0;
+  genoNodes.forEach(function(n){
+    minX=Math.min(minX,n.x-60);minY=Math.min(minY,n.y-50);
+    maxX=Math.max(maxX,n.x+60);maxY=Math.max(maxY,n.y+50);
+  });
+  var W=Math.max(800,maxX-minX+60),H=Math.max(500,maxY-minY+60);
   w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+title+'</title><style>'
-    +'body{font-family:Georgia,serif;background:#fff;margin:0;padding:20px;color:#3C2415;}'
-    +'h2{font-size:1.1rem;letter-spacing:.2em;color:#3C2415;font-weight:normal;margin-bottom:4px;text-transform:uppercase;}'
-    +'p{font-size:.75rem;color:#9A7860;margin-bottom:16px;}'
-    +'.wrap{position:relative;width:'+ww+'px;height:'+wh+'px;border:1px solid #D4C5A0;background:#FAF6EE;overflow:visible;}'
-    +'.geno-svg{position:absolute;top:0;left:0;width:100%;height:100%;overflow:visible;}'
-    +'.geno-canvas{position:absolute;top:0;left:0;width:100%;height:100%;}'
+    +'*{box-sizing:border-box;margin:0;padding:0;}'
+    +'body{font-family:Georgia,serif;background:#fff;padding:24px;color:#3C2415;}'
+    +'h2{font-size:1rem;letter-spacing:.2em;text-transform:uppercase;font-weight:normal;margin-bottom:4px;}'
+    +'p{font-size:.72rem;color:#9A7860;margin-bottom:18px;}'
+    +'.wrap{position:relative;width:'+W+'px;height:'+H+'px;border:1px solid #D4C5A0;background:#faf6ee;overflow:visible;}'
+    +'.geno-canvas,.geno-svg{position:absolute;top:0;left:0;width:'+W+'px;height:'+H+'px;overflow:visible;}'
     +'.geno-node{position:absolute;transform:translate(-50%,-50%);box-sizing:border-box;}'
-    +'.geno-node.male{width:66px;height:50px;border:2px solid #3C2415;background:#fff;}'
-    +'.geno-node.female{width:60px;height:60px;border:2px solid #3C2415;background:#fff;border-radius:50%;}'
-    +'.geno-node.neutral{width:54px;height:54px;border:2px solid #3C2415;background:#fff;transform:translate(-50%,-50%) rotate(45deg);}'
+    +'.geno-node.male{width:90px;height:68px;border:2px solid #3C2415;background:#fff;}'
+    +'.geno-node.female{width:76px;height:76px;border:2px solid #3C2415;background:#fff;border-radius:50%;}'
+    +'.geno-node.neutral{width:68px;height:68px;border:2px solid #3C2415;background:#fff;transform:translate(-50%,-50%) rotate(45deg);}'
     +'.geno-node.neutral .geno-node-inner{transform:rotate(-45deg);}'
-    +'.geno-node.proband{border:3px solid #C4A44A;background:rgba(196,164,74,.1);}'
+    +'.geno-node.proband{border-width:3px;border-color:#C4A44A;background:rgba(196,164,74,.08);}'
     +'.geno-node.deceased{opacity:.5;}'
     +'[data-c="gold"]{background:rgba(196,164,74,.14)!important;border-color:#8B6B20!important;}'
     +'[data-c="red"]{background:#fff5f3!important;border-color:#8B3A2A!important;}'
-    +'[data-c="blue"]{background:#eef0ff!important;border-color:#3a5a8b!important;}'
-    +'[data-c="green"]{background:#eef5ee!important;border-color:#3a7a4a!important;}'
-    +'.geno-node-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;padding:3px;box-sizing:border-box;}'
-    +'.geno-node-name{font-size:.68rem;color:#3C2415;text-align:center;line-height:1.2;word-break:break-word;}'
-    +'.geno-node-year{font-size:.58rem;color:#9A7860;margin-top:1px;}'
+    +'[data-c="blue"]{background:#f0f4ff!important;border-color:#3a5a8b!important;}'
+    +'[data-c="green"]{background:#f0f8f0!important;border-color:#3a7a4a!important;}'
+    +'[data-c="purple"]{background:#f8f0ff!important;border-color:#6b3a8b!important;}'
+    +'[data-c="orange"]{background:#fff8f0!important;border-color:#8b5a2a!important;}'
+    +'.geno-node-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;padding:4px;}'
+    +'.geno-node-name{font-size:.7rem;color:#3C2415;text-align:center;line-height:1.2;font-weight:bold;}'
+    +'.geno-node-meta{font-size:.54rem;color:#9A7860;margin-top:2px;text-align:center;}'
+    +'.geno-node-tag{font-size:.49rem;padding:1px 3px;background:rgba(196,164,74,.15);border-radius:2px;color:#7a5c2e;margin-top:1px;}'
     +'@media print{body{padding:8px;}.wrap{border:none;}}'
     +'</style></head><body>'
     +'<h2>'+title+'</h2>'
-    +'<p>Document généré le '+new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})+'</p>'
+    +'<p>G\xe9n\xe9r\xe9 le '+new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})+'</p>'
     +'<div class="wrap"><div class="geno-canvas">'+nodesHtml+'</div>'+svgHtml+'</div>'
     +'</body></html>');
   w.document.close();
   setTimeout(function(){w.print();},600);
 }
+
 </script>
 </body>
 </html>
