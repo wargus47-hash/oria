@@ -132,6 +132,35 @@ li{font-size:15px;color:var(--brn);line-height:1.8;margin-bottom:4px}
 .div-line{flex:1;height:1px;background:var(--border)}
 .div-icon{color:var(--gold);font-size:18px;flex-shrink:0}
 
+/* ── ORACLE ── */
+.oracle-intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:740px;margin:24px 0}
+.oracle-theme-block{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px 24px}
+.oracle-theme-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gold-d);font-family:-apple-system,sans-serif;margin-bottom:4px}
+.oracle-theme-phase{font-size:13px;color:var(--brn);font-style:italic;margin-bottom:8px}
+.oracle-theme-desc{font-size:13px;color:var(--brn);line-height:1.6}
+.oracle-protocol-grid{display:flex;flex-direction:column;gap:12px;max-width:720px;margin:20px 0}
+.oracle-protocol{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:18px 22px;display:flex;gap:18px;align-items:flex-start}
+.oracle-protocol-num{font-size:22px;font-weight:300;color:var(--gold);font-family:-apple-system,sans-serif;min-width:28px;margin-top:-2px}
+.oracle-protocol-title{font-size:14px;font-weight:700;color:var(--brown);margin-bottom:5px;font-family:-apple-system,sans-serif}
+.oracle-protocol-text{font-size:13px;color:var(--brn);line-height:1.7}
+.oracle-protocol-when{font-size:11px;color:var(--gold-d);text-transform:uppercase;letter-spacing:.07em;font-family:-apple-system,sans-serif;margin-top:6px}
+.oracle-cards-section{margin:28px 0;max-width:760px}
+.oracle-cards-theme{margin-bottom:32px}
+.oracle-cards-theme-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gold-d);font-family:-apple-system,sans-serif;margin-bottom:4px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.oracle-cards-theme-phase{font-size:12px;color:var(--muted);font-family:-apple-system,sans-serif;margin-bottom:14px}
+.oracle-cards-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.oracle-card-thumb{display:flex;flex-direction:column;align-items:center;gap:5px;width:100px}
+.oracle-card-thumb img{width:100px;border-radius:4px;border:1px solid var(--border);display:block}
+.oracle-card-thumb-name{font-size:10px;color:var(--brn);text-align:center;line-height:1.3;font-family:-apple-system,sans-serif}
+.oracle-posture-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:740px;margin:20px 0}
+.oracle-posture-card{border-radius:10px;padding:18px 20px}
+.oracle-posture-card.oui{background:rgba(196,164,74,.08);border:1px solid rgba(196,164,74,.3)}
+.oracle-posture-card.non{background:rgba(139,58,42,.05);border:1px solid rgba(139,58,42,.2)}
+.oracle-posture-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;font-family:-apple-system,sans-serif;margin-bottom:10px}
+.oracle-posture-title.oui{color:var(--gold-d)}
+.oracle-posture-title.non{color:#8B3A2A}
+.oracle-posture-card li{font-size:13px;color:var(--brn);line-height:1.7;margin-bottom:2px}
+
 /* ── MANDALA SVG ── */
 .mandala-section{display:flex;gap:48px;align-items:flex-start;flex-wrap:wrap;margin:28px 0}
 
@@ -187,6 +216,9 @@ li{font-size:15px;color:var(--brn);line-height:1.8;margin-bottom:4px}
   <a class="sb-link" onclick="scrollTo('mandala')"><span class="sb-num">3.1</span>Le Mandala Vivant</a>
   <a class="sb-link" onclick="scrollTo('journal')"><span class="sb-num">3.2</span>Le Journal ORIA</a>
   <a class="sb-link" onclick="scrollTo('genosocio')"><span class="sb-num">3.3</span>Le Génosociogramme</a>
+  <a class="sb-link" onclick="scrollTo('oracle')"><span class="sb-num">3.4</span>L'Oracle L'Antre Toi</a>
+  <a class="sb-link" onclick="scrollTo('oracle-protocoles')"><span class="sb-num">3.4a</span>Protocoles d'utilisation</a>
+  <a class="sb-link" onclick="scrollTo('oracle-cartes')"><span class="sb-num">3.4b</span>Les 55 cartes</a>
 
   <div class="sb-section">Partie IV — Archétypes</div>
   <a class="sb-link" onclick="scrollTo('archetypes')"><span class="sb-num">4.1</span>Les 12 Archétypes ORIA</a>
@@ -233,6 +265,7 @@ li{font-size:15px;color:var(--brn);line-height:1.8;margin-bottom:4px}
     <div class="cover-badge">12 archétypes</div>
     <div class="cover-badge">Le Mandala Vivant</div>
     <div class="cover-badge">Le Dossier d'Âme</div>
+    <div class="cover-badge">Oracle L'Antre Toi</div>
     <div class="cover-badge">Méthode propriétaire</div>
   </div>
   <div class="cover-scroll">Défiler pour commencer ↓</div>
@@ -1193,6 +1226,297 @@ li{font-size:15px;color:var(--brn);line-height:1.8;margin-bottom:4px}
       <li>Les secrets — visibles par les blancs dans le récit familial</li>
     </ul>
   </div>
+</div>
+
+<!-- ══════════════ ORACLE L'ANTRE TOI ══════════════ -->
+
+<div class="section" id="oracle">
+  <div class="section-num">Partie III · 3.4</div>
+  <div class="section-title">L'Oracle L'Antre Toi</div>
+  <div class="section-lead">Un oracle de réconciliation intérieure créé par Jonathan Cassagne — intégré à la méthode ORIA comme outil de révélation symbolique au service du praticien et du participant.</div>
+
+  <p>L'Oracle L'Antre Toi est né d'une traversée personnelle. Il a été conçu comme un refuge sacré pour celles et ceux qui sentent en eux un trop-plein ou un grand vide, un seuil d'écoute pour ce qui n'a pas encore été entendu. Ses 55 cartes sont des miroirs, des mémoires vivantes, des archétypes qui murmurent à travers celui qui les tient en main. Ici, il ne s'agit pas de prédire mais de ressentir, de reconnaître, de relier, de réparer.</p>
+
+  <p>Dans le cadre de la méthode ORIA, l'Oracle n'est pas un accessoire ni un décor. C'est un outil de travail à part entière, utilisé avec précision et intention par le praticien certifié. Chacune des 55 cartes a été associée à une ou plusieurs phases du parcours ORIA selon son registre thématique — corps, lignage, ombre, intégration, archétype, émergence, transmission. Cette correspondance permet au praticien de proposer des tirages ciblés, adaptés à là où en est le participant dans son chemin.</p>
+
+  <div class="pq"><p>Les cartes ne donnent pas de réponses. Elles ouvrent des passages vers toi : ton souffle, ton corps, ton histoire.</p><div class="pq-attr">L'Antre Toi — Jonathan Cassagne</div></div>
+
+  <h3>Positionnement de l'Oracle dans ORIA</h3>
+  <p>L'Oracle intervient comme pont entre ce qui est su et ce qui est ressenti, entre ce que le participant peut formuler et ce qui résiste encore à la parole. Il est particulièrement précieux dans trois situations récurrentes : lorsque la parole est bloquée et que le corps a besoin d'un point d'entrée symbolique ; lorsque le praticien souhaite ouvrir ou fermer une séance par un acte rituel ancrant la présence ; lorsque le participant traverse une résistance intellectuelle et que l'image permet de contourner la censure du mental.</p>
+
+  <p>L'Oracle ne se substitue jamais aux exercices de la méthode ni aux questions d'observation du praticien. Il les complète. Une carte peut précéder un exercice, le préparer intérieurement. Elle peut aussi suivre une séance dense et offrir un mot de clôture, une image à emporter jusqu'à la prochaine rencontre. Le praticien est toujours maître de l'usage — la carte ne décide rien, elle propose.</p>
+
+  <div class="oracle-intro-grid">
+    <div class="oracle-theme-block">
+      <div class="oracle-theme-label">Corps · 11 cartes</div>
+      <div class="oracle-theme-phase">Phase 1 — L'Ancrage</div>
+      <div class="oracle-theme-desc">La peau, le souffle, les mains, les jambes, la gorge — le corps comme premier territoire de vérité. Ces cartes entrent par la sensation avant d'entrer par la pensée.</div>
+    </div>
+    <div class="oracle-theme-block">
+      <div class="oracle-theme-label">Lignage · 13 cartes</div>
+      <div class="oracle-theme-phase">Phase 2 — La Cartographie</div>
+      <div class="oracle-theme-desc">Le sang, les parents, les ancêtres, les secrets, les pactes — ce qui circule dans les veines sans avoir été choisi. Ces cartes accompagnent le travail du génosociogramme.</div>
+    </div>
+    <div class="oracle-theme-block">
+      <div class="oracle-theme-label">Pause · 5 cartes</div>
+      <div class="oracle-theme-phase">Phase 2·5 — L'Œil du Cyclone</div>
+      <div class="oracle-theme-desc">Le silence, le vide fécond, l'espace entre deux états — cartes d'immobilité consentie et de présence nue. Idéales pour les séances sans agenda.</div>
+    </div>
+    <div class="oracle-theme-block">
+      <div class="oracle-theme-label">Ombre · 10 cartes</div>
+      <div class="oracle-theme-phase">Phase 3 — La Traversée</div>
+      <div class="oracle-theme-desc">La colère, la honte, le saboteur, le masque — tout ce qui a été refoulé et qui remonte. Ces cartes nommant l'ombre permettent de l'accueillir sans la dramatiser.</div>
+    </div>
+    <div class="oracle-theme-block">
+      <div class="oracle-theme-label">Intégration · 2 cartes</div>
+      <div class="oracle-theme-phase">Phase 4 — L'Intégration</div>
+      <div class="oracle-theme-desc">La faim de reconnaissance, le guerrier qui dépose les armes — cartes de réconciliation avec soi-même après la traversée.</div>
+    </div>
+    <div class="oracle-theme-block">
+      <div class="oracle-theme-label">Archétype · 8 cartes</div>
+      <div class="oracle-theme-phase">Phase 5 — La Révélation</div>
+      <div class="oracle-theme-desc">La Sorcière Guérisseuse, le Faiseur de Ponts, la Gardienne du Seuil — des figures archétypales qui résonnent avec les 12 archétypes ORIA et accompagnent leur émergence.</div>
+    </div>
+    <div class="oracle-theme-block">
+      <div class="oracle-theme-label">Émergence · 4 cartes</div>
+      <div class="oracle-theme-phase">Phase 6 — L'Émergence</div>
+      <div class="oracle-theme-desc">L'appel incompréhensible, la vision, le sacré qui frissonne, l'être retrouvé — cartes de reconnaissance de ce qui devient, de ce qui s'incarne enfin.</div>
+    </div>
+    <div class="oracle-theme-block">
+      <div class="oracle-theme-label">Transmission · 2 cartes</div>
+      <div class="oracle-theme-phase">Phase 7 — La Transmission</div>
+      <div class="oracle-theme-desc">L'amour qui traverse, la danse de l'unité — cartes de clôture et de passage. Idéales pour la cérémonie de remise du Dossier d'Âme.</div>
+    </div>
+  </div>
+
+  <div class="box box-gold" style="max-width:720px;margin:24px 0">
+    <div class="box-title">Ce que l'Oracle n'est pas dans le cadre ORIA</div>
+    <p>L'Oracle L'Antre Toi n'est pas un outil de divination. Il ne prédit pas l'avenir, ne diagnostique pas, n'interprète pas à la place du participant. Le praticien ne "lit" pas la carte pour le participant — il l'invite à la lire lui-même. Le praticien ne dit pas "cette carte signifie que vous portez telle blessure" — il dit "qu'est-ce que cette carte touche en vous ?". La différence n'est pas seulement sémantique : elle est éthique. L'Oracle ouvre. Le praticien tient l'espace. Le participant décide de ce qu'il y entre.</p>
+  </div>
+</div>
+
+<div class="section" id="oracle-protocoles">
+  <div class="section-num">Partie III · 3.4a</div>
+  <div class="section-title">Les 5 Protocoles d'utilisation</div>
+  <div class="section-lead">Cinq manières précises et éprouvées d'utiliser l'Oracle en séance ORIA, chacune avec son moment, son intention et sa posture.</div>
+
+  <div class="oracle-protocol-grid">
+    <div class="oracle-protocol">
+      <div class="oracle-protocol-num">1</div>
+      <div>
+        <div class="oracle-protocol-title">L'Ouverture — Entrer par l'image</div>
+        <div class="oracle-protocol-text">Le participant tire une carte face cachée au début de la séance. Il la retourne et reste deux minutes en silence avec elle — sans chercher à comprendre, juste à ressentir. Puis il dit simplement : « Ce qui me touche dans cette carte, c'est… » Le praticien écoute sans commenter. Ce premier mouvement pose la tonalité de la séance et contourne la censure intellectuelle qui arrive souvent en début de rencontre.</div>
+        <div class="oracle-protocol-when">Usage : Toutes phases · Début de séance · Cartes du deck complet ou filtrées par phase</div>
+      </div>
+    </div>
+
+    <div class="oracle-protocol">
+      <div class="oracle-protocol-num">2</div>
+      <div>
+        <div class="oracle-protocol-title">Le Pont — Donner des mots à l'indicible</div>
+        <div class="oracle-protocol-text">Lorsque la parole est bloquée — que le participant tourne en rond, qu'un silence s'installe qui n'est pas fécond, que quelque chose cherche à se dire sans trouver sa forme — le praticien propose une carte tirée dans la famille thématique correspondant à la phase en cours. La carte ne parle pas pour le participant : elle lui offre une image, un mot, une figure vers laquelle il peut pointer du doigt et dire « oui, c'est là ». Ce protocole est particulièrement précieux en Phase 3 (Traversée) lorsque l'ombre résiste à la nomination directe.</div>
+        <div class="oracle-protocol-when">Usage : Phases 1 à 6 · Milieu de séance · Cartes sélectionnées par phase</div>
+      </div>
+    </div>
+
+    <div class="oracle-protocol">
+      <div class="oracle-protocol-num">3</div>
+      <div>
+        <div class="oracle-protocol-title">Le Miroir des Trois — Corps, Ombre, Transmission</div>
+        <div class="oracle-protocol-text">Le participant tire trois cartes, les pose face cachée, puis les retourne une à une dans cet ordre : la première représente ce qu'il porte visiblement, la deuxième ce qu'il cache encore, la troisième ce qu'il transmet malgré lui. Ce tirage ternaire est particulièrement puissant en Phase 3 (Traversée) ou au moment du bilan de mi-parcours (Phase 2·5). Il n'appelle pas d'interprétation du praticien — il appelle la parole du participant sur ce qu'il voit, ressent, reconnaît dans chacune des trois positions.</div>
+        <div class="oracle-protocol-when">Usage : Phases 2·5 et 3 · Séance de bilan ou d'ombre · Deck complet ou famille Ombre</div>
+      </div>
+    </div>
+
+    <div class="oracle-protocol">
+      <div class="oracle-protocol-num">4</div>
+      <div>
+        <div class="oracle-protocol-title">La Constellation — Oracle et génosociogramme</div>
+        <div class="oracle-protocol-text">En Phase 2, lorsque le travail du génosociogramme est engagé, le praticien sélectionne des cartes de la famille Lignage et les dispose physiquement sur la table, comme un génosociogramme vivant. Une carte peut représenter la mère, une autre le père, une autre un ancêtre inconnu, une autre un secret de famille. Le participant est invité à se lever, à marcher autour de la constellation, à observer depuis différents angles. Ce protocole engage le corps dans le travail généalogique et dépasse la représentation purement cognitive de l'héritage.</div>
+        <div class="oracle-protocol-when">Usage : Phase 2 · Séances de cartographie · Cartes famille Lignage uniquement</div>
+      </div>
+    </div>
+
+    <div class="oracle-protocol">
+      <div class="oracle-protocol-num">5</div>
+      <div>
+        <div class="oracle-protocol-title">La Clôture — La carte compagnon</div>
+        <div class="oracle-protocol-text">En fin de séance, le participant tire une carte qu'il garde avec lui jusqu'à la rencontre suivante. Cette carte n'est pas à analyser — elle est à fréquenter. Le praticien invite le participant à la poser dans un endroit visible chez lui, à lui parler, à noter dans son Journal ORIA ce qu'elle éveille au fil des jours. Lors de la séance suivante, la carte est posée sur la table et le participant en parle en premier. Ce protocole assure une continuité vivante entre les séances et approfondit le travail intérieur en dehors du cadre formel.</div>
+        <div class="oracle-protocol-when">Usage : Toutes phases · Fin de séance · Deck complet ou phase actuelle · Cartes gardées en mémoire dans le Journal</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="oracle-posture-grid">
+    <div class="oracle-posture-card oui">
+      <div class="oracle-posture-title oui">Le praticien fait…</div>
+      <ul>
+        <li>Propose la carte, tient l'espace</li>
+        <li>Pose des questions ouvertes sur ce que la carte touche</li>
+        <li>Laisse le silence après le tirage</li>
+        <li>Note ce que le participant exprime</li>
+        <li>Choisit la famille de cartes selon la phase</li>
+        <li>Enregistre le tirage dans le dossier participant</li>
+      </ul>
+    </div>
+    <div class="oracle-posture-card non">
+      <div class="oracle-posture-title non">Le praticien ne fait pas…</div>
+      <ul>
+        <li>N'interprète pas la carte à la place du participant</li>
+        <li>Ne dit jamais "cette carte veut dire que…"</li>
+        <li>Ne tire pas plusieurs cartes en espérant une "meilleure"</li>
+        <li>N'utilise pas l'Oracle comme oracle divinatoire</li>
+        <li>Ne force pas si le participant est résistant à l'outil</li>
+        <li>N'oublie pas que la carte est un miroir, pas un oracle</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="pq"><p>Chaque carte est un miroir. Une mémoire vivante. Un archétype qui murmure à travers toi. Ici, il ne s'agit pas de prédire, mais de ressentir. De reconnaître, de relier, de réparer.</p><div class="pq-attr">L'Antre Toi — Jonathan Cassagne</div></div>
+</div>
+
+<div class="section" id="oracle-cartes">
+  <div class="section-num">Partie III · 3.4b</div>
+  <div class="section-title">Les 55 cartes — Référentiel complet</div>
+  <div class="section-lead">Les 55 cartes organisées par famille thématique, avec leur citation et leur rituel. À connaître dans leur essence — non pour les mémoriser toutes, mais pour reconnaître celle qui s'impose dans un moment de séance.</div>
+
+  <div class="oracle-cards-section">
+
+    <!-- CORPS -->
+    <div class="oracle-cards-theme">
+      <div class="oracle-cards-theme-title">Corps — 11 cartes</div>
+      <div class="oracle-cards-theme-phase">Phase 1 · L'Ancrage · "La peau parle plus fort que ta bouche."</div>
+      <p style="font-size:14px;max-width:720px">Ces cartes entrent dans le corps avant d'entrer dans la pensée. Elles nommant ce qui est somatique, retenu, figé — ce que le participant porte physiquement sans toujours le savoir. Utilisées en Phase 1 pour initier le contact avec le corps, elles restent pertinentes tout au long du parcours lorsqu'une résistance corporelle est perceptible.</p>
+      <div class="oracle-cards-row">
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/3.png" alt="L'Écho dans la Peau" loading="lazy"><div class="oracle-card-thumb-name">L'Écho dans la Peau</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/4.png" alt="Le Nœud dans le Ventre" loading="lazy"><div class="oracle-card-thumb-name">Le Nœud dans le Ventre</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/5.png" alt="Les Mains de l'Autre" loading="lazy"><div class="oracle-card-thumb-name">Les Mains de l'Autre</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/6.png" alt="Le Cri Retenu" loading="lazy"><div class="oracle-card-thumb-name">Le Cri Retenu</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/7.png" alt="Le Dos qui Porte" loading="lazy"><div class="oracle-card-thumb-name">Le Dos qui Porte</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/8.png" alt="Le Souffle Coupé" loading="lazy"><div class="oracle-card-thumb-name">Le Souffle Coupé</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/9.png" alt="La Bouche Fermée" loading="lazy"><div class="oracle-card-thumb-name">La Bouche Fermée</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/10.png" alt="Les Jambes Figées" loading="lazy"><div class="oracle-card-thumb-name">Les Jambes Figées</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/12.png" alt="Le Corps Absent" loading="lazy"><div class="oracle-card-thumb-name">Le Corps Absent</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/13.png" alt="La Chair qui Sait" loading="lazy"><div class="oracle-card-thumb-name">La Chair qui Sait</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/45.png" alt="Le Corps de Sagesse" loading="lazy"><div class="oracle-card-thumb-name">Le Corps de Sagesse</div></div>
+      </div>
+    </div>
+
+    <!-- LIGNAGE -->
+    <div class="oracle-cards-theme">
+      <div class="oracle-cards-theme-title">Lignage — 13 cartes</div>
+      <div class="oracle-cards-theme-phase">Phase 2 · La Cartographie · "Ce qui est tu se transmet sans mot."</div>
+      <p style="font-size:14px;max-width:720px">Ces cartes accompagnent le travail du génosociogramme et l'exploration de l'héritage familial. Elles nommant les figures, les pactes, les secrets, les loyautés invisibles qui structurent le participant sans qu'il en ait conscience. Le protocole Constellation (protocole 4) est particulièrement adapté à cette famille.</p>
+      <div class="oracle-cards-row">
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/11.png" alt="Le Sang Ancien" loading="lazy"><div class="oracle-card-thumb-name">Le Sang Ancien</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/16.png" alt="La Haine Héréditaire" loading="lazy"><div class="oracle-card-thumb-name">La Haine Héréditaire</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/26.png" alt="La Mère Non Vue" loading="lazy"><div class="oracle-card-thumb-name">La Mère Non Vue</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/27.png" alt="Le Père Muet" loading="lazy"><div class="oracle-card-thumb-name">Le Père Muet</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/28.png" alt="L'Ancêtre Oubliée" loading="lazy"><div class="oracle-card-thumb-name">L'Ancêtre Oubliée</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/29.png" alt="Le Secret de Famille" loading="lazy"><div class="oracle-card-thumb-name">Le Secret de Famille</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/30.png" alt="La Promesse Non Tenue" loading="lazy"><div class="oracle-card-thumb-name">La Promesse Non Tenue</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/31.png" alt="L'Enfant Non Né" loading="lazy"><div class="oracle-card-thumb-name">L'Enfant Non Né</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/32.png" alt="Le Pacte Silencieux" loading="lazy"><div class="oracle-card-thumb-name">Le Pacte Silencieux</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/33.png" alt="La Douleur Injuste" loading="lazy"><div class="oracle-card-thumb-name">La Douleur Injuste</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/34.png" alt="Les Règles du Clan" loading="lazy"><div class="oracle-card-thumb-name">Les Règles du Clan</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/35.png" alt="La Voix qui Te Précède" loading="lazy"><div class="oracle-card-thumb-name">La Voix qui Te Précède</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/46.png" alt="La Voix Ancestrale" loading="lazy"><div class="oracle-card-thumb-name">La Voix Ancestrale</div></div>
+      </div>
+    </div>
+
+    <!-- PAUSE -->
+    <div class="oracle-cards-theme">
+      <div class="oracle-cards-theme-title">Pause — 5 cartes</div>
+      <div class="oracle-cards-theme-phase">Phase 2·5 · L'Œil du Cyclone · "Ce n'est pas le vide. C'est l'espace d'où tout peut naître."</div>
+      <p style="font-size:14px;max-width:720px">Ces cartes accompagnent les moments d'immobilité consentie — lorsque le participant est entre deux états, ni encore transformé ni plus tel qu'il était. Elles ne poussent pas vers l'avant. Elles invitent à rester là, à habiter le creux.</p>
+      <div class="oracle-cards-row">
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/48.png" alt="La Nuit de l'Âme" loading="lazy"><div class="oracle-card-thumb-name">La Nuit de l'Âme</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/49.png" alt="Le Silence Fécond" loading="lazy"><div class="oracle-card-thumb-name">Le Silence Fécond</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/51.png" alt="L'Espace Entre Deux" loading="lazy"><div class="oracle-card-thumb-name">L'Espace Entre Deux</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/54.png" alt="Le Non-Savoir Béni" loading="lazy"><div class="oracle-card-thumb-name">Le Non-Savoir Béni</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/55.png" alt="Le Temps Suspendu" loading="lazy"><div class="oracle-card-thumb-name">Le Temps Suspendu</div></div>
+      </div>
+    </div>
+
+    <!-- OMBRE -->
+    <div class="oracle-cards-theme">
+      <div class="oracle-cards-theme-title">Ombre — 10 cartes</div>
+      <div class="oracle-cards-theme-phase">Phase 3 · La Traversée · "Je crée en secret. Je dirige sans nom. Je suis ce que tu n'as pas encore regardé."</div>
+      <p style="font-size:14px;max-width:720px">Ces cartes nomment ce qui a été refoulé, nié, ou porté comme une honte. Elles ne dramatisent pas — elles reconnaissent. Utilisées avec soin en Phase 3, elles permettent au participant de poser un mot sur ce qu'il ressent sans avoir à l'expliquer. Le Miroir des Trois (protocole 3) est le dispositif le plus adapté à cette famille.</p>
+      <div class="oracle-cards-row">
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/14.png" alt="La Colère Sainte" loading="lazy"><div class="oracle-card-thumb-name">La Colère Sainte</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/15.png" alt="L'Enfant Honteux" loading="lazy"><div class="oracle-card-thumb-name">L'Enfant Honteux</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/17.png" alt="L'Amour Empoisonné" loading="lazy"><div class="oracle-card-thumb-name">L'Amour Empoisonné</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/19.png" alt="Le Saboteur Masqué" loading="lazy"><div class="oracle-card-thumb-name">Le Saboteur Masqué</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/20.png" alt="L'Oubli Volontaire" loading="lazy"><div class="oracle-card-thumb-name">L'Oubli Volontaire</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/21.png" alt="La Culpabilité qui Ronge" loading="lazy"><div class="oracle-card-thumb-name">La Culpabilité qui Ronge</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/22.png" alt="La Peur de Ne Pas Être" loading="lazy"><div class="oracle-card-thumb-name">La Peur de Ne Pas Être</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/23.png" alt="L'Ombre qui Tisse" loading="lazy"><div class="oracle-card-thumb-name">L'Ombre qui Tisse</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/24.png" alt="Le Masque du Bien" loading="lazy"><div class="oracle-card-thumb-name">Le Masque du Bien</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/25.png" alt="Le Nom qui Lie" loading="lazy"><div class="oracle-card-thumb-name">Le Nom qui Lie</div></div>
+      </div>
+    </div>
+
+    <!-- INTÉGRATION -->
+    <div class="oracle-cards-theme">
+      <div class="oracle-cards-theme-title">Intégration — 2 cartes</div>
+      <div class="oracle-cards-theme-phase">Phase 4 · L'Intégration · "Je n'ai plus à me défendre pour exister."</div>
+      <p style="font-size:14px;max-width:720px">Ces deux cartes accompagnent le moment de réconciliation avec soi-même après la traversée — lorsque le combat intérieur commence à se déposer et que le participant apprend à se voir sans avoir besoin de se prouver.</p>
+      <div class="oracle-cards-row">
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/18.png" alt="La Faim de Reconnaissance" loading="lazy"><div class="oracle-card-thumb-name">La Faim de Reconnaissance</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/40.png" alt="Le Guerrier Brisé" loading="lazy"><div class="oracle-card-thumb-name">Le Guerrier Brisé</div></div>
+      </div>
+    </div>
+
+    <!-- ARCHÉTYPE -->
+    <div class="oracle-cards-theme">
+      <div class="oracle-cards-theme-title">Archétype — 8 cartes</div>
+      <div class="oracle-cards-theme-phase">Phase 5 · La Révélation · "Je suis ce que tu n'as pas encore nommé."</div>
+      <p style="font-size:14px;max-width:720px">Ces cartes portent des figures archétypales — non pas les 12 archétypes ORIA à proprement parler, mais des figures mythiques qui leur font écho et qui peuvent accompagner le processus de révélation de l'archétype du participant. Elles sont précieuses avant et pendant les séances de Phase 5, lorsque quelque chose cherche à se nommer.</p>
+      <div class="oracle-cards-row">
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/36.png" alt="La Sorcière Guérisseuse" loading="lazy"><div class="oracle-card-thumb-name">La Sorcière Guérisseuse</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/37.png" alt="Le Faiseur de Ponts" loading="lazy"><div class="oracle-card-thumb-name">Le Faiseur de Ponts</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/38.png" alt="La Gardienne du Seuil" loading="lazy"><div class="oracle-card-thumb-name">La Gardienne du Seuil</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/39.png" alt="L'Enfant Sacré" loading="lazy"><div class="oracle-card-thumb-name">L'Enfant Sacré</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/41.png" alt="La Mère Sauvage" loading="lazy"><div class="oracle-card-thumb-name">La Mère Sauvage</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/42.png" alt="L'Amant Caché" loading="lazy"><div class="oracle-card-thumb-name">L'Amant Caché</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/43.png" alt="La Joueuse de Masques" loading="lazy"><div class="oracle-card-thumb-name">La Joueuse de Masques</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/44.png" alt="Le Visionnaire Blessé" loading="lazy"><div class="oracle-card-thumb-name">Le Visionnaire Blessé</div></div>
+      </div>
+    </div>
+
+    <!-- ÉMERGENCE -->
+    <div class="oracle-cards-theme">
+      <div class="oracle-cards-theme-title">Émergence — 4 cartes</div>
+      <div class="oracle-cards-theme-phase">Phase 6 · L'Émergence · "Tu n'as jamais été perdu.e. Tu étais juste loin de toi."</div>
+      <p style="font-size:14px;max-width:720px">Ces cartes accompagnent la reconnaissance de ce qui devient — lorsque le participant commence à se voir différemment dans sa vie quotidienne, lorsque quelque chose s'incarne enfin. Elles célèbrent l'émergence sans la forcer.</p>
+      <div class="oracle-cards-row">
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/47.png" alt="L'Appel Incompréhensible" loading="lazy"><div class="oracle-card-thumb-name">L'Appel Incompréhensible</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/52.png" alt="La Vision Venue d'Ailleurs" loading="lazy"><div class="oracle-card-thumb-name">La Vision Venue d'Ailleurs</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/53.png" alt="Le Sacré qui Frissonne" loading="lazy"><div class="oracle-card-thumb-name">Le Sacré qui Frissonne</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/56.png" alt="L'Être Retrouvé" loading="lazy"><div class="oracle-card-thumb-name">L'Être Retrouvé</div></div>
+      </div>
+    </div>
+
+    <!-- TRANSMISSION -->
+    <div class="oracle-cards-theme">
+      <div class="oracle-cards-theme-title">Transmission — 2 cartes</div>
+      <div class="oracle-cards-theme-phase">Phase 7 · La Transmission · "Rien ne te manque. Tu es l'unité qui s'ignore encore."</div>
+      <p style="font-size:14px;max-width:720px">Ces deux cartes encadrent la clôture du parcours. L'Amour qui Te Traverse peut être posée lors de la cérémonie de remise du Dossier d'Âme — elle rappelle que ce qui a été reçu n'appartient plus seulement au participant, mais commence à circuler. La Danse de l'Unité peut être la dernière carte du parcours, offerte comme un geste final.</p>
+      <div class="oracle-cards-row">
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/50.png" alt="L'Amour qui Te Traverse" loading="lazy"><div class="oracle-card-thumb-name">L'Amour qui Te Traverse</div></div>
+        <div class="oracle-card-thumb"><img src="Oracle L'Antre Toi/57.png" alt="La Danse de l'Unité" loading="lazy"><div class="oracle-card-thumb-name">La Danse de l'Unité</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="box box-brown" style="max-width:720px">
+    <div class="box-title dark">L'Oracle et le Journal ORIA</div>
+    <p>Chaque carte tirée en séance a sa place dans le Journal ORIA du participant. Le praticien invite le participant à coller ou dessiner la carte reçue sur une page, et à répondre par écrit à la question rituelle inscrite au dos. Ce travail d'écriture entre les séances ancre le symbole dans la vie quotidienne — il transforme l'image en processus vivant plutôt qu'en souvenir de séance. Au fil du parcours, le Journal devient une constellation visible de toutes les cartes traversées, un chemin symbolique parallèle au chemin des phases.</p>
+  </div>
+
+  <div class="divider"><div class="div-line"></div><div class="div-icon">✦</div><div class="div-line"></div></div>
 </div>
 
 <!-- ══════════════ PARTIE IV — ARCHÉTYPES ══════════════ -->
