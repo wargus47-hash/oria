@@ -110,6 +110,30 @@ textarea.field-input{resize:vertical;min-height:90px;line-height:1.6;}
 .ex-dur{font-size:.72rem;color:#8a7060;letter-spacing:.05em;margin-bottom:6px;padding:2px 8px;background:rgba(196,164,74,.08);display:inline-block;border-radius:2px;border:1px solid rgba(196,164,74,.2);}
 .ex-guide{margin-top:10px;padding:8px 12px;background:rgba(196,164,74,.07);border-left:3px solid #C4A44A;font-size:.83rem;color:#7a5c2e;line-height:1.55;font-style:italic;}
 .ex-note{margin-top:6px;padding:7px 12px;background:rgba(60,36,21,.04);border-left:3px solid rgba(60,36,21,.2);font-size:.78rem;color:#8a7060;line-height:1.55;}
+/* --- Bibliothèque d'exercices complémentaires --- */
+.lib-section{border:1px solid #e8dfc8;border-radius:8px;overflow:hidden;margin:0;background:#fffdf7;}
+.lib-section-hd{display:flex;align-items:center;gap:10px;padding:14px 18px;cursor:pointer;font-family:'Georgia',serif;font-size:1rem;font-weight:600;color:#3C2415;list-style:none;background:#f7f0e0;}
+.lib-section-hd::-webkit-details-marker{display:none;}
+.lib-count{font-size:.78rem;color:#8a7145;font-family:system-ui,sans-serif;font-weight:normal;margin-left:auto;}
+.lib-section[open] .lib-chev{transform:rotate(90deg);}
+.lib-chev{font-size:.7rem;color:#b89a4a;transition:transform .2s;flex-shrink:0;}
+.lib-cards{padding:12px;display:flex;flex-direction:column;gap:8px;}
+.lib-card{border:1px solid #e2d9c4;border-radius:6px;overflow:hidden;background:#fff;}
+.lib-card-hd{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;list-style:none;}
+.lib-card-hd::-webkit-details-marker{display:none;}
+.lib-card-title{font-size:.9rem;color:#3C2415;font-family:'Georgia',serif;flex:1;}
+.lib-card[open] .lib-chev{transform:rotate(90deg);}
+.lib-card-body{padding:14px 16px;border-top:1px solid #ede4d0;background:#fffdf9;display:flex;flex-direction:column;gap:8px;}
+.lib-text{margin:0;font-size:.88rem;color:#3a2e1e;line-height:1.65;}
+.lib-guide{font-size:.83rem;color:#5a7a3a;border-left:3px solid #8aad5a;padding-left:10px;}
+.lib-note{font-size:.82rem;color:#7a5a2a;font-style:italic;border-left:3px solid #C4A44A;padding-left:10px;}
+.lib-cat{font-size:.72rem;padding:2px 8px;border-radius:12px;font-family:system-ui,sans-serif;white-space:nowrap;flex-shrink:0;}
+.lib-cat-ecriture{background:#e8f0e0;color:#3a6020;}
+.lib-cat-corporel{background:#e0eaf8;color:#1a4a80;}
+.lib-cat-imaginaire{background:#ede0f8;color:#5a1a80;}
+.lib-cat-rituel{background:#f8e8d0;color:#8a3a00;}
+.lib-cat-dessin{background:#f0e8d0;color:#6a4a00;}
+.lib-cat-dialogue{background:#e0f0f0;color:#006060;}
 .question-list{list-style:none;padding:0;}
 .question-list li{padding:8px 0;border-bottom:1px solid var(--border);font-size:.88rem;color:var(--brown);line-height:1.5;}
 .question-list li:last-child{border-bottom:none;}
@@ -879,6 +903,202 @@ function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); 
 function loadState(){ const r=localStorage.getItem(STORAGE_KEY); if(r){try{state=JSON.parse(r);}catch(e){}} }
 function client(){ return state.clients.find(c=>c.id===state.currentClientId); }
 
+// PHASE_LIBRARY — exercices compl\xe9mentaires par phase
+// cat: ecriture | corporel | imaginaire | rituel | dessin | dialogue
+const PHASE_LIBRARY = {
+  0:[
+    {title:"La m\xe9t\xe9o int\xe9rieure",cat:"imaginaire",dur:"10 min",
+     text:"Si vous deviez d\xe9crire votre \xe9tat int\xe9rieur en ce moment \xe0 travers une image m\xe9t\xe9orologique — une saison, un ciel, une temp\xe9rature, une lumi\xe8re — laquelle serait-elle ? Prenez le temps de trouver la m\xe9taphore juste : pas celle que vous pensez devoir utiliser, mais celle qui correspond vraiment. D\xe9crivez-la en quelques phrases.",
+     guide:"Cette m\xe9taphore vous ressemble-t-elle ? Y a-t-il un d\xe9tail de cette image qui vous surprend ?",
+     note:"La m\xe9taphore m\xe9t\xe9orologique offre un acc\xe8s indirect \xe0 l'\xe9tat \xe9motionnel, particuli\xe8rement utile pour les participants qui peinent \xe0 nommer leurs \xe9motions directement."},
+    {title:"Le double seuil",cat:"ecriture",dur:"15 min",
+     text:"\xc9crivez deux paragraphes. Le premier d\xe9crit l'espace que vous quittez — ce que vous laissez derri\xe8re en entrant dans ce parcours. Le second d\xe9crit, m\xeame de fa\xe7on floue, l'espace vers lequel vous vous dirigez. Un seuil est un espace entre deux espaces : regardez-les c\xf4te \xe0 c\xf4te.",
+     guide:"Que ressentez-vous \xe0 regarder ces deux espaces c\xf4te \xe0 c\xf4te ?"},
+    {title:"L'objet du seuil",cat:"rituel",dur:"\xc0 apporter \xe0 la premi\xe8re s\xe9ance",
+     text:"Demandez au participant d'apporter un objet — quotidien ou charg\xe9 de sens — qui repr\xe9sente quelque chose d'important dans sa vie actuelle. En s\xe9ance, accordez dix minutes \xe0 sa description : sa texture, son histoire, pourquoi il a choisi celui-l\xe0 plut\xf4t qu'un autre.",
+     note:"Ce qui est dit autour d'un objet est souvent plus r\xe9v\xe9lateur que ce qui serait dit directement. L'objet offre une distance qui permet la parole."},
+    {title:"La premi\xe8re question invers\xe9e",cat:"dialogue",dur:"10 min",
+     text:"Au lieu de vous demander ce que vous attendez de ce parcours, demandez-vous : qu'est-ce que ce parcours attend de vous ? Qu'est-ce que cette d\xe9marche demande \xe0 la part de vous qui r\xe9siste ? \xc9crivez librement pendant dix minutes \xe0 partir de cette question invers\xe9e.",
+     guide:"Qu'est-ce qui, en vous, h\xe9site encore \xe0 commencer vraiment ?"},
+    {title:"Le contrat avec soi-m\xeame",cat:"ecriture",dur:"20 min",
+     text:"\xc9crivez un court texte — une demi-page maximum — qui nomme trois choses : ce \xe0 quoi vous vous engagez dans ce parcours (votre intention), ce que vous avez besoin que le praticien sache pour vous accompagner au mieux, et une chose que vous souhaitez laisser \xe0 la porte \xe0 chaque s\xe9ance — une attitude, une protection, un masque.",
+     note:"Ce texte n'est pas montr\xe9 au praticien sauf si le participant le propose. C'est un acte d'intention personnel, non un engagement contractuel."}
+  ],
+  1:[
+    {title:"La ligne du temps sensorielle",cat:"ecriture",dur:"30 min",
+     text:"Tracez votre ligne du temps — non pas d'\xe9v\xe9nements, mais de sensations marquantes. Non pas « j'ai d\xe9m\xe9nag\xe9 \xe0 7 ans » mais « \xe0 7 ans, j'ai senti le froid du nouveau carrelage ». Pour chaque \xe9tape de vie, cherchez le d\xe9tail sensoriel le plus pr\xe9cis : une odeur, une texture, une couleur, un son, une temp\xe9rature.",
+     guide:"Y a-t-il une sensation r\xe9currente \xe0 travers les \xe2ges — quelque chose que votre corps reconna\xeet depuis toujours ?"},
+    {title:"Le r\xe9cit du pr\xe9nom",cat:"dialogue",dur:"15 min",
+     text:"Qui a choisi votre pr\xe9nom ? Pourquoi celui-l\xe0 plut\xf4t qu'un autre ? Y a-t-il une figure familiale, une signification port\xe9e par ce choix ? Et votre rapport \xe0 votre pr\xe9nom aujourd'hui : vous y sentez-vous pleinement ? Y a-t-il un surnom, un autre nom que certains utilisent ? Le pr\xe9nom est souvent le premier h\xe9ritage conscient.",
+     guide:"Si vous aviez eu un autre pr\xe9nom, qui seriez-vous diff\xe9remment ?",
+     note:"Certains participants portent le pr\xe9nom d'un anc\xeatre d\xe9c\xe9d\xe9 ou d'une figure marquante. Cette information est pr\xe9cieuse pour la Phase 2."},
+    {title:"Les trois piliers",cat:"corporel",dur:"15 min en s\xe9ance, pratique entre les s\xe9ances",
+     text:"Identifiez trois \xe9l\xe9ments qui constituent vos piliers d'ancrage actuels — non ce que vous pensez devoir valoriser, mais ce qui vous ram\xe8ne r\xe9ellement \xe0 vous-m\xeame quand vous \xeates perdu. Ce peuvent \xeatre des lieux, des personnes, des activit\xe9s, des sensations, des objets. D\xe9crivez pr\xe9cis\xe9ment pourquoi chacun vous ancre.",
+     guide:"Ces piliers vous appartenaient-ils avant votre histoire familiale — ou sont-ils n\xe9s de cette histoire ?"},
+    {title:"L'enfance debout",cat:"corporel",dur:"10 min",
+     text:"Tenez-vous debout, les pieds bien pos\xe9s sur le sol, les yeux ferm\xe9s. Imaginez-vous enfant, \xe0 8 ans, debout dans une pi\xe8ce familiale. Quel est le sol sous vos pieds ? Comment tenez-vous votre corps ? Portez-vous quelque chose ? Attendez-vous quelqu'un ? Restez dans cette image cinq minutes. Puis revenez \xe0 votre corps d'aujourd'hui.",
+     guide:"Comment l'enfant de 8 ans tenait-il son corps — et comment cela r\xe9sonne-t-il avec votre posture aujourd'hui ?"},
+    {title:"Le territoire int\xe9rieur",cat:"dessin",dur:"20-30 min",
+     text:"Sans habilet\xe9 artistique requise, dessinez une carte de votre monde int\xe9rieur tel qu'il est aujourd'hui. Indiquez les zones que vous connaissez bien, celles qui vous sont floues, les fronti\xe8res entre ces espaces. Conservez ce dessin : il sera revisit\xe9 en Phase 7.",
+     note:"Proposez cet exercice sans mod\xe8le ni exemple. La spontan\xe9it\xe9 du dessin porte des informations que les mots auraient rationalis\xe9es."}
+  ],
+  2:[
+    {title:"Les h\xe9ritages nomm\xe9s",cat:"ecriture",dur:"20 min",
+     text:"Listez trois choses re\xe7ues de votre famille que vous choisissez de garder — des valeurs, des fa\xe7ons d'\xeatre, des savoirs, des ressources. Puis trois choses que vous avez d\xe9cid\xe9 de ne pas reproduire. Attention : ce qu'on fuit structure autant que ce qu'on ch\xe9rit.",
+     guide:"Y a-t-il quelque chose dans la colonne du « ne pas reproduire » qui est encore pr\xe9sent dans votre vie, malgr\xe9 votre d\xe9cision ?"},
+    {title:"La cartographie des lieux",cat:"dessin",dur:"25 min",
+     text:"Dessinez une carte des lieux significatifs de votre lign\xe9e : pays ou r\xe9gion d'origine de chaque branche, lieux de vie importants, migrations. Ce n'est pas une carte g\xe9ographique pr\xe9cise — c'est une repr\xe9sentation de l'espace qui a form\xe9 votre syst\xe8me familial. Y a-t-il des lieux qui ont disparu ? Des migrations jamais vraiment nomm\xe9es ?",
+     guide:"Quel est le lieu de votre famille qui vous est le plus \xe9tranger — et qu'est-ce que cela vous dit ?"},
+    {title:"La signature du non-dit",cat:"dialogue",dur:"15 min",
+     text:"Y a-t-il un \xe9v\xe9nement dont on ne parle pas dans votre famille ? Un deuil non fait, une honte transmise, un secret ? L'exercice consiste \xe0 nommer simplement l'espace de ce silence : sa forme, sa texture, comment il se manifeste dans les rassemblements, dans ce qu'on \xe9vite de dire.",
+     note:"N'insistez pas si le participant r\xe9siste. Nommer l'existence du non-dit sans chercher \xe0 le remplir est d\xe9j\xe0 un acte de reconnaissance.",
+     guide:"Quel effet produit ce silence dans le corps familial — et dans votre propre corps ?"},
+    {title:"Le tableau des r\xe9p\xe9titions",cat:"ecriture",dur:"30 min",
+     text:"Recensez les r\xe9p\xe9titions visibles dans votre g\xe9nosociogramme : m\xeames pr\xe9noms, m\xeames m\xe9tiers, m\xeames types de relations, m\xeames types de pertes, m\xeames \xe2ges de crise. Puis regardez votre propre vie : retrouvez-vous l'une de ces r\xe9p\xe9titions ? Une r\xe9p\xe9tition n'est pas une fatalit\xe9 — c'est une information sur ce qui cherche \xe0 \xeatre reconnu.",
+     guide:"Quelle r\xe9p\xe9tition vous surprend le plus — et y a-t-il une \xe9motion qui y est associ\xe9e ?"},
+    {title:"Les interdits de famille",cat:"ecriture",dur:"20 min",
+     text:"Dans votre famille d'origine, qu'est-ce qui ne se faisait pas ? Qu'est-ce qui ne se disait pas ? Ces interdits n'\xe9taient peut-\xeatre jamais formul\xe9s explicitement — ils se transmettaient par l'atmosph\xe8re, par les r\xe9actions, par l'\xe9vitement. Listez-en quatre ou cinq. Puis demandez-vous : lesquels de ces interdits guidez-vous encore aujourd'hui, sans les avoir jamais vraiment choisis ?",
+     guide:"Si vous pouviez lever l'un de ces interdits pour les g\xe9n\xe9rations qui viennent — lequel choisiriez-vous, et pourquoi ?"}
+  ],
+  2.5:[
+    {title:"Le texte suspendu",cat:"ecriture",dur:"Sans dur\xe9e impos\xe9e",
+     text:"Commencez une phrase par « Je suis en train de... » et \xe9crivez sans chercher \xe0 finir. Laissez la phrase en suspens, incompl\xe8te. Recommencez. Puis encore. L'exercice n'a pas de fin. Il n'y a pas de bonne r\xe9ponse. Dans le d\xe9sert, l'\xe9criture n'est pas destin\xe9e \xe0 r\xe9soudre — elle est destin\xe9e \xe0 t\xe9moigner qu'on est encore l\xe0, qu'on cherche encore, m\xeame sans trouver.",
+     note:"Ne demandez pas au participant de lire ce qu'il a \xe9crit. Le texte suspendu lui appartient. Votre r\xf4le est simplement de tenir l'espace pendant qu'il \xe9crit."},
+    {title:"La marche lente",cat:"corporel",dur:"15-20 min entre les s\xe9ances",
+     text:"Proposez au participant une pratique simple pour la semaine : marcher tr\xe8s lentement pendant 15 \xe0 20 minutes, sans destination, sans t\xe9l\xe9phone, sans musique. Observer le sol, les textures, les sons proches. La lenteur volontaire est une forme de r\xe9sistance \xe0 l'urgence que le d\xe9sert cr\xe9e.",
+     guide:"Qu'avez-vous remarqu\xe9 que vous n'auriez pas remarqu\xe9 en marchant normalement ?",
+     note:"Simple et accessible, cet exercice aide \xe0 sortir de la rumination mentale caract\xe9ristique du d\xe9sert identitaire."},
+    {title:"Le t\xe9moin patient",cat:"corporel",dur:"20 min",
+     text:"Restez assis, sans rien faire, pendant vingt minutes. Pas de m\xe9ditation guid\xe9e, pas de visualisation. Simplement rester. Observez ce qui se passe — les pens\xe9es qui arrivent, les r\xe9sistances, l'envie d'aller chercher quelque chose \xe0 faire. \xc0 la fin, notez une seule chose : qu'est-ce que cette immobilit\xe9 vous a r\xe9v\xe9l\xe9 sur votre rapport \xe0 l'inconfort de ne rien faire ?",
+     guide:"Qu'est-ce que le silence vous dit quand vous arr\xeatez de l'\xe9viter ?"},
+    {title:"La lettre depuis le d\xe9sert",cat:"ecriture",dur:"20 min",
+     text:"\xc9crivez une lettre \xe0 quelqu'un que vous aimez — pas pour lui expliquer ce que vous traversez, mais pour lui dire simplement o\xf9 vous \xeates : dans un entre-deux, sans rep\xe8res clairs. Pas de demande, pas d'explication, pas de r\xe9solution. Juste une lettre qui dit : je suis l\xe0, dans ce passage.",
+     note:"Cette lettre n'est pas envoy\xe9e. Elle permet au participant de nommer son \xe9tat sans avoir \xe0 le justifier — ce qui est pr\xe9cis\xe9ment ce dont il a besoin dans cette phase."}
+  ],
+  3:[
+    {title:"La ressource cach\xe9e dans la blessure",cat:"ecriture",dur:"20 min",
+     text:"Choisissez une \xe9preuve de votre parcours — quelque chose que vous avez travers\xe9, pas quelque chose que vous \xeates encore en train de vivre. Demandez-vous : qu'est-ce que cette travers\xe9e vous a appris que vous n'auriez pas appris autrement ? Quelle force a-t-elle d\xe9velopp\xe9e en vous, m\xeame \xe0 votre insu ? Cet exercice ne nie pas la douleur — il cherche \xe0 nommer ce que la blessure a construit.",
+     guide:"Si cette \xe9preuve avait quelque chose \xe0 vous transmettre, que serait-ce ?"},
+    {title:"Le rituel de d\xe9pose",cat:"rituel",dur:"20-30 min en s\xe9ance",
+     text:"Co-construisez avec le participant un rituel symbolique de d\xe9pose de quelque chose qu'il a longtemps port\xe9 : une lettre br\xfbl\xe9e, un objet d\xe9pos\xe9 dans un lieu significatif, un geste r\xe9p\xe9t\xe9, une phrase dite \xe0 voix haute. Le rituel doit \xeatre simple, sinc\xe8re, choisi par le participant lui-m\xeame. Son effet n'est pas magique — il marque symboliquement une d\xe9cision prise int\xe9rieurement.",
+     note:"Ne proposez pas vous-m\xeame le rituel. Demandez : « S'il y avait un geste que vous pourriez faire pour marquer cette d\xe9pose, quel serait-il ? »"},
+    {title:"La lettre de l'anc\xeatre",cat:"imaginaire",dur:"25 min",
+     text:"Inversez la direction : n'\xe9crivez pas \xe0 l'anc\xeatre, mais laissez l'anc\xeatre vous \xe9crire. Imaginez qu'une figure de votre lign\xe9e vous envoie une lettre — celle qu'elle aurait voulu \xe9crire si elle avait eu acc\xe8s \xe0 toute sa propre lucidit\xe9 et bienveillance. Qu'aurait-elle \xe0 vous dire ? Que voulait-elle transmettre que les circonstances de sa vie ne lui ont pas permis de dire ?",
+     guide:"Que se passe-t-il en vous en lisant (ou en \xe9crivant) cette lettre ?",
+     note:"Cet exercice peut \xeatre tr\xe8s charg\xe9 \xe9motionnellement. Accompagnez la lecture en s\xe9ance avec une pr\xe9sence silencieuse."},
+    {title:"Les trois d\xe9cisions",cat:"ecriture",dur:"15 min",
+     text:"Posez ces trois questions au participant et laissez-le \xe9crire librement \xe0 partir de chacune : Qu'est-ce que vous choisissez de garder de votre h\xe9ritage ? Qu'est-ce que vous choisissez de d\xe9poser ? Qu'est-ce que vous choisissez de transformer ? Chaque r\xe9ponse peut \xeatre not\xe9e et sign\xe9e dans le journal — non comme un contrat l\xe9gal, mais comme un acte de parole intentionnel.",
+     guide:"Qu'est-ce qui est facile \xe0 r\xe9pondre, et qu'est-ce qui r\xe9siste encore ?"},
+    {title:"Le collage d'int\xe9gration",cat:"dessin",dur:"30-45 min entre les s\xe9ances",
+     text:"Proposez au participant de cr\xe9er un collage — avec des images d\xe9coup\xe9es, des photos personnelles, des mots — qui repr\xe9sente ce qu'il int\xe8gre \xe0 ce stade du parcours. Pas de r\xe8gles esth\xe9tiques. Seulement l'intuition qui guide la main. Ce collage est apport\xe9 en s\xe9ance et d\xe9crit, non interpr\xe9t\xe9.",
+     note:"Le collage offre un acc\xe8s \xe0 des associations non-verbales que l'\xe9criture seule n'atteint pas. Accueillez ce que le participant d\xe9crit sans proposer d'interpr\xe9tation."}
+  ],
+  4:[
+    {title:"La cartographie des d\xe9sirs",cat:"dessin",dur:"25 min",
+     text:"Tracez un cercle. \xc0 l'int\xe9rieur, notez tout ce que vous voulez vraiment — non ce que vous pensez devoir vouloir, mais ce que vous voudriez si personne ne regardait, si vous n'aviez pas peur du ridicule. \xc0 l'ext\xe9rieur du cercle, notez ce que vous attendez de vous-m\xeame parce que c'est raisonnable ou attendu. Comparez les deux espaces.",
+     guide:"Y a-t-il quelque chose \xe0 l'int\xe9rieur du cercle que vous n'avez jamais dit \xe0 voix haute ?"},
+    {title:"La lettre depuis le futur",cat:"ecriture",dur:"20 min",
+     text:"Imaginez-vous \xe0 80 ans, regardant votre vie. \xc9crivez une lettre \xe0 votre vous d'aujourd'hui. Que vous dites-vous ? De quoi \xeates-vous fier ? Y a-t-il des regrets — et si oui, sur quoi portent-ils ? Ce n'est pas un exercice de projection positive : c'est une invitation \xe0 clarifier ce qui compte vraiment, vu depuis la fin.",
+     guide:"De quoi le vous de 80 ans serait-il le plus fier si vous commenciez \xe0 changer quelque chose maintenant ?"},
+    {title:"Les dix minutes quotidiennes",cat:"corporel",dur:"Pratique quotidienne sur 7 jours",
+     text:"Pendant une semaine, accordez-vous dix minutes par jour pour faire quelque chose sans utilit\xe9 imm\xe9diate mais qui vous nourrit : dessiner sans r\xe9sultat, marcher sans destination, observer la lumi\xe8re. \xc0 la fin de la semaine, notez : qu'avez-vous ressenti dans ces espaces ? Sont-ils faciles ou difficiles \xe0 vous accorder ?",
+     guide:"Qu'est-ce qui vous r\xe9siste le plus dans l'id\xe9e de vous accorder du temps sans utilit\xe9 ?"},
+    {title:"Le test de r\xe9sonance",cat:"corporel",dur:"20 min",
+     text:"Prenez chaque d\xe9sir ou aspiration identifi\xe9 dans les exercices pr\xe9c\xe9dents. Pour chacun, restez debout et prononcez-le \xe0 voix haute \xe0 la premi\xe8re personne : « Je suis ici pour... » ou « Ce que je veux vraiment, c'est... » Observez ce qui se passe dans votre corps : tension, l\xe9g\xe8ret\xe9, souffle retenu, larmes. Ces signaux sont fiables.",
+     guide:"Lequel de ces \xe9nonc\xe9s produit le signal le plus clair dans votre corps ?",
+     note:"Cet exercice pr\xe9pare directement la formulation de la phrase du Projet d'\xc2me."},
+    {title:"Le mentor imaginaire",cat:"imaginaire",dur:"20 min",
+     text:"Imaginez quelqu'un — r\xe9el ou fictif, historique ou contemporain — qui incarne ce que vous aspirez \xe0 exprimer. Ce n'est pas un mod\xe8le \xe0 copier : c'est un miroir. \xc9crivez en quoi cette figure vous ressemble d\xe9j\xe0, m\xeame partiellement. Puis \xe9crivez ce qu'elle vous dirait de faire maintenant, si elle vous regardait avec bienveillance.",
+     guide:"Qu'est-ce que ce mentor voit en vous que vous avez du mal \xe0 voir vous-m\xeame ?"}
+  ],
+  5:[
+    {title:"La galerie des figures",cat:"imaginaire",dur:"25 min",
+     text:"\xc9crivez les noms de cinq figures — r\xe9elles ou fictives, vivantes ou historiques — auxquelles vous vous identifiez spontan\xe9ment ou que vous admirez. Pour chacune : ce que vous admirez en elle, ce qui vous d\xe9range en elle, et une qualit\xe9 que vous reconnaissez partager. Cette galerie est un mat\xe9riau de conversation pour le praticien, non un outil d'attribution.",
+     note:"Ne nommez pas encore l'arch\xe9type pendant cet exercice. Gardez-le en observation."},
+    {title:"L'ombre \xe0 apprivoiser",cat:"ecriture",dur:"20 min",
+     text:"\xc9crivez ce que vous percevez comme votre propre ombre — la part de vous que vous jugez le plus s\xe9v\xe8rement, que vous cherchez \xe0 cacher ou \xe0 compenser. Dans quelles circonstances de votre vie cette ombre est-elle apparue le plus clairement ? Sous quelle forme ? L'ombre n'est pas un d\xe9faut \xe0 corriger — c'est une r\xe9serve d'\xe9nergie non int\xe9gr\xe9e.",
+     guide:"Qu'est-ce que cette ombre a cherch\xe9 \xe0 vous prot\xe9ger, quand elle est apparue ?",
+     note:"L'int\xe9gration de l'ombre de l'arch\xe9type sera approfondie en Phase 6."},
+    {title:"Le portrait \xe0 la troisi\xe8me personne",cat:"ecriture",dur:"20 min",
+     text:"\xc9crivez-vous \xe0 la troisi\xe8me personne — « Il est quelqu'un qui... » ou « Elle est fondamentalement... » — comme si vous d\xe9criviez un personnage de roman. Ce portrait doit \xeatre \xe9crit avec bienveillance, m\xeame dans ses contradictions. Pas de jugements, pas de « il devrait ». C'est un portrait de ce qu'il est, dans sa complexit\xe9 r\xe9elle.",
+     guide:"Qu'est-ce que ce portrait dit de vous que vous n'auriez pas dit directement \xe0 la premi\xe8re personne ?",
+     note:"Ce portrait sera inclus dans le Dossier d'\xc2me."},
+    {title:"La sc\xe8ne de reconnaissance",cat:"imaginaire",dur:"15 min",
+     text:"Souvenez-vous d'un moment dans votre vie o\xf9 vous vous \xeates senti pleinement vous-m\xeame — une sc\xe8ne dans laquelle toutes vos parties semblaient align\xe9es. Avec qui \xe9tiez-vous ? Que faisiez-vous ? Cette sc\xe8ne n'est pas un id\xe9al \xe0 reproduire — c'est un t\xe9moignage de ce que vous \xeates quand rien ne vous en emp\xeache.",
+     guide:"Quelle qualit\xe9 \xe9tait particuli\xe8rement pr\xe9sente dans ce moment — et comment se manifeste-t-elle dans votre vie aujourd'hui ?"}
+  ],
+  6:[
+    {title:"Le titre du film",cat:"imaginaire",dur:"10 min",
+     text:"Si votre vie \xe9tait un film, comment s'appellerait-il ? Pas le titre que vous aimeriez que les gens voient — le titre v\xe9ritable, celui qui capturerait honn\xeatement ce que vous avez v\xe9cu jusqu'ici. Puis : quel serait le titre du chapitre suivant, celui qui commence maintenant ?",
+     guide:"Qu'est-ce qui change dans le titre entre avant et maintenant ?"},
+    {title:"La sc\xe8ne fondatrice",cat:"ecriture",dur:"25 min",
+     text:"Dans votre mythe personnel, il y a souvent une sc\xe8ne fondatrice — un moment pr\xe9cis, t\xf4t dans votre vie, o\xf9 quelque chose d'essentiel s'est nou\xe9. Ce n'est pas forc\xe9ment un traumatisme : ce peut \xeatre un moment de clart\xe9, de d\xe9cision, de s\xe9paration. Identifiez cette sc\xe8ne et racontez-la en d\xe9tail, \xe0 la troisi\xe8me personne, comme si vous la regardiez depuis l'ext\xe9rieur.",
+     guide:"Qu'est-ce que le personnage comprend dans cette sc\xe8ne — et qu'est-ce qu'il ne comprend pas encore ?"},
+    {title:"Le chapitre manquant",cat:"ecriture",dur:"20 min",
+     text:"Dans toute histoire, il y a des chapitres qu'on a saut\xe9s ou qu'on n'a pas eu le droit d'\xe9crire. Y a-t-il dans votre mythe personnel un chapitre manquant — une partie de votre histoire que vous n'avez jamais vraiment racont\xe9e ? Vous n'avez pas \xe0 l'\xe9crire enti\xe8rement. D\xe9crivez simplement son existence : de quoi parlerait-il ? Quelle serait sa premi\xe8re phrase ?",
+     guide:"Qu'est-ce que ce chapitre manquant changerait \xe0 votre r\xe9cit si vous l'\xe9criviez ?"},
+    {title:"La voix du narrateur",cat:"ecriture",dur:"20 min",
+     text:"Tout mythe personnel est racont\xe9 par une voix. Quelle est la voix de votre narrateur int\xe9rieur ? Est-elle dure ou bienveillante ? Distante ou proche ? \xc9crivez un passage de votre mythe avec la voix que vous utilisez habituellement — puis r\xe9\xe9crivez le m\xeame passage avec la voix d'un narrateur bienveillant. Observez ce qui change.",
+     guide:"Quelle voix souhaitez-vous qu'on entende dans la conclusion de votre mythe ?"}
+  ],
+  7:[
+    {title:"Le testament symbolique",cat:"ecriture",dur:"30 min",
+     text:"Un testament symbolique n'est pas un document l\xe9gal — c'est un acte de transmission intentionnel. \xc9crivez ce que vous souhaitez transmettre : non vos biens, mais ce que vous avez compris, transform\xe9, d\xe9couvert. \xc0 qui le transmettez-vous ? Sous quelle forme ? Ce testament est \xe9crit au pr\xe9sent : « Je transmets... je l\xe8gue... je confie... »",
+     guide:"Y a-t-il quelque chose que vous n'aviez pas pr\xe9vu de transmettre, mais qui est apparu dans ce texte ?"},
+    {title:"La lettre aux g\xe9n\xe9rations futures",cat:"ecriture",dur:"25 min",
+     text:"\xc9crivez une lettre aux g\xe9n\xe9rations qui viendront apr\xe8s vous — dans trente, cinquante, cent ans. Qu'est-ce que vous leur transmettez de ce que vous avez v\xe9cu, travers\xe9, compris ? Qu'est-ce que vous leur souhaitez de pouvoir faire diff\xe9remment ? Cette lettre n'a pas de destinataire r\xe9el — elle a un horizon.",
+     guide:"Qu'est-ce que vous voudriez que ces g\xe9n\xe9rations sachent de vous — au-del\xe0 de votre nom et de vos dates ?"},
+    {title:"Le bilan de pr\xe9sence",cat:"corporel",dur:"20 min",
+     text:"\xc0 l'issue de ce parcours, tenez-vous debout une derni\xe8re fois. Fermez les yeux. Sentez vos pieds sur le sol. Comparez cette sensation \xe0 celle du tout d\xe9but — \xe0 la Phase 0. Puis ouvrez les yeux et regardez autour de vous. Qu'est-ce que vous voyez maintenant que vous ne voyiez pas au d\xe9but ?",
+     guide:"Comment tenez-vous debout diff\xe9remment qu'au d\xe9but ?",
+     note:"Ce rituel de cl\xf4ture corporel est particuli\xe8rement fort pour les participants qui ont commenc\xe9 le parcours coup\xe9s de leur corps."},
+    {title:"L'alliance avec soi",cat:"rituel",dur:"15 min lors de la derni\xe8re s\xe9ance",
+     text:"Invitez le participant \xe0 \xe9crire une phrase d'alliance avec lui-m\xeame — courte, \xe0 la premi\xe8re personne, qui nomme ce qu'il s'engage \xe0 honorer dans sa propre vie apr\xe8s ce parcours. Pas un objectif, pas une r\xe9solution : une direction. « Je m'engage \xe0... » ou « \xc0 partir d'aujourd'hui, je choisis de... » La phrase est lue \xe0 voix haute, puis ins\xe9r\xe9e dans le Dossier d'\xc2me.",
+     note:"Certains participants choisissent de signer physiquement cette phrase. Accueillez ce geste avec le s\xe9rieux qu'il m\xe9rite — c'est l'un des actes les plus importants du parcours."}
+  ]
+};
+
+const CAT_LABELS={
+  ecriture:'✍ \xc9criture',
+  corporel:'◎ Corporel',
+  imaginaire:'◎ Imaginaire',
+  rituel:'✦ Rituel',
+  dessin:'▦ Dessin',
+  dialogue:'◊ Dialogue'
+};
+
+function renderGenoLibrary(phase){
+  var lib=PHASE_LIBRARY[phase.num]||[];
+  if(!lib.length)return '';
+  var cards=lib.map(function(ex){
+    var catLbl=CAT_LABELS[ex.cat]||ex.cat;
+    var body='';
+    if(ex.dur)body+='<div class="ex-dur">&#9200; '+escHtml(ex.dur)+'</div>';
+    body+='<p class="lib-text">'+escHtml(ex.text)+'</p>';
+    if(ex.guide)body+='<div class="lib-guide">&rarr; '+escHtml(ex.guide)+'</div>';
+    if(ex.note)body+='<div class="lib-note">&#9998; '+escHtml(ex.note)+'</div>';
+    return '<details class="lib-card">'
+      +'<summary class="lib-card-hd">'
+      +'<span class="lib-cat lib-cat-'+ex.cat+'">'+catLbl+'</span>'
+      +'<span class="lib-card-title">'+escHtml(ex.title)+'</span>'
+      +'<span class="lib-chev">&#9656;</span>'
+      +'</summary>'
+      +'<div class="lib-card-body">'+body+'</div>'
+      +'</details>';
+  }).join('');
+  return '<div class="guide-section">'
+    +'<details class="lib-section">'
+    +'<summary class="lib-section-hd">'
+    +'Biblioth\xe8que d\'exercices compl\xe9mentaires'
+    +'<span class="lib-count">'+lib.length+' exercices</span>'
+    +'<span class="lib-chev">&#9656;</span>'
+    +'</summary>'
+    +'<div class="lib-cards">'+cards+'</div>'
+    +'</details>'
+    +'</div>';
+}
+
+
 // ── PHASES ────────────────────────────────────────────────────────
 const PHASES = [
   { num:0, label:'Phase 0', name:'Le Seuil',
@@ -1438,6 +1658,7 @@ function renderSessionGuide(){
         <div class="guide-section-title">Questions d'observation praticien</div>
         <ul class="question-list">${phase.questions.map(q=>`<li>${q}</li>`).join('')}</ul>
       </div>
+      ${renderGenoLibrary(phase)}
     </div>`;
   renderSessionHistory();
 }
