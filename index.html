@@ -2169,6 +2169,10 @@ function showToast(msg){
 }
 
 // ── UTILS ─────────────────────────────────────────────────────────
+function escHtml(s){
+  if(!s)return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 function formatDate(iso){
   if(!iso)return '—';const[y,m,d]=iso.split('-');
   const months=['jan.','fév.','mars','avr.','mai','juin','juil.','août','sep.','oct.','nov.','déc.'];
