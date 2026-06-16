@@ -161,6 +161,53 @@ textarea.field-input{resize:vertical;min-height:90px;line-height:1.6;}
 .da-section-title{font-size:.8rem;letter-spacing:.15em;color:var(--gold-d);text-transform:uppercase;margin-bottom:14px;}
 .da-actions{display:flex;gap:12px;margin-top:24px;}
 
+/* ── ORACLE ───────────────────────────────────────────────────── */
+.oracle-layout{display:flex;gap:0;height:100%;overflow:hidden;flex-direction:column;}
+.oracle-toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px;}
+.oracle-mode-btn{padding:7px 16px;border:1px solid var(--border);background:var(--white);font-family:Georgia,serif;font-size:.8rem;color:var(--muted);cursor:pointer;border-radius:2px;}
+.oracle-mode-btn:hover{border-color:var(--gold);color:var(--gold-d);}
+.oracle-mode-btn.active{background:var(--gold);border-color:var(--gold);color:var(--brown);}
+.oracle-phase-filter{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
+.oracle-phase-chip{padding:4px 12px;border:1px solid var(--border);background:var(--white);font-family:Georgia,serif;font-size:.75rem;color:var(--muted);cursor:pointer;border-radius:20px;}
+.oracle-phase-chip:hover{border-color:var(--gold);}
+.oracle-phase-chip.active{background:var(--gold-l);border-color:var(--gold);color:var(--gold-d);}
+.oracle-tirage-zone{display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;}
+.oracle-card-display{flex:0 0 220px;display:flex;flex-direction:column;align-items:center;gap:12px;}
+.oracle-card-img{width:200px;border-radius:4px;box-shadow:0 4px 20px rgba(60,36,21,.25);cursor:pointer;transition:transform .2s;}
+.oracle-card-img:hover{transform:scale(1.02);}
+.oracle-card-back{width:200px;height:320px;border-radius:4px;background:var(--brown);display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid var(--gold);box-shadow:0 4px 20px rgba(60,36,21,.25);flex-direction:column;gap:8px;color:var(--gold);font-size:1.4rem;letter-spacing:.3em;}
+.oracle-card-back span{font-size:.7rem;color:var(--muted-l);letter-spacing:.15em;text-transform:uppercase;}
+.oracle-card-info{flex:1;min-width:260px;}
+.oracle-card-name{font-size:1.2rem;color:var(--brown);margin-bottom:6px;}
+.oracle-card-quote{font-style:italic;color:var(--muted);font-size:.9rem;line-height:1.6;margin-bottom:16px;padding:12px 16px;border-left:3px solid var(--gold);background:var(--ivory-d);}
+.oracle-card-theme{font-size:.68rem;letter-spacing:.15em;color:var(--gold-d);text-transform:uppercase;margin-bottom:8px;}
+.oracle-card-ritual{font-size:.85rem;color:var(--brn);line-height:1.7;margin-bottom:16px;}
+.oracle-card-phases{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.oracle-card-phase-tag{font-size:.7rem;background:var(--gold-ll);border:1px solid var(--gold);color:var(--gold-d);padding:2px 8px;border-radius:10px;}
+.oracle-protocols{background:var(--white);border:1px solid var(--border);border-radius:2px;padding:20px;margin-bottom:20px;}
+.oracle-protocol-item{padding:10px 0;border-bottom:1px solid var(--border);font-size:.85rem;color:var(--brown);line-height:1.5;}
+.oracle-protocol-item:last-child{border-bottom:none;}
+.oracle-protocol-name{font-weight:normal;color:var(--gold-d);margin-bottom:3px;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;}
+.oracle-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;}
+.oracle-grid-card{cursor:pointer;border-radius:3px;overflow:hidden;border:2px solid transparent;transition:border-color .15s;}
+.oracle-grid-card:hover{border-color:var(--gold);}
+.oracle-grid-card.phase-match{border-color:rgba(196,164,74,.4);}
+.oracle-grid-card img{width:100%;display:block;}
+.oracle-grid-card-name{font-size:.7rem;color:var(--brown);padding:6px 8px;background:var(--white);text-align:center;line-height:1.3;}
+.oracle-history{margin-top:24px;}
+.oracle-history-entry{background:var(--white);border:1px solid var(--border);border-radius:2px;padding:12px 16px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start;}
+.oracle-history-img{width:48px;border-radius:2px;flex-shrink:0;}
+.oracle-history-info{flex:1;}
+.oracle-history-name{font-size:.88rem;color:var(--brown);margin-bottom:2px;}
+.oracle-history-meta{font-size:.72rem;color:var(--muted);margin-bottom:4px;}
+.oracle-history-note{font-size:.8rem;color:var(--brn);font-style:italic;}
+.oracle-history-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;padding:0 2px;flex-shrink:0;}
+.oracle-history-del:hover{color:var(--danger);}
+.draw-btn{background:var(--brown);color:var(--gold);border:1px solid var(--gold);padding:12px 28px;font-family:Georgia,serif;font-size:.88rem;letter-spacing:.12em;cursor:pointer;border-radius:2px;text-transform:uppercase;}
+.draw-btn:hover{background:var(--brn);}
+/* modal oracle card large */
+.oracle-modal-img{width:100%;max-width:300px;border-radius:4px;display:block;margin:0 auto 16px;}
+
 /* ── PAST SESSIONS ────────────────────────────────────────────── */
 .session-history{margin-top:24px;}
 .session-history h4{font-size:.72rem;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;}
@@ -297,6 +344,7 @@ textarea.field-input{resize:vertical;min-height:90px;line-height:1.6;}
         <button class="tab" onclick="switchTab('mandala')">Mandala</button>
         <button class="tab" id="tab-archetype" onclick="switchTab('archetype')">Archétype</button>
         <button class="tab" id="tab-dossier" onclick="switchTab('dossier')">Dossier d'Âme</button>
+        <button class="tab" onclick="switchTab('oracle')">Oracle</button>
       </div>
       <div class="tab-panels">
 
@@ -480,6 +528,65 @@ textarea.field-input{resize:vertical;min-height:90px;line-height:1.6;}
           </div>
         </div>
 
+        <!-- ORACLE -->
+        <div class="tab-panel" id="panel-oracle">
+          <div class="section-title">Oracle L'Antre Toi — Outil de séance</div>
+          <p style="font-size:.85rem;color:var(--muted);margin-bottom:20px;line-height:1.6;">L'Oracle est un miroir, pas un oracle divinatoire. Chaque carte ouvre un espace — elle ne prédit rien, ne diagnostique rien. Le praticien choisit le protocole, pose la carte, tient l'espace.</p>
+
+          <!-- Protocoles -->
+          <div class="oracle-protocols">
+            <div class="guide-section-title" style="margin-bottom:12px;">5 Protocoles d'utilisation</div>
+            <div class="oracle-protocol-item"><div class="oracle-protocol-name">L'Ouverture</div>Le participant tire une carte face cachée, la retourne en silence (2 min), puis dit : « Ce qui me touche dans cette carte, c'est… » — utilisé en début de séance, toutes phases.</div>
+            <div class="oracle-protocol-item"><div class="oracle-protocol-name">Le Pont</div>Quand la parole est bloquée, le praticien propose une carte de la phase en cours. Elle donne un vocabulaire à ce qui n'a pas encore de mots.</div>
+            <div class="oracle-protocol-item"><div class="oracle-protocol-name">Le Miroir des 3</div>Phase 3 — Le participant tire 3 cartes : ce que je porte / ce que je cache / ce que je transmets.</div>
+            <div class="oracle-protocol-item"><div class="oracle-protocol-name">La Constellation</div>Phase 2 — Le praticien sélectionne des cartes de lignage et les dispose physiquement comme un génosociogramme sur la table.</div>
+            <div class="oracle-protocol-item"><div class="oracle-protocol-name">La Clôture</div>Fin de séance — une carte est tirée et gardée par le participant jusqu'à la prochaine rencontre. Elle est son compagnon de semaine.</div>
+          </div>
+
+          <!-- Mode selector -->
+          <div class="oracle-toolbar">
+            <button class="oracle-mode-btn active" onclick="setOracleMode('tirage')" id="omode-tirage">Tirage</button>
+            <button class="oracle-mode-btn" onclick="setOracleMode('bibliotheque')" id="omode-bibliotheque">Bibliothèque</button>
+            <button class="oracle-mode-btn" onclick="setOracleMode('historique')" id="omode-historique">Historique des tirages</button>
+          </div>
+
+          <!-- MODE: TIRAGE -->
+          <div id="oracle-tirage">
+            <div class="guide-section-title" style="margin-bottom:10px;">Filtrer par phase</div>
+            <div class="oracle-phase-filter" id="oracle-phase-filter"></div>
+            <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
+              <button class="draw-btn" onclick="drawCard()">Tirer une carte</button>
+              <button class="btn-sm" onclick="drawCard(true)">Tirer dans toutes les phases</button>
+            </div>
+            <div class="oracle-tirage-zone" id="oracle-tirage-zone">
+              <div style="width:200px;height:320px;border:2px dashed var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.82rem;text-align:center;padding:20px;">Cliquez sur<br>« Tirer une carte »</div>
+            </div>
+            <!-- Save tirage -->
+            <div id="oracle-save-zone" style="display:none;margin-top:20px;">
+              <div class="notes-area">
+                <h4>Note de tirage (praticien)</h4>
+                <textarea class="field-input" id="oracle-tirage-note" rows="3" placeholder="Résonance observée, mots du participant, orientation pour la suite..."></textarea>
+                <div style="display:flex;gap:10px;margin-top:10px;">
+                  <button class="btn-save" onclick="saveTirage()">Enregistrer ce tirage</button>
+                  <button class="btn-sm" onclick="clearTirage()">Effacer</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MODE: BIBLIOTHÈQUE -->
+          <div id="oracle-bibliotheque" style="display:none;">
+            <div class="guide-section-title" style="margin-bottom:10px;">Filtrer par thème</div>
+            <div class="oracle-phase-filter" id="oracle-theme-filter"></div>
+            <div class="oracle-grid" id="oracle-grid"></div>
+          </div>
+
+          <!-- MODE: HISTORIQUE -->
+          <div id="oracle-historique" style="display:none;">
+            <div class="oracle-history" id="oracle-history-list"></div>
+          </div>
+        </div>
+
       </div><!-- tab-panels -->
     </div><!-- workspace -->
 
@@ -497,6 +604,20 @@ textarea.field-input{resize:vertical;min-height:90px;line-height:1.6;}
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('modal-add')">Annuler</button>
       <button class="btn-gold" onclick="addClient()">Créer le participant</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Carte Oracle agrandie -->
+<div class="modal-overlay" id="modal-oracle-card">
+  <div class="modal" style="max-width:380px;text-align:center;">
+    <img class="oracle-modal-img" id="modal-oracle-img" src="" alt="">
+    <div id="modal-oracle-name" style="font-size:1.1rem;color:var(--brown);margin-bottom:8px;"></div>
+    <div id="modal-oracle-quote" style="font-style:italic;font-size:.85rem;color:var(--muted);line-height:1.6;margin-bottom:12px;padding:10px 14px;background:var(--ivory-d);border-left:3px solid var(--gold);text-align:left;"></div>
+    <div id="modal-oracle-ritual" style="font-size:.82rem;color:var(--brn);line-height:1.7;text-align:left;margin-bottom:16px;"></div>
+    <div class="modal-actions" style="justify-content:center;">
+      <button class="btn-cancel" onclick="closeModal('modal-oracle-card')">Fermer</button>
+      <button class="btn-save" onclick="selectCardFromModal()" style="margin:0;">Utiliser cette carte</button>
     </div>
   </div>
 </div>
@@ -618,6 +739,245 @@ const MANDALA_RINGS = [
   {phase:7, label:'Postulat Central', r:5, center:true}
 ];
 
+// ── ORACLE CARDS ──────────────────────────────────────────────────
+// file = PNG filename in "Oracle L'Antre Toi/" folder (1.png=intro, 2.png=message, 3.png=carte1...)
+const ORACLE_CARDS = [
+  // CORPS — Phase 1 (Ancrage)
+  {id:1, file:3,  name:"L'Écho dans la Peau",       theme:'corps',       phases:[1],      quote:"Ta peau parle plus fort que ta bouche. Elle garde la trace de tout ce que tu n'as pas nommé.",                                                           ritual:"Passe lentement tes mains sur ton corps, de la tête aux pieds, en prononçant : « Je te reconnais. Je te sens. Je te rends ta voix. »"},
+  {id:2, file:4,  name:"Le Nœud dans le Ventre",    theme:'corps',       phases:[1],      quote:"Je suis la boule que tu ignores. Le oui que tu ravales. La peur de dire non.",                                                                           ritual:"Allonge-toi et respire dans ton ventre. Place tes mains dessus. Demande à ce nœud ce qu'il veut dire. Puis écoute. Et écris."},
+  {id:3, file:5,  name:"Les Mains de l'Autre",      theme:'corps',       phases:[1],      quote:"J'ai gardé l'empreinte. Même si tu prétends avoir oublié.",                                                                                               ritual:"Dessine une main sur une feuille. Note à l'intérieur tout ce que d'autres mains ont imprimé dans ton corps. Puis brûle ou enterre le dessin."},
+  {id:4, file:6,  name:"Le Cri Retenu",             theme:'corps',       phases:[1],      quote:"Je suis la voix bloquée. La gorge serrée. L'expression sacrifiée.",                                                                                       ritual:"Chante un son qui monte du ventre. Même si c'est laid. Même si ça tremble. Même si tu pleures."},
+  {id:5, file:7,  name:"Le Dos qui Porte",          theme:'corps',       phases:[1,4],    quote:"Je suis la charge invisible. Celle que tu n'as jamais remise à sa place.",                                                                                 ritual:"Visualise un sac lourd sur ton dos. Puis retire-le consciemment. Respire profondément et dis : « Je rends ce qui ne m'appartient pas. »"},
+  {id:6, file:8,  name:"Le Souffle Coupé",          theme:'corps',       phases:[0,1],    quote:"Chaque fois que tu t'es figé, j'ai oublié comment respirer.",                                                                                             ritual:"Inspire profondément. Expire lentement par la bouche. Répète 11 fois. Sens où le souffle ne passe plus. Apporte-y ta présence."},
+  {id:7, file:9,  name:"La Bouche Fermée",          theme:'corps',       phases:[1,4],    quote:"Je suis l'histoire que tu n'as pas racontée. Le baiser refusé. Le non prononcé.",                                                                          ritual:"Écris une lettre que tu ne donneras jamais. À qui as-tu fermé la bouche ? À toi ? À un autre ? Dis-le. Et brûle-la si tu veux."},
+  {id:8, file:10, name:"Les Jambes Figées",         theme:'corps',       phases:[1],      quote:"Je suis la peur du mouvement. L'héritage du figement. L'ordre de ne pas fuir.",                                                                           ritual:"Debout, secoue légèrement tes jambes, puis danse ou marche en répétant : « Je suis libre d'avancer. »"},
+  {id:9, file:12, name:"Le Corps Absent",           theme:'corps',       phases:[1],      quote:"Tu vis dans ta tête pour ne pas sentir. Mais je suis toujours là, en attente.",                                                                            ritual:"Fais un scan corporel lent. Chaque partie que tu ressens, touche-la. Chaque partie que tu fuis, nomme-la. Et reste là. Présent."},
+  {id:10,file:13, name:"La Chair qui Sait",         theme:'corps',       phases:[1,5],    quote:"Tu n'as pas besoin de comprendre. Je suis ta sagesse première.",                                                                                            ritual:"Allonge-toi ou assieds-toi. Demande à ton corps : « De quoi as-tu besoin aujourd'hui ? » Puis fais-le. Sans justification."},
+  {id:11,file:45, name:"Le Corps de Sagesse",       theme:'corps',       phases:[1,5],    quote:"Tu veux comprendre ? Écoute ton dos. Ton ventre. Ton rythme.",                                                                                              ritual:"Allonge-toi. Demande à ton corps : « Qu'as-tu à me dire aujourd'hui ? » Ne bouge pas. Juste écoute."},
+  // LIGNAGE — Phase 2 (Cartographie)
+  {id:12,file:11, name:"Le Sang Ancien",            theme:'lignage',     phases:[2],      quote:"Je coule avec les mémoires. Je suis le sang des autres qui vit encore en toi.",                                                                            ritual:"Place une goutte d'eau sur ton poignet. Visualise qu'elle porte tout ce que tu transmets malgré toi. Dis : « Je choisis ce que je continue. »"},
+  {id:13,file:16, name:"La Haine Héréditaire",      theme:'lignage',     phases:[2,3],    quote:"Je coule dans tes veines quand tu juges. Quand tu exclus. Quand tu t'exclus.",                                                                              ritual:"Écris toutes les phrases de rejet que tu as entendues ou dites. Lis-les à voix haute. Puis dis : « Je me désolidarise de cette haine. »"},
+  {id:14,file:26, name:"La Mère Non Vue",           theme:'lignage',     phases:[2],      quote:"Elle t'a portée. Mais qui l'a portée, elle ?",                                                                                                              ritual:"Visualise ta mère comme une petite fille. Demande-toi : « De quoi a-t-elle été privée ? » Offre-lui en silence ce qu'elle n'a pas reçu."},
+  {id:15,file:27, name:"Le Père Muet",              theme:'lignage',     phases:[2],      quote:"Il était là... ou pas. Mais qu'a-t-il tu ?",                                                                                                                 ritual:"Ferme les yeux. Invoque la figure du père intérieur. Demande-lui : « Quelle force voulais-tu me transmettre ? » Écris ce qui vient, même s'il n'y a que des silences."},
+  {id:16,file:28, name:"L'Ancêtre Oubliée",        theme:'lignage',     phases:[2],      quote:"Je n'ai pas laissé de trace. Pourtant je vis encore à travers toi.",                                                                                        ritual:"Imagine une ancêtre inconnue. Donne-lui un nom, une histoire, un geste. Accueille-la. Dis : « Tu as ta place. Mais je suis vivant.e à ma manière. »"},
+  {id:17,file:29, name:"Le Secret de Famille",      theme:'lignage',     phases:[2],      quote:"Ce qui est tu se transmet sans mot. Je vis dans les symptômes, les répétitions, les silences.",                                                              ritual:"Demande en toi : « Quel mystère me touche sans que je le comprenne ? » Note ce qui vient, même flou. Reconnais simplement."},
+  {id:18,file:30, name:"La Promesse Non Tenue",     theme:'lignage',     phases:[2],      quote:"Tu vis selon un contrat ancien. Il est temps de t'en libérer.",                                                                                              ritual:"Ferme les yeux. Visualise une promesse faite avant toi. Ressens si elle pèse. Dis : « Je rends cette promesse. Je me choisis. »"},
+  {id:19,file:31, name:"L'Enfant Non Né",           theme:'lignage',     phases:[2],      quote:"Je n'ai pas pris corps. Mais je vis dans les silences et les absences.",                                                                                     ritual:"Allume une bougie. Offre un prénom ou un souffle à cet enfant non-né. Dis : « Tu existes. Tu n'es pas mal. Je vis. »"},
+  {id:20,file:32, name:"Le Pacte Silencieux",       theme:'lignage',     phases:[2,4],    quote:"Je suis resté fidèle à ta douleur, sans le savoir.",                                                                                                         ritual:"Écris : « À qui ai-je juré sans parler de ne jamais être plus heureux.se ? » Puis déchire la feuille et dis : « Je me délie. »"},
+  {id:21,file:33, name:"La Douleur Injuste",        theme:'lignage',     phases:[2,4],    quote:"Ce n'est pas à toi de porter cela. Mais tu le fais par loyauté.",                                                                                            ritual:"Écris une phrase d'injustice que tu ressens depuis toujours. Puis : « Cela n'a pas commencé avec moi. Et je rends cette douleur. »"},
+  {id:22,file:34, name:"Les Règles du Clan",        theme:'lignage',     phases:[2],      quote:"Chez nous, on ne dit pas, on ne pleure pas, on ne part pas.",                                                                                                ritual:"Complète : « Les règles invisibles de ma famille sont... » Puis écris en grand une règle que tu choisis de briser aujourd'hui."},
+  {id:23,file:35, name:"La Voix qui Te Précède",    theme:'lignage',     phases:[2],      quote:"Je parle à travers toi. Tu crois penser, mais je me répète.",                                                                                               ritual:"Ferme les yeux. Demande : « Quelle phrase entendue mille fois me possède encore ? » Puis dis : « Je rends cette voix à sa source. Je découvre la mienne. »"},
+  {id:24,file:46, name:"La Voix Ancestrale",        theme:'lignage',     phases:[2,7],    quote:"Je parle depuis loin. À travers ton chant, ton souffle, ton silence.",                                                                                       ritual:"Chante. Murmure. Parle à voix haute. Et sens que d'autres voix traversent la tienne. Dis : « Je suis la continuité. Et la différence. »"},
+  // PAUSE — Phase 2·5 (L'Œil du Cyclone)
+  {id:25,file:48, name:"La Nuit de l'Âme",         theme:'pause',       phases:[2.5,3],  quote:"Ce n'est pas une fin. C'est le creux qui prépare la lumière vraie.",                                                                                         ritual:"Reste dans le noir. Éteins tout. Assieds-toi en silence. Et dis : « Je ne suis pas seul.e dans l'obscur. Je suis en gestation. »"},
+  {id:26,file:49, name:"Le Silence Fécond",         theme:'pause',       phases:[0,2.5],  quote:"Ce n'est pas le vide. C'est l'espace d'où tout peut naître.",                                                                                                ritual:"Observe 5 minutes de silence total. Pas de téléphone, pas de bruit, pas de parole. Respire et accueille ce qui remonte."},
+  {id:27,file:51, name:"L'Espace Entre Deux",       theme:'pause',       phases:[0,2.5],  quote:"Tu n'es plus ce que tu étais. Pas encore ce que tu seras. Sois ici.",                                                                                        ritual:"Écris : « Je suis entre... » Laisse venir les réponses. Puis ajoute : « Et c'est parfait. »"},
+  {id:28,file:54, name:"Le Non-Savoir Béni",        theme:'pause',       phases:[2.5],    quote:"Tu veux comprendre. Mais c'est en ne sachant pas que tu grandis.",                                                                                            ritual:"Note tout ce que tu ne comprends pas aujourd'hui. Puis écris en grand : « Et c'est très bien comme ça. »"},
+  {id:29,file:55, name:"Le Temps Suspendu",         theme:'pause',       phases:[2.5],    quote:"Il n'y a pas d'urgence. Ton âme n'a pas de montre.",                                                                                                          ritual:"Ralentis. Va marcher sans but. Laisse le temps s'étirer. Écoute ce qui se passe en toi quand il n'y a rien à faire."},
+  // OMBRE — Phase 3 (La Traversée)
+  {id:30,file:14, name:"La Colère Sainte",          theme:'ombre',       phases:[3],      quote:"Je ne suis pas une faute. Je suis la force que tu refuses d'assumer.",                                                                                        ritual:"Tape dans un coussin. Crie dans un oreiller. Laisse sortir. Puis dis : « Ma colère me protège. Elle a le droit d'exister. »"},
+  {id:31,file:15, name:"L'Enfant Honteux",          theme:'ombre',       phases:[3],      quote:"J'ai cru que c'était moi, le problème. Alors j'ai appris à me cacher.",                                                                                       ritual:"Pose une main sur ton cœur, une sur ton ventre. Murmure : « Tu n'as rien fait de mal. Tu as le droit d'être aimé tel que tu es. »"},
+  {id:32,file:17, name:"L'Amour Empoisonné",        theme:'ombre',       phases:[3],      quote:"Je te caresse avec la peur. Je te retiens sous prétexte d'aimer.",                                                                                            ritual:"Repense à une relation douloureuse. Écris : « Ce que j'ai cru être de l'amour, c'était... » Laisse venir sans filtre."},
+  {id:33,file:19, name:"Le Saboteur Masqué",        theme:'ombre',       phases:[3],      quote:"Je t'arrête juste avant la lumière. Car je crois encore que tu ne la mérites pas.",                                                                           ritual:"Écris plusieurs fois : « Si je réussissais vraiment, j'aurais peur que... » Puis dis : « J'avance quand même. »"},
+  {id:34,file:20, name:"L'Oubli Volontaire",        theme:'ombre',       phases:[3],      quote:"Tu dis que tu ne sais plus. Mais ton corps s'en souvient très bien.",                                                                                          ritual:"Choisis une photo de ton enfance. Regarde-la. Demande : « Qu'as-tu envie que je me rappelle ? »"},
+  {id:35,file:21, name:"La Culpabilité qui Ronge",  theme:'ombre',       phases:[3],      quote:"Je suis ce que tu ressasses, au lieu d'avancer.",                                                                                                              ritual:"Écris une lettre de pardon. À toi. Ou à un autre. Puis choisis : la garder, l'enterrer, ou la brûler."},
+  {id:36,file:22, name:"La Peur de Ne Pas Être",    theme:'ombre',       phases:[3],      quote:"Tu cours. Tu fuis. Tu prouves. Pour éviter de sentir le vide.",                                                                                               ritual:"Assieds-toi. Ne fais rien pendant 3 minutes. Respire. Laisse venir ce qui monte. Observe sans juger."},
+  {id:37,file:23, name:"L'Ombre qui Tisse",         theme:'ombre',       phases:[3],      quote:"Je crée en secret. Je dirige sans nom. Je suis ce que tu n'as pas encore regardé.",                                                                           ritual:"Dessine ton ombre. Une forme, une bête, un symbole. Garde-la. Regarde-la. Murmure : « Tu es là. Je te reconnais. »"},
+  {id:38,file:24, name:"Le Masque du Bien",         theme:'ombre',       phases:[3,4],    quote:"Je dis ce qu'il faut. Je souris. Je guéris les autres pour ne pas m'affronter.",                                                                               ritual:"Demande-toi : « À quel moment je ne suis pas vrai ? » Note-le. Et choisis un espace où tomber le masque."},
+  {id:39,file:25, name:"Le Nom qui Lie",            theme:'ombre',       phases:[2,3],    quote:"Tu portes ce nom comme un flambeau... ou une chaîne.",                                                                                                          ritual:"Écris ton nom complet. Regarde-le. Puis ajoute : « Je suis libre d'honorer ce nom... ou de m'en libérer. » Fais un geste symbolique."},
+  // INTÉGRATION — Phase 4
+  {id:40,file:18, name:"La Faim de Reconnaissance", theme:'integration', phases:[4],      quote:"Je me plie. Je séduis. Je me trahis... juste pour être vu.",                                                                                                  ritual:"Regarde-toi dans un miroir, longtemps. Puis dis : « Je te vois. Tu n'as plus besoin de mendier. »"},
+  {id:41,file:40, name:"Le Guerrier Brisé",         theme:'integration', phases:[4],      quote:"Je me suis battu trop longtemps. Je porte l'armure même en paix.",                                                                                             ritual:"Pose tes mains sur ton torse. Sens où tu es encore en tension. Et dis : « Je n'ai plus à me défendre pour exister. »"},
+  // ARCHÉTYPE — Phase 5 (La Révélation)
+  {id:42,file:36, name:"La Sorcière Guérisseuse",   theme:'archetype',   phases:[5],      quote:"Je sais sans preuve. J'entends ce qui ne se dit pas. Je touche sans les mains.",                                                                              ritual:"Allume une bougie. Pose tes mains sur un objet, une plante ou ton propre corps. Dis : « Je suis canal. Je suis guérison. Je suis écoute. »"},
+  {id:43,file:37, name:"Le Faiseur de Ponts",       theme:'archetype',   phases:[5],      quote:"Je relie les mondes, les extrêmes, les opposés. Je ne choisis pas, je relie.",                                                                                 ritual:"Dessine deux cercles : l'un pour ton visible, l'autre pour ton invisible. Trace un pont entre les deux. Observe où tu vis."},
+  {id:44,file:38, name:"La Gardienne du Seuil",     theme:'archetype',   phases:[5],      quote:"Je garde l'entrée. Rien ne passe sans conscience. Tu ne peux pas tricher ici.",                                                                               ritual:"Ferme les yeux. Imagine une porte. Qui est devant ? Qu'est-ce que tu n'oses pas encore traverser ? Dis : « J'entre avec respect. J'avance en conscience. »"},
+  {id:45,file:39, name:"L'Enfant Sacré",            theme:'archetype',   phases:[5],      quote:"Je ris, je danse, je m'émerveille. Je suis la part vivante et invincible.",                                                                                    ritual:"Fais une activité d'enfant : saute, dessine, chante faux, joue. Puis dis : « Mon innocence est une force. »"},
+  {id:46,file:41, name:"La Mère Sauvage",           theme:'archetype',   phases:[5],      quote:"Je nourris ou je détruis. Je suis l'amour féroce, la tendresse indomptable.",                                                                                  ritual:"Berce-toi comme une mère berce son enfant. Puis murmure : « Je me donne ce que j'attendais des autres. »"},
+  {id:47,file:42, name:"L'Amant Caché",             theme:'archetype',   phases:[5],      quote:"Je désire en silence. Je brûle dans l'ombre. Je me nie pour ne pas déranger.",                                                                                 ritual:"Regarde-toi nu, ou imagine ton corps aimé. Et dis : « Mon désir est sacré. Je n'ai pas à le taire. »"},
+  {id:48,file:43, name:"La Joueuse de Masques",     theme:'archetype',   phases:[5],      quote:"Je change de peau pour survivre. Mais je me suis presque oubliée.",                                                                                            ritual:"Écris tous les rôles que tu joues dans une journée. Entoure celui que tu n'as pas envie de garder demain."},
+  {id:49,file:44, name:"Le Visionnaire Blessé",     theme:'archetype',   phases:[5],      quote:"J'ai vu trop loin. Trop tôt. Et on ne m'a pas cru.",                                                                                                           ritual:"Écris une vision, une idée, un rêve que tu as caché par peur du rejet. Puis lis-le à voix haute, juste pour toi."},
+  // ÉMERGENCE — Phase 6
+  {id:50,file:47, name:"L'Appel Incompréhensible", theme:'emergence',   phases:[0,6],    quote:"Tu ne sais pas pourquoi, mais tu sais que tu dois y aller.",                                                                                                    ritual:"Pose cette question : « Qu'est-ce que je ressens sans comprendre ? » Puis fais un pas dans cette direction, même minuscule."},
+  {id:51,file:52, name:"La Vision Venue d'Ailleurs",theme:'emergence',   phases:[6],      quote:"Tu as vu quelque chose que les autres ne voient pas. Ne l'étouffe pas.",                                                                                        ritual:"Ferme les yeux. Invoque une vision. Dessine ou écris ce qui vient, même si ça semble étrange. C'est un message."},
+  {id:52,file:53, name:"Le Sacré qui Frissonne",    theme:'emergence',   phases:[6],      quote:"Ce frisson soudain. Ce moment hors du temps. C'est moi.",                                                                                                        ritual:"Repense à un instant sacré. Revis-le avec tous tes sens. Et dis : « Je m'ouvre à la magie incarnée. »"},
+  {id:53,file:56, name:"L'Être Retrouvé",           theme:'emergence',   phases:[6],      quote:"Tu n'as jamais été perdu.e. Tu étais juste loin de toi.",                                                                                                        ritual:"Regarde-toi dans un miroir et dis : « Je me reconnais. Je me retrouve. Je suis là. »"},
+  // TRANSMISSION — Phase 7
+  {id:54,file:50, name:"L'Amour qui Te Traverse",   theme:'transmission',phases:[7],      quote:"Tu n'as rien à donner. Tu as juste à laisser circuler.",                                                                                                        ritual:"Place ta main sur ton cœur. Respire en imaginant que l'amour passe à travers toi... pas depuis toi."},
+  {id:55,file:57, name:"La Danse de l'Unité",       theme:'transmission',phases:[7],      quote:"Rien ne te manque. Tu es l'unité qui s'ignore encore.",                                                                                                          ritual:"Danse. Lentement. Laisse chaque partie de ton corps s'accorder. Ressens-toi comme un seul être, complet."}
+];
+
+const ORACLE_THEMES = {
+  corps:       {label:'Corps',          color:'#8B5E30', phases:'Phase 1'},
+  lignage:     {label:'Lignage',        color:'#6B4D2F', phases:'Phase 2'},
+  pause:       {label:'Pause',          color:'#9A7860', phases:'Phase 2·5'},
+  ombre:       {label:'Ombre',          color:'#5A3A2A', phases:'Phase 3'},
+  integration: {label:'Intégration',    color:'#7A5A3A', phases:'Phase 4'},
+  archetype:   {label:'Archétype',      color:'#C4A44A', phases:'Phase 5'},
+  emergence:   {label:'Émergence',      color:'#B8936A', phases:'Phase 6'},
+  transmission:{label:'Transmission',   color:'#A07840', phases:'Phase 7'}
+};
+
+function oracleImgPath(fileNum){
+  return "Oracle L'Antre Toi/"+fileNum+".png";
+}
+
+// ── ORACLE STATE ──────────────────────────────────────────────────
+let oracleMode = 'tirage';
+let oraclePhaseFilter = null;
+let oracleThemeFilter = null;
+let currentOracleCard = null;
+
+function setOracleMode(mode){
+  oracleMode = mode;
+  ['tirage','bibliotheque','historique'].forEach(m=>{
+    document.getElementById('omode-'+m).classList.toggle('active', m===mode);
+    document.getElementById('oracle-'+m).style.display = m===mode ? 'block':'none';
+  });
+  if(mode==='bibliotheque') renderOracleGrid();
+  if(mode==='historique') renderOracleHistory();
+}
+
+function renderOracle(){
+  // Phase filter chips
+  const pf = document.getElementById('oracle-phase-filter');
+  pf.innerHTML = '';
+  const phaseLabels = [{num:0,label:'Phase 0'},{num:1,label:'Phase 1'},{num:2,label:'Phase 2'},{num:2.5,label:'Phase 2·5'},{num:3,label:'Phase 3'},{num:4,label:'Phase 4'},{num:5,label:'Phase 5'},{num:6,label:'Phase 6'},{num:7,label:'Phase 7'}];
+  phaseLabels.forEach(p=>{
+    const btn=document.createElement('button');
+    btn.className='oracle-phase-chip'+(oraclePhaseFilter===p.num?' active':'');
+    btn.textContent=p.label;
+    btn.onclick=()=>{
+      oraclePhaseFilter = oraclePhaseFilter===p.num ? null : p.num;
+      renderOracle();
+    };
+    pf.appendChild(btn);
+  });
+  // Theme filter chips for library
+  const tf = document.getElementById('oracle-theme-filter');
+  tf.innerHTML='';
+  Object.entries(ORACLE_THEMES).forEach(([key,th])=>{
+    const btn=document.createElement('button');
+    btn.className='oracle-phase-chip'+(oracleThemeFilter===key?' active':'');
+    btn.textContent=th.label+' — '+th.phases;
+    btn.onclick=()=>{
+      oracleThemeFilter = oracleThemeFilter===key ? null : key;
+      renderOracleGrid();
+      btn.classList.toggle('active', oracleThemeFilter===key);
+    };
+    tf.appendChild(btn);
+  });
+  setOracleMode(oracleMode);
+}
+
+function drawCard(allPhases){
+  let pool = ORACLE_CARDS;
+  if(!allPhases && oraclePhaseFilter !== null){
+    pool = ORACLE_CARDS.filter(c=>c.phases.includes(oraclePhaseFilter));
+    if(!pool.length) pool = ORACLE_CARDS;
+  }
+  const card = pool[Math.floor(Math.random()*pool.length)];
+  showCardInTirage(card);
+}
+
+function showCardInTirage(card){
+  currentOracleCard = card;
+  const zone = document.getElementById('oracle-tirage-zone');
+  zone.innerHTML=`
+    <div class="oracle-card-display">
+      <img class="oracle-card-img" src="${oracleImgPath(card.file)}" alt="${card.name}" onclick="openOracleCardModal(${card.id})">
+      <div style="font-size:.7rem;color:var(--muted);text-align:center;">Cliquez pour agrandir</div>
+    </div>
+    <div class="oracle-card-info">
+      <div class="oracle-card-theme">${ORACLE_THEMES[card.theme]?ORACLE_THEMES[card.theme].label:card.theme} · ${card.phases.map(p=>p===2.5?'Phase 2·5':'Phase '+p).join(', ')}</div>
+      <div class="oracle-card-name">${card.name}</div>
+      <div class="oracle-card-quote">« ${card.quote} »</div>
+      <div style="font-size:.7rem;letter-spacing:.15em;color:var(--gold-d);text-transform:uppercase;margin-bottom:8px;">Rituel proposé</div>
+      <div class="oracle-card-ritual">${card.ritual}</div>
+    </div>`;
+  document.getElementById('oracle-save-zone').style.display='block';
+  document.getElementById('oracle-tirage-note').value='';
+}
+
+function clearTirage(){
+  currentOracleCard=null;
+  document.getElementById('oracle-tirage-zone').innerHTML='<div style="width:200px;height:320px;border:2px dashed var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.82rem;text-align:center;padding:20px;">Cliquez sur<br>« Tirer une carte »</div>';
+  document.getElementById('oracle-save-zone').style.display='none';
+}
+
+function saveTirage(){
+  const c=client(); if(!c||!currentOracleCard) return;
+  const note=document.getElementById('oracle-tirage-note').value.trim();
+  if(!c.oracleHistory) c.oracleHistory=[];
+  c.oracleHistory.unshift({
+    id:Date.now().toString(),
+    date:new Date().toISOString().split('T')[0],
+    cardId:currentOracleCard.id,
+    cardName:currentOracleCard.name,
+    cardFile:currentOracleCard.file,
+    phase:oraclePhaseFilter,
+    note
+  });
+  saveState();
+  showToast('Tirage enregistré — '+currentOracleCard.name);
+  clearTirage();
+}
+
+function renderOracleGrid(){
+  let pool = oracleThemeFilter ? ORACLE_CARDS.filter(c=>c.theme===oracleThemeFilter) : ORACLE_CARDS;
+  const grid=document.getElementById('oracle-grid');
+  grid.innerHTML=pool.map(card=>`
+    <div class="oracle-grid-card" onclick="openOracleCardModal(${card.id})" title="${card.name}">
+      <img src="${oracleImgPath(card.file)}" alt="${card.name}" loading="lazy">
+      <div class="oracle-grid-card-name">${card.name}</div>
+    </div>`).join('');
+}
+
+function renderOracleHistory(){
+  const c=client();
+  const el=document.getElementById('oracle-history-list');
+  if(!c||!c.oracleHistory||!c.oracleHistory.length){
+    el.innerHTML='<div style="font-size:.82rem;color:var(--muted);padding:12px 0;">Aucun tirage enregistré pour ce participant.</div>';
+    return;
+  }
+  el.innerHTML=c.oracleHistory.map(h=>`
+    <div class="oracle-history-entry">
+      <img class="oracle-history-img" src="${oracleImgPath(h.cardFile)}" alt="${h.cardName}">
+      <div class="oracle-history-info">
+        <div class="oracle-history-name">${h.cardName}</div>
+        <div class="oracle-history-meta">${formatDate(h.date)}${h.phase!==null&&h.phase!==undefined?' · Phase '+(h.phase===2.5?'2·5':h.phase):''}</div>
+        ${h.note?`<div class="oracle-history-note">${h.note}</div>`:''}
+      </div>
+      <button class="oracle-history-del" onclick="deleteOracleTirage('${h.id}',event)" title="Supprimer">✕</button>
+    </div>`).join('');
+}
+
+function deleteOracleTirage(id,e){
+  e.stopPropagation();
+  const c=client(); if(!c) return;
+  if(!confirm('Supprimer ce tirage ?')) return;
+  c.oracleHistory=c.oracleHistory.filter(h=>h.id!==id);
+  saveState(); renderOracleHistory();
+}
+
+function openOracleCardModal(cardId){
+  const card=ORACLE_CARDS.find(c=>c.id===cardId); if(!card) return;
+  document.getElementById('modal-oracle-img').src=oracleImgPath(card.file);
+  document.getElementById('modal-oracle-name').textContent=card.name;
+  document.getElementById('modal-oracle-quote').textContent='« '+card.quote+' »';
+  document.getElementById('modal-oracle-ritual').textContent=card.ritual;
+  currentOracleCard=card;
+  openModal('modal-oracle-card');
+}
+
+function selectCardFromModal(){
+  closeModal('modal-oracle-card');
+  if(currentOracleCard){
+    showCardInTirage(currentOracleCard);
+    setOracleMode('tirage');
+  }
+}
+
 // ── INIT ──────────────────────────────────────────────────────────
 function initPractitioner(){
   const name=document.getElementById('setup-name').value.trim();
@@ -661,7 +1021,8 @@ function addClient(){
     mandalaIntention:'',
     daNom:'',daIntention:'',daDates:'',daNomFondateur:'',daNomSens:'',
     daArchPrincipal:'',daArchSecondaire:'',daArchNarr:'',
-    daVoiles:'',daForces:'',daLois:'',daPostulat:'',daTransmissions:'',daMessage:''
+    daVoiles:'',daForces:'',daLois:'',daPostulat:'',daTransmissions:'',daMessage:'',
+    oracleHistory:[]
   };
   state.clients.push(c);
   saveState();
@@ -751,6 +1112,7 @@ function switchTab(tab){
   if(tab==='archetype')renderArchetype();
   if(tab==='seance')renderSessionGuide();
   if(tab==='dossier')renderDossierLock();
+  if(tab==='oracle'){oracleMode='tirage';oraclePhaseFilter=null;oracleThemeFilter=null;renderOracle();}
 }
 
 // ── LOAD CLIENT ───────────────────────────────────────────────────
