@@ -107,6 +107,9 @@ textarea.field-input{resize:vertical;min-height:90px;line-height:1.6;}
 .exercise-num{font-size:.68rem;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
 .exercise-title{font-size:.92rem;color:var(--brown);margin-bottom:6px;}
 .exercise-text{font-size:.85rem;color:var(--brn);line-height:1.7;}
+.ex-dur{font-size:.72rem;color:#8a7060;letter-spacing:.05em;margin-bottom:6px;padding:2px 8px;background:rgba(196,164,74,.08);display:inline-block;border-radius:2px;border:1px solid rgba(196,164,74,.2);}
+.ex-guide{margin-top:10px;padding:8px 12px;background:rgba(196,164,74,.07);border-left:3px solid #C4A44A;font-size:.83rem;color:#7a5c2e;line-height:1.55;font-style:italic;}
+.ex-note{margin-top:6px;padding:7px 12px;background:rgba(60,36,21,.04);border-left:3px solid rgba(60,36,21,.2);font-size:.78rem;color:#8a7060;line-height:1.55;}
 .question-list{list-style:none;padding:0;}
 .question-list li{padding:8px 0;border-bottom:1px solid var(--border);font-size:.88rem;color:var(--brown);line-height:1.5;}
 .question-list li:last-child{border-bottom:none;}
@@ -276,7 +279,63 @@ textarea.field-input{resize:vertical;min-height:90px;line-height:1.6;}
 /* ── TOAST ────────────────────────────────────────────────────── */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--brown);color:var(--ivory);padding:12px 20px;border-radius:2px;border-left:3px solid var(--gold);font-size:.85rem;z-index:200;opacity:0;transform:translateY(10px);transition:all .25s;pointer-events:none;}
 .toast.show{opacity:1;transform:translateY(0);}
-</style>
+
+/* ─── GÉNOSOCIOGRAMME ────────────────────────────────────────────── */
+#panel-geno{padding:0;display:flex;flex-direction:column;height:calc(100vh - 148px);min-height:460px;}
+.geno-hint{font-size:.64rem;color:var(--muted);font-style:italic;padding:6px 14px;background:var(--ivory-d);border-bottom:1px solid var(--border);flex-shrink:0;}
+.geno-toolbar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:var(--ivory);border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap;}
+.geno-sep{width:1px;height:26px;background:var(--border);margin:0 3px;flex-shrink:0;}
+.geno-lbl{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);flex-shrink:0;}
+.geno-tool{width:34px;height:34px;border:1px solid var(--border);background:var(--white);color:var(--brown);cursor:pointer;border-radius:2px;font-size:1rem;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;transition:all .12s;flex-shrink:0;}
+.geno-tool:hover{background:var(--gold-ll);border-color:var(--gold);}
+.geno-tool.active{background:var(--brown);color:var(--gold);border-color:var(--brown);}
+.geno-area{flex:1;overflow:hidden;position:relative;}
+.geno-wrap{position:absolute;inset:0;overflow:hidden;cursor:default;
+  background-color:var(--ivory-dd);
+  background-image:linear-gradient(rgba(196,164,74,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(196,164,74,.12) 1px,transparent 1px);
+  background-size:44px 44px;}
+.geno-svg{position:absolute;top:0;left:0;width:100%;height:100%;overflow:visible;z-index:1;pointer-events:none;}
+.geno-canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:2;}
+.geno-node{position:absolute;transform:translate(-50%,-50%);user-select:none;cursor:pointer;box-sizing:border-box;}
+.geno-node-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;padding:3px 5px;box-sizing:border-box;}
+.geno-node-name{font-family:Georgia,serif;font-size:.67rem;color:var(--brown);text-align:center;line-height:1.2;word-break:break-word;max-width:58px;}
+.geno-node-year{font-size:.57rem;color:var(--muted);margin-top:1px;}
+.geno-node.male{width:66px;height:50px;border:2px solid var(--brown);background:var(--white);}
+.geno-node.female{width:60px;height:60px;border:2px solid var(--brown);background:var(--white);border-radius:50%;}
+.geno-node.neutral{width:54px;height:54px;border:2px solid var(--brown);background:var(--white);transform:translate(-50%,-50%) rotate(45deg);}
+.geno-node.neutral .geno-node-inner{transform:rotate(-45deg);}
+.geno-node.proband{border-width:3px;border-color:var(--gold);background:var(--gold-ll);}
+.geno-node.proband .geno-node-name{color:var(--gold-d);font-weight:bold;}
+.geno-node.deceased{opacity:.5;}
+.geno-node.deceased::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom right,transparent calc(50% - 1px),rgba(60,36,21,.5) calc(50% - 1px),rgba(60,36,21,.5) calc(50% + 1px),transparent calc(50% + 1px));}
+.geno-node.selected{outline:2.5px solid var(--gold);outline-offset:4px;}
+.geno-node.connecting{outline:2.5px dashed var(--gold);outline-offset:4px;animation:gConnPulse 1s ease-in-out infinite;}
+@keyframes gConnPulse{0%,100%{outline-color:var(--gold-d);}50%{outline-color:var(--gold);}}
+.geno-node[data-c="gold"]{background:rgba(196,164,74,.14)!important;border-color:var(--gold-d)!important;}
+.geno-node[data-c="red"]{background:#fff5f3!important;border-color:#8B3A2A!important;}
+.geno-node[data-c="blue"]{background:#f0f4ff!important;border-color:#3a5a8b!important;}
+.geno-node[data-c="green"]{background:#f0f8f0!important;border-color:#3a7a4a!important;}
+/* Inspector */
+.geno-insp{position:absolute;right:0;top:0;bottom:0;width:186px;background:var(--ivory);border-left:1px solid var(--border);padding:12px 10px;overflow-y:auto;z-index:10;display:none;flex-direction:column;gap:7px;}
+.geno-insp-hd{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);padding-bottom:7px;border-bottom:1px solid var(--border);margin-bottom:1px;}
+.geno-if{margin-bottom:5px;}
+.geno-il{display:block;font-size:.59rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
+.geno-ii{width:100%;padding:4px 6px;border:1px solid var(--border);background:var(--white);font-family:Georgia,serif;font-size:.75rem;color:var(--brown);border-radius:1px;box-sizing:border-box;}
+.geno-swatches{display:flex;gap:4px;flex-wrap:wrap;margin-top:2px;}
+.geno-sw{width:17px;height:17px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:border-color .12s;}
+.geno-sw.on,.geno-sw:hover{border-color:var(--brown);}
+.geno-edge-list{max-height:88px;overflow-y:auto;margin-top:3px;}
+.geno-ei{display:flex;align-items:center;justify-content:space-between;font-size:.66rem;color:var(--brown);padding:3px 0;border-bottom:1px solid var(--ivory-dd);}
+.geno-ei-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.72rem;padding:0 2px;}
+.geno-ei-del:hover{color:var(--danger);}
+/* Relation chooser */
+.geno-rc{position:absolute;background:var(--ivory);border:1px solid var(--border);border-radius:3px;padding:8px;box-shadow:0 4px 18px rgba(60,36,21,.15);z-index:20;min-width:170px;display:none;}
+.geno-rc-hd{font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.geno-ro{display:flex;align-items:center;gap:8px;padding:5px 6px;cursor:pointer;border-radius:2px;font-size:.75rem;color:var(--brown);}
+.geno-ro:hover{background:var(--gold-ll);}
+/* Legend */
+.geno-legend{display:flex;flex-wrap:wrap;gap:8px 16px;padding:7px 12px;background:var(--ivory);border-top:1px solid var(--border);font-size:.63rem;color:var(--muted);flex-shrink:0;align-items:center;}
+.geno-li{display:flex;align-items:center;gap:4px;}</style>
 </head>
 <body>
 
@@ -371,6 +430,7 @@ textarea.field-input{resize:vertical;min-height:90px;line-height:1.6;}
         <button class="tab" id="tab-archetype" onclick="switchTab('archetype')">Archétype</button>
         <button class="tab" id="tab-dossier" onclick="switchTab('dossier')">Dossier d’Âme</button>
         <button class="tab" onclick="switchTab('oracle')">Oracle</button>
+        <button class="tab" id="tab-geno" onclick="switchTab('geno')">G&#233;nogramme</button>
       </div>
       <div class="tab-panels">
 
@@ -701,6 +761,54 @@ textarea.field-input{resize:vertical;min-height:90px;line-height:1.6;}
           </div>
         </div>
 
+      
+        <!-- GÉNOSOCIOGRAMME -->
+        <div class="tab-panel" id="panel-geno">
+          <div class="geno-hint">Outil &#8598; pour sélectionner / déplacer &#8212; Cliquez sur le fond pour poser un membre &#8212; &#8741; pour relier deux personnes</div>
+          <div class="geno-toolbar">
+            <span class="geno-lbl">Outil</span>
+            <button class="geno-tool active" data-tool="select" onclick="genoSetTool('select')" title="Sélectionner / Déplacer">&#8598;</button>
+            <div class="geno-sep"></div>
+            <span class="geno-lbl">Ajouter</span>
+            <button class="geno-tool" data-tool="male" onclick="genoSetTool('male')" title="Homme">&#9632;</button>
+            <button class="geno-tool" data-tool="female" onclick="genoSetTool('female')" title="Femme">&#9679;</button>
+            <button class="geno-tool" data-tool="neutral" onclick="genoSetTool('neutral')" title="Non défini">&#9670;</button>
+            <div class="geno-sep"></div>
+            <button class="geno-tool" data-tool="connect" onclick="genoSetTool('connect')" title="Relier deux membres" style="font-size:.8rem;letter-spacing:.04em;">&#8741;</button>
+            <button class="geno-tool" data-tool="delete" onclick="genoSetTool('delete')" title="Supprimer" style="font-size:.8rem;">&#10005;</button>
+            <div class="geno-sep"></div>
+            <button class="btn-sm" onclick="genoAddProband()">+ Participant</button>
+            <button class="btn-sm" style="margin-left:auto;" onclick="clearGeno()">Effacer tout</button>
+            <button class="btn-sm" onclick="printGeno()">Imprimer</button>
+          </div>
+          <div class="geno-area">
+            <div class="geno-wrap" id="geno-wrap">
+              <svg class="geno-svg" id="geno-svg" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <marker id="arrowGold" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                    <polygon points="0 0, 6 3, 0 6" fill="#C4A44A"/>
+                  </marker>
+                </defs>
+              </svg>
+              <div class="geno-canvas" id="geno-canvas"></div>
+              <div class="geno-rc" id="geno-rc"></div>
+              <div class="geno-insp" id="geno-insp" style="display:none;"></div>
+            </div>
+          </div>
+          <div class="geno-legend">
+            <span style="font-size:.59rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:6px;">Légende</span>
+            <span class="geno-li"><svg width="22" height="18"><rect x="1" y="2" width="20" height="14" fill="none" stroke="#3C2415" stroke-width="2"/></svg>Homme</span>
+            <span class="geno-li"><svg width="20" height="18"><circle cx="10" cy="9" r="8" fill="none" stroke="#3C2415" stroke-width="2"/></svg>Femme</span>
+            <span class="geno-li"><svg width="20" height="18"><polygon points="10,1 19,9 10,17 1,9" fill="none" stroke="#3C2415" stroke-width="2"/></svg>Non défini</span>
+            <span style="color:var(--border);">|</span>
+            <span class="geno-li"><svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#3C2415" stroke-width="2"/></svg>Filiation</span>
+            <span class="geno-li"><svg width="26" height="10"><line x1="0" y1="3" x2="26" y2="3" stroke="#3C2415" stroke-width="2"/><line x1="0" y1="7" x2="26" y2="7" stroke="#3C2415" stroke-width="2"/></svg>Union</span>
+            <span class="geno-li"><svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#8B5E30" stroke-width="2" stroke-dasharray="6 3"/></svg>Séparation</span>
+            <span class="geno-li"><svg width="26" height="12"><path d="M0,6 L5,2 L10,10 L15,2 L20,10 L26,6" fill="none" stroke="#8B3A2A" stroke-width="2"/></svg>Conflit</span>
+            <span class="geno-li"><svg width="26" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="#C4A44A" stroke-width="2" stroke-dasharray="7 4"/><polygon points="22,1 26,4 22,7" fill="#C4A44A"/></svg>Transmission</span>
+            <span class="geno-li"><svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#3C2415" stroke-width="5"/></svg>Fusion</span>
+          </div>
+        </div>
       </div><!-- tab-panels -->
     </div><!-- workspace -->
 
@@ -752,49 +860,47 @@ const PHASES = [
   { num:0, label:'Phase 0', name:'Le Seuil',
     essence:"Le participant arrive avec ce qu'il croit être sa demande. Le praticien accueille sans saisir, sans orienter. Le Seuil n'est pas franchi — il est reconnu.",
     exercises:[
-      {title:'La carte et le territoire',text:"Invitez le participant à décrire en trois mots ce qu'il espère de cet accompagnement. Sans relancer, sans commenter. Observez les mots choisis : sont-ils orientés vers un avoir, un être, ou un faire ? Notez en silence."},
-      {title:"L'objet du seuil",text:"Demandez au participant d'apporter un objet qui le représente aujourd'hui. Accordez dix minutes à la description de cet objet : sa texture, son histoire, pourquoi il a choisi celui-ci et pas un autre. L'objet est le premier miroir."},
-      {title:'La première question',text:"Posez une unique question : « Qu'est-ce qui vous a amené ici maintenant, et non il y a six mois ? ». Laissez le silence après la réponse. Ne remplissez pas. Ce qui émerge dans ce silence appartient au parcours."}
+      {title:"Le regard du témoin",dur:"10 min observation + 20 min écriture",text:"Fermez les yeux. Observez ce qui se passe en vous — pensées, sensations physiques, émotions, images — sans rien changer, sans rien juger, sans chercher à comprendre. Vous êtes simplement là, à regarder passer ce qui passe. Après 10 minutes, ouvrez les yeux et décrivez par écrit ce que vous avez observé, comme si vous étiez un journaliste qui rapporte des faits depuis l'intérieur. Pas d'analyse. Pas de conclusions. Uniquement des observations factuelles : J'ai remarqué une tension dans les épaules. J'ai remarqué une pensée à propos de ma mère. J'ai remarqué une légèreté soudaine.",guide:"Qu'est-ce que j'ai vu, sans interpréter ?"},
+      {title:"Le corps comme premier témoin",dur:"15 minutes",text:"Parcourez mentalement votre corps de la tête aux pieds, très lentement. Pour chaque zone — crâne, nuque, épaules, poitrine, ventre, bas du dos, hanches, jambes — notez simplement ce que vous percevez : tension, légèreté, chaleur, froid, douleur diffuse, rien du tout. Ne cherchez pas de signification. Ne vous demandez pas pourquoi votre gorge est serrée. Observez uniquement. Après l'exercice, posez une seule question : si mon corps était en train de me dire quelque chose que je n'entends pas habituellement, qu'est-ce que ce serait ?",note:"Particulièrement utile pour les participants très dans la tête — analytiques, intellectuels, habitués à fonctionner depuis le mental. Le corps leur offre un accès à leur expérience que le mental leur avait jusqu'ici coupé.",guide:"Si mon corps pouvait parler à ma place, que dirait-il en ce moment ?"},
+      {title:"Une journée en témoin",dur:"Pratique quotidienne entre les séances",text:"Choisissez chaque matin un moment de 5 à 10 minutes pendant lequel vous vous observerez comme un témoin bienveillant — pendant le trajet, lors d'un repas, avant de dormir. Dans ce temps, notez dans votre journal : une émotion observée, une pensée récurrente, une sensation physique, une interaction qui a laissé une trace. Pas d'analyse. Juste la description. Après une semaine, relisez vos notes : des thèmes commencent-ils à apparaître ? Des répétitions ? Des absences notables ?",guide:"Qu'est-ce qui revient, sans que je l'aie décidé ?"}
     ],
     questions:["Qu'est-ce que le participant nomme comme problème — et qu'est-ce que vous, praticien, percevez comme enjeu réel ?","Quel est le registre émotionnel dominant à l'entrée ?","Y a-t-il des éléments qui nécessitent une orientation vers un professionnel de santé ?","Quelle est la qualité de présence du participant ?"] },
   { num:1, label:'Phase 1', name:"L'Ancrage",
     essence:"Avant tout voyage, une racine. Cette phase pose les fondations corporelles et sensorielles du participant. Le sol doit être senti avant que la carte soit dépliée.",
     exercises:[
-      {title:'La colonne de vie',text:"Guidez le participant dans une visualisation debout : sentir ses pieds sur le sol, remonter l'attention vers les genoux, le bassin, le ventre, le cœur, la gorge, le sommet du crâne. Nommer chaque zone à voix haute. L'exercice dure au minimum sept minutes. Terminez par : « Où ressentez-vous le plus de vie en ce moment ? »"},
-      {title:'La ligne du temps sensorielle',text:"Tracez avec le participant une ligne du temps non pas d'événements, mais de sensations marquantes. Non pas « j'ai déménagé à 7 ans » mais « à 7 ans, j'ai senti le froid du nouveau carrelage ». L'entrée par le corps ouvre ce que la narration intellectuelle referme."},
-      {title:'Le territoire intérieur',text:"Demandez au participant de dessiner, sans habileté requise, une carte de son monde intérieur : où sont les zones connues, les zones d'ombre, les frontières. Ce dessin est conservé et revisité en Phase 7."}
+      {title:"La première carte de l'héritage",text:"Sur une grande feuille, dessinez votre arbre familial sur au moins deux générations. Pour chaque figure présente, notez : le prénom, le métier ou le rôle principal dans la famille, un événement marquant de sa vie, et ce que la famille dit habituellement d'elle en quelques mots. Ne cherchez pas à être exhaustif — notez ce qui vient naturellement. Ce qui manque est également une information. Une fois la carte posée, prenez du recul. Regardez-la comme si vous la voyiez pour la première fois. Entourez simplement les éléments qui se répètent — un prénom, un métier, un type d'événement, un schéma relationnel.",guide:"Quels métiers ou rôles traversent ma lignée ? Quelles pertes n'ont apparemment jamais été pleurées ? Quelle figure me ressemble le plus — et que ressens-je en le remarquant ?"},
+      {title:"Le portrait d'une figure marquante",text:"Choisissez dans votre arbre une figure qui vous attire ou vous intrigue — pas nécessairement celle que vous aimez le mieux, mais celle vers laquelle votre regard revient. Écrivez son portrait en une page : qui était-il ou elle ? Quelle a été sa vie ? Qu'a-t-il ou elle traversé que personne n'a vraiment vu ? Qu'est-ce qu'il ou elle n'a jamais pu accomplir ? Écrivez ce portrait à la troisième personne, dans un registre bienveillant — comme si vous racontiez la vie d'un personnage de roman que vous respectez. Pas de jugement. Pas de il aurait dû. Juste la vie telle qu'elle s'est déroulée.",guide:"Qu'est-ce que cette figure a porté que personne n'a jamais nommé ?"},
+      {title:"La figure de ressource",text:"Dans votre lignée, même lointaine, y a-t-il une figure qui a su traverser l'adversité avec une force ou une sagesse particulière ? Quelqu'un qui a transformé une épreuve en quelque chose de transmissible ? Ce peut être un ancêtre connu, une figure entendue dans les récits familiaux, ou même quelqu'un dont vous ne connaissez que le prénom. Écrivez ce que vous savez de cette figure-ressource. Puis demandez-vous : qu'est-ce que cette personne vous a transmis, sans que vous l'ayez peut-être jamais reconnu comme tel ?",note:"Cet exercice équilibre le travail sur les blessures par une attention portée aux ressources latentes de la lignée. Ne passez pas uniquement par les douleurs — les forces héritées méritent le même regard.",guide:"De qui dans ma lignée ai-je peut-être reçu quelque chose que je n'ai pas encore pleinement reconnu ?"}
     ],
     questions:["Le participant est-il dans son corps ou dans sa tête pendant les exercices ?","Quelles zones corporelles sont évitées ou semblent absentes ?","Y a-t-il une dissociation visible lors des exercices sensoriels ?","Quel est le rapport du participant à l'enfance dans son évocation corporelle ?"] },
   { num:2, label:'Phase 2', name:'La Cartographie',
     essence:"La carte n'est pas le territoire — mais sans carte, on ne part pas. Cette phase donne des mots, des formes, des structures à ce qui était ressenti sans langage.",
     exercises:[
-      {title:'Le génosociogramme vivant',text:"Construisez ensemble le génosociogramme en commençant non par les noms, mais par les qualités attribuées. Qui était « le fort », « le silencieux », « celle qui souffrait » ? Les étiquettes familiales sont les premières cartes transmises. Identifiez lesquelles portent encore leur poids."},
-      {title:'Les héritages nommés',text:"Invitez le participant à lister trois choses reçues de sa famille et trois choses décidées de ne pas reproduire. Le « ne pas reproduire » révèle souvent ce qui est encore actif. Ce qu'on fuit structure autant que ce qu'on chérit."},
-      {title:'La signature du non-dit',text:"Y a-t-il un événement dont on ne parle pas dans la famille ? Un deuil non fait, une honte transmise, un secret ? Nommez l'espace de ce non-dit sans chercher à le remplir. L'exercice consiste à reconnaître son existence, pas à le résoudre."}
+      {title:"La loyauté invisible",text:"Identifiez une situation dans votre vie qui se répète malgré vous — un type de relation qui finit toujours de la même façon, un schéma professionnel récurrent, une manière de réagir face au conflit ou à la réussite qui vous surprend vous-même. Décrivez cette répétition avec précision, en restant dans les faits. Maintenant, regardez votre génosociogramme. Qui, dans votre famille, a vécu quelque chose d'analogue ? Que se passerait-il symboliquement, dans votre système familial, si vous rompiez cette répétition ? Qui laisseriez-vous derrière vous ?",guide:"À qui serais-je infidèle si je changeais cela ?"},
+      {title:"Le miroir systémique",text:"Choisissez dans votre génosociogramme la figure qui vous ressemble le plus, ou à l'inverse celle que vous avez le plus cherché à fuir — les deux sont souvent la même. Écrivez en quoi vous lui ressemblez déjà, objectivement, que vous le vouliez ou non. Puis écrivez ce que cette figure n'a pas pu accomplir dans sa vie — ce qu'elle a dû abandonner, taire, comprimer. Et demandez-vous : est-ce que je porte quelque chose de cette aspiration inachevée dans ma propre vie, peut-être sous une autre forme ?",guide:"Qu'est-ce que cette figure avait commencé à accomplir, et que je suis peut-être en train de continuer sans le savoir ?"},
+      {title:"La phrase héritée",text:"Pensez à une croyance sur vous-même que vous portez depuis longtemps — une phrase intérieure qui revient souvent dans vos moments difficiles : Je ne mérite pas de réussir vraiment. Les gens finissent toujours par partir. Il ne faut pas trop se montrer. Écrivez-la telle qu'elle se formule en vous, avec ses mots précis. Maintenant demandez-vous : qui dans ma lignée aurait pu penser ou vivre quelque chose qui ressemble à cette phrase ? À quelle époque, dans quelles circonstances, cette croyance a-t-elle pu être une vérité de survie pour l'un de mes ancêtres ? Elle n'était peut-être pas fausse pour eux. Elle est simplement devenue obsolète pour moi.",guide:"De qui ai-je hérité cette façon de me voir — et dans quel monde cette phrase avait-elle du sens ?"}
     ],
     questions:["Quelles loyautés invisibles le participant porte-t-il encore ?","Y a-t-il des répétitions de schéma sur plusieurs générations ?","Quelle place le participant occupait-il dans le système familial ?","Quel Voile semble le plus actif à ce stade ?"] },
   { num:2.5, label:'Phase 2·5', name:"L'Œil du Cyclone",
     essence:"Ce n'est pas une phase de progression — c'est une phase d'immobilité consentie. Le participant est au centre de la tempête. L'œil est calme non par absence de tempête, mais parce qu'il en est le centre.",
     exercises:[
-      {title:'La pause sans agenda',text:"Cette séance ne comporte aucun exercice structuré. Vous rencontrez le participant là où il est. Proposez un silence de dix minutes en début de séance. Observez ce qu'il fait de ce silence. Ce qu'on fait du vide révèle comment on habite sa propre intériorité."},
-      {title:"L'inventaire du moment",text:"Demandez : « Si vous deviez décrire exactement où vous en êtes, sans chercher à progresser, sans chercher à changer quelque chose — que diriez-vous ? » Écoutez sans orienter. Cette phase est diagnostique autant que thérapeutique."},
-      {title:'Le miroir de mi-parcours',text:"Relisez avec le participant ses premières notes de cahier (Phase 0–2). Qu'est-ce qui a changé — et qu'est-ce qui n'a pas encore bougé ? Cette relecture est une reconnaissance de chemin parcouru, non un bilan de progression."}
+      {title:"Ce qui est encore vrai",dur:"Pratique en séance et entre les séances",text:"Dans ce moment de vide et de désorientation, une pratique simple peut aider le participant à retrouver un ancrage minimal. Demandez-lui d'écrire, sans ordre ni logique, les réponses à cette question : Qu'est-ce qui est encore vrai pour moi, même maintenant ? Les réponses peuvent être très concrètes : J'aime le café le matin. Je me sens bien quand je marche dans la nature. Certaines personnes me manquent. Je tiens à ma parole. Ces ancrages minuscules ne résolvent pas le désert, mais ils offrent des points d'appui dans la traversée. Accueillez chaque réponse avec respect, même les plus triviales : dans le désert, chaque certitude est précieuse.",note:"Ne remplissez pas vous-même ce vide avec des réassurances, des explications ou des projections positives sur ce qui attend le participant de l'autre côté. Votre présence silencieuse et stable est votre contribution la plus précieuse. Le participant a besoin d'être accompagné dans le désert — non secouru de lui.",guide:"Qu'est-ce qui est encore vrai, même maintenant ?"}
     ],
     questions:["Le participant est-il dans la résistance, l'intégration, ou la régression ?","Faut-il ralentir le rythme des séances ?","Y a-t-il des éléments qui nécessitent une supervision ?","Le participant a-t-il un espace de soutien en dehors des séances ?"] },
   { num:3, label:'Phase 3', name:'La Traversée',
     essence:"Ce qui devait rester caché remonte. Le participant rencontre ses zones d'ombre — non pour les vaincre, mais pour les reconnaître comme siennes. La Traversée n'est pas un combat.",
     exercises:[
-      {title:'La lettre non envoyée',text:"Invitez le participant à écrire une lettre à quelqu'un envers qui il porte une blessure non résolue. Cette lettre ne sera jamais envoyée. Elle sera lue à voix haute en séance suivante, puis rituellement brûlée ou enterrée. L'intention est la mise en mots, non la confrontation."},
-      {title:"Le dialogue avec l'ombre",text:"Guidez le participant dans un dialogue imaginaire avec la partie de lui qu'il rejette le plus. « Qu'est-ce que tu veux que je sache ? Qu'est-ce que tu as essayé de me protéger ? » Le praticien tient l'espace de sécurité."},
-      {title:'La ressource de la Traversée',text:"Identifiez avec le participant une ressource intérieure — une qualité, un souvenir, une figure bienveillante — qu'il peut activer pendant les périodes de turbulence entre les séances. Nommez-la. Donnez-lui une ancre sensorielle concrète."}
+      {title:"La lettre d'intégration",text:"Choisissez un élément de votre héritage que vous avez longtemps rejeté, fui ou tenté d'ignorer. Ce peut être un comportement familial, une souffrance transmise, un secret, une loyauté qui vous a coûté. Écrivez une lettre à cette partie de votre histoire — non pour la justifier, non pour l'excuser, mais pour lui dire honnêtement : Je vois ce que tu as traversé. Je comprends dans quelles circonstances tu t'es transmis ainsi. Je ne suis plus obligé de te répéter. Je t'accueille dans mon histoire comme une partie réelle de ce qui m'a formé. Cette lettre n'est pas destinée à être envoyée. Elle est destinée à être écrite — et peut-être relue en séance.",guide:"Que se passerait-il si vous cessiez de dépenser de l'énergie à combattre cette partie de votre héritage ?"},
+      {title:"Le dialogue impossible",text:"Choisissez un ancêtre avec lequel vous n'avez jamais pu avoir de conversation réelle — parce qu'il est décédé avant votre naissance, parce que la relation était trop conflictuelle, ou parce que certaines choses n'ont jamais pu être dites. Écrivez le dialogue que vous auriez voulu avoir. Commencez par parler en votre nom — dites ce que vous n'avez jamais pu dire. Puis laissez cet ancêtre répondre : écrivez ce que vous imaginez qu'il aurait pu dire s'il avait eu accès à toute sa propre lucidité et bienveillance. Ce dialogue est un acte d'imagination créatrice au service de l'intégration — non une communication spirituelle.",guide:"Qu'est-ce qui, dans ce dialogue imaginaire, vous surprend ?"},
+      {title:"Le geste de réconciliation",text:"L'intégration ne passe pas seulement par les mots — elle peut aussi passer par un geste symbolique concret. Co-construisez avec le participant un geste personnel de réconciliation avec un aspect de son héritage : visiter un lieu familial chargé de sens, encadrer une vieille photo d'un ancêtre, créer un rituel simple de reconnaissance à une date précise, planter quelque chose, écrire un nom longtemps tu. Le geste n'a pas besoin d'être grand. Il doit être sincère, choisi librement par le participant, et accomplir dans le monde extérieur ce que l'intégration a accompli intérieurement.",note:"Ne proposez pas vous-même le geste. Guidez le participant vers sa propre idée : S'il y avait quelque chose de concret que vous pourriez faire pour marquer cette reconnaissance, qu'est-ce que ce serait ?"}
     ],
     questions:["Le participant a-t-il les ressources suffisantes pour traverser ce qui remonte ?","Y a-t-il des signes de décompensation nécessitant une orientation clinique ?","Quelle est la qualité du soutien extérieur (entourage, thérapeute parallèle) ?","Quel Voile est traversé — et comment se manifeste-t-il concrètement ?"] },
   { num:4, label:'Phase 4', name:"L'Intégration",
     essence:"Ce qui a été traversé demande maintenant à être intégré. L'intégration n'est pas une conclusion — c'est un processus de tissage. Les fragments deviennent structure.",
     exercises:[
-      {title:'Le récit recomposé',text:"Invitez le participant à raconter son histoire depuis le début — mais avec les nouvelles lunettes du parcours. Non pas « j'étais comme ça », mais « je comprends maintenant que... ». Observez les glissements : du subi à l'assumé, du passif à l'actif."},
-      {title:"Le mandala d'intégration",text:"Proposez au participant de revisiter le dessin du territoire intérieur (Phase 1) et de le redessiner. Quelles zones ont été éclairées ? Quelles frontières ont bougé ? Ce n'est pas une évaluation — c'est un état des lieux vivant."},
-      {title:'Les trois décisions',text:"Demandez : « Qu'est-ce que vous choisissez de garder ? Qu'est-ce que vous choisissez de déposer ? Qu'est-ce que vous choisissez de transformer ? » Ces trois questions constituent le cœur de l'acte d'intégration. Chaque réponse est notée et signée dans le cahier."}
+      {title:"La vocation masquée",text:"Demandez au participant de se souvenir de ce qu'il voulait faire, être ou devenir entre 7 et 12 ans — avant que les contraintes du réel et les attentes familiales ne viennent rediriger son élan. Pas nécessairement une profession précise : un type d'action, un sens, une manière d'être dans le monde. Je voulais soigner les animaux. Je voulais raconter des histoires. Je voulais construire des choses qui durent. Je voulais que tout le monde soit traité pareil. Puis demandez-lui : est-ce que cet élan de l'enfance est complètement étranger à ce qu'il est aujourd'hui — ou est-ce qu'il cherche encore à s'exprimer, peut-être sous une forme qu'il n'a pas encore reconnue ?",guide:"Qu'est-ce que cet enfant savait, que l'adulte a appris à mettre de côté ?"},
+      {title:"Ce qu'on vous demande",text:"Invitez le participant à observer les demandes spontanées que son entourage lui adresse — non les tâches administratives ou pratiques, mais les demandes de fond : ce pour quoi les gens viennent naturellement le chercher, lui font confiance, le convoquent. On me demande toujours de calmer les conflits. On vient me voir quand quelqu'un ne sait plus quoi décider. Les gens me confient ce qu'ils ne disent à personne d'autre. On me demande de rendre les choses belles ou claires. Ces demandes répétées pointent souvent vers un don naturel que les autres perçoivent avant que lui-même ne l'ait pleinement reconnu.",guide:"Pour quoi les gens vous convoquent-ils — même sans le formuler explicitement ?"},
+      {title:"La phrase du Projet d'Âme",text:"En fin de Phase 4, après avoir exploré plusieurs axes sur plusieurs séances, invitez le participant à formuler son Projet d'Âme en une seule phrase — non parfaite, non définitive, mais honnête et vivante. Cette phrase commence généralement par : Je suis ici pour… ou Ma contribution est de… ou Ce que mon histoire m'a préparé à offrir, c'est… Laissez venir plusieurs tentatives. Certaines sonneront creuses — le participant le ressentira lui-même. D'autres produiront ce signal caractéristique : une émotion légère, un souffle différent, parfois des larmes discrètes. Ce signal est fiable. Il indique que la phrase a touché quelque chose de vrai.",note:"Ne corrigez pas la formulation. Accueillez la phrase telle qu'elle vient. Elle sera affinée en Phase 6 lors de l'écriture du Mythe Personnel."}
     ],
     questions:["Le participant parle-t-il de lui avec plus de nuance qu'en Phase 0 ?","Y a-t-il encore des zones de résistance ou d'évitement ?","Le participant peut-il nommer ce qui a changé dans sa vie quotidienne ?","Est-il prêt pour l'attribution de l'archétype ?"] },
   { num:5, label:'Phase 5', name:'La Révélation',
@@ -808,17 +914,17 @@ const PHASES = [
   { num:6, label:'Phase 6', name:"L'Émergence",
     essence:"Le participant n'est plus seulement en processus — il devient. L'Émergence est le moment où l'identité réintégrée commence à se manifester dans la vie réelle, au-delà des séances.",
     exercises:[
-      {title:"L'acte fondateur",text:"Demandez au participant d'identifier un acte concret dans sa vie quotidienne qui incarne ce qu'il est devenu. Pas un grand geste — un acte ordinaire mais symboliquement chargé. L'écrire, le nommer, le dater. Ce sera mentionné dans le Dossier d’Âme."},
-      {title:'Le nom fondateur',text:"Guidez le participant dans l'exploration d'un nom, un mot, une phrase qui nomme son essence telle qu'il la comprend maintenant. Ce Nom Fondateur émerge du participant — le praticien accompagne l'émergence, ne la prescrit pas."},
-      {title:"La lettre à l'explorateur du Seuil",text:"Invitez le participant à écrire une lettre à lui-même au moment de la Phase 0 — à celui ou celle qui arrivait au Seuil. Cette lettre sera lue lors de la cérémonie de remise du Dossier d’Âme."}
+      {title:"La première ébauche — l'entrée en mythe",text:"Commencez par écrire votre histoire à la troisième personne, en ouvrant avec la formule : Il était une fois un être qui est né dans une famille où… Continuez librement pendant 20 à 30 minutes sans vous arrêter, sans corriger, sans relire. Laissez venir ce qui vient. Cette première ébauche n'a pas besoin d'être bonne, elle a besoin d'exister. C'est la matière brute sur laquelle les séances suivantes travailleront. L'archétype attribué doit être présent dans la manière dont le personnage traverse les épreuves — non pas mentionné explicitement, mais incarné dans ses mouvements, ses choix, sa façon de tenir.",guide:"Si votre histoire était un voyage initiatique, quelles en seraient les trois épreuves majeures — et qu'avez-vous traversé à chacune d'elles ?"},
+      {title:"La relecture avec les yeux de l'archétype",text:"Reprenez la première ébauche de votre mythe. Relisez-la maintenant avec les yeux de votre archétype. Demandez-vous : comment un être portant cet archétype traverse-t-il ces épreuves ? Qu'est-ce que l'archétype voit dans cette histoire que le personnage lui-même ne voyait pas encore ? Annotez, corrigez, ajoutez des scènes. Portez une attention particulière à la manière dont l'ombre de l'archétype apparaît dans les moments les plus difficiles du récit — et à la manière dont le personnage commence à en sortir.",guide:"À quel moment de votre histoire l'archétype est-il le plus clairement à l'œuvre — et à quel moment est-ce son ombre qui s'exprime ?"},
+      {title:"La conclusion vivante",text:"Écrivez la conclusion de votre mythe — non pas la fin de votre histoire (elle n'est pas terminée), mais l'horizon vers lequel elle pointe. Décrivez, toujours à la troisième personne, ce que ce personnage vient offrir au monde, ce qu'il transmet, quelle trace il cherche à laisser. Cette conclusion n'est pas un plan — c'est un horizon. Elle peut rester poétique, imprécise dans ses contours, mais elle doit être chargée d'une intention réelle. Cette conclusion devient le premier matériau du Contrat d'Âme qui sera formalisé en Phase 7.",guide:"Dans dix ans, si ce personnage a vécu fidèlement à ce qu'il est en train de devenir — qu'est-ce que les autres diront de lui ?"}
     ],
     questions:["Le changement se manifeste-t-il dans la vie quotidienne du participant ?","Y a-t-il encore une dépendance à la validation extérieure ?","Le participant peut-il nommer ce qu'il transmet à son entourage ?","Est-il prêt pour la phase de transmission et de clôture ?"] },
   { num:7, label:'Phase 7', name:'La Transmission',
     essence:"Le cercle se ferme — et s'ouvre. Ce qui a été reçu, transformé, intégré, est maintenant transmis. Non comme une fin, mais comme un recommencement.",
     exercises:[
-      {title:'La cérémonie de remise',text:"Préparez un espace rituel pour la remise du Dossier d’Âme. Bougies, silence, présence pleine. Le praticien lit d'abord son message personnel (section 9 du Dossier). Le participant lit sa lettre à l'explorateur du Seuil. Puis le Dossier est remis physiquement. Prévoyez un temps de silence après."},
-      {title:'Le mandala final',text:"Imprimez le Mandala Vivant avec tous les anneaux illuminés. Il est remis avec le Dossier d’Âme — représentation visuelle du chemin accompli."},
-      {title:"L'après-parcours",text:"Discutez avec le participant de ce qu'il souhaite maintenant : reprendre une pratique personnelle autonome, rejoindre un groupe, entamer un nouveau cycle ORIA à un niveau plus profond. La transmission ne ferme pas la porte — elle l'ouvre différemment."}
+      {title:"L'écriture du Contrat d'Âme",text:"Le Contrat d'Âme est un document personnel de quelques lignes — non un plan d'action, mais une déclaration d'orientation. Il est écrit à la première personne, dans un langage simple et direct. Il comprend cinq voix successives : D'où je viens — une phrase qui nomme l'héritage reconnu et intégré, sans honte ni glorification. Ce que j'ai traversé — une phrase qui nomme la transformation accomplie. Ce que je suis — l'archétype vivant, incarné dans ses mots propres. Ce que j'offre — la contribution concrète, ancrée dans la vocation découverte en Phase 4. Mon engagement — un cap choisi librement, non une promesse de perfection.",note:"Laissez le participant écrire seul, sans suggestions de formulation. Vous êtes présent, silencieux. Après l'écriture, invitez-le à lire le Contrat à voix haute. Ce moment de lecture orale est souvent le plus fort du parcours."},
+      {title:"La lettre à la lignée",text:"Avant de clore le parcours, invitez le participant à écrire une dernière lettre — non pas à un ancêtre en particulier, mais à sa lignée entière. Une lettre qui dit : Voilà ce que j'ai reçu de vous. Voilà ce que j'ai reconnu. Voilà ce que je transforme. Et voilà ce que je viens transmettre à mon tour. Cette lettre n'est pas envoyée. Elle est déposée — dans le Dossier d'Âme, ou dans un endroit choisi par le participant. Elle marque symboliquement le passage : d'héritier qui subit à héritier qui choisit ce qu'il transmet.",guide:"Qu'est-ce que vous avez envie que votre lignée sache — ce que vous avez vu, traversé, décidé ?"},
+      {title:"Le rituel de clôture",text:"La dernière séance du parcours ORIA n'est pas une séance de travail ordinaire — c'est un rituel de clôture, co-construit avec le participant. Le praticien génère le Dossier d'Âme et le remet en main propre. Il prend le temps de lire ensemble un passage du Dossier. Il nomme explicitement ce qu'il a observé dans le parcours de ce participant — non comme un diagnostic, mais comme un témoignage : Voici ce que j'ai vu de vous, au fil de ce chemin. Un espace est laissé au participant pour qu'il exprime ce que ce parcours lui a apporté. La séance se clôt par : Ce parcours est terminé. Ce qui commence maintenant, c'est votre vie depuis cet endroit."}
     ],
     questions:["Le participant est-il en capacité de recevoir la remise sans la minimiser ?","Y a-t-il des éléments non résolus qui méritent un suivi après-parcours ?","Le Dossier d’Âme est-il complet et fidèle au vécu du participant ?","Qu'est-ce que ce parcours vous a appris, à vous, praticien ?"] }
 ];
@@ -1227,6 +1333,7 @@ function switchTab(tab){
   if(tab==='seance')renderSessionGuide();
   if(tab==='dossier')renderDossierLock();
   if(tab==='oracle'){oracleMode='tirage';oraclePhaseFilter=null;oracleThemeFilter=null;renderOracle();}
+  if(tab==='geno')genoLoad();
 }
 
 // ── LOAD CLIENT ───────────────────────────────────────────────────
@@ -1301,7 +1408,7 @@ function renderSessionGuide(){
       <div class="guide-phase-essence">${phase.essence}</div>
       <div class="guide-section">
         <div class="guide-section-title">Exercices de séance</div>
-        ${phase.exercises.map((ex,i)=>`<div class="exercise-block"><div class="exercise-num">Exercice ${i+1}</div><div class="exercise-title">${ex.title}</div><div class="exercise-text">${ex.text}</div></div>`).join('')}
+        ${phase.exercises.map((ex,i)=>`<div class="exercise-block"><div class="exercise-num">Exercice ${i+1}</div><div class="exercise-title">${ex.title}</div>${ex.dur?'<div class="ex-dur">&#9200; '+ex.dur+'</div>':''}<div class="exercise-text">${ex.text}</div>${ex.guide?'<div class="ex-guide"><em>&rarr; '+ex.guide+'</em></div>':''  }${ex.note?'<div class="ex-note">&#9998; '+ex.note+'</div>':''}</div>`).join('')}
       </div>
       <div class="guide-section">
         <div class="guide-section-title">Questions d'observation praticien</div>
@@ -1833,6 +1940,381 @@ document.addEventListener('keydown',e=>{
 loadState();
 if(state.practitioner){launchApp();}
 else{document.getElementById('setup').style.display='flex';document.getElementById('app').style.display='none';}
+
+// ── GÉNOSOCIOGRAMME ───────────────────────────────────────────────
+var genoTool='select',genoNodes=[],genoEdges=[],genoSelected=null,genoConnecting=null,genoDrag=null,genoNextId=1;
+
+var GENO_RELS=[
+  {key:'filiation',label:'Filiation (parent ↔ enfant)'},
+  {key:'union',label:'Union / Mariage'},
+  {key:'sep',label:'Séparation / Divorce'},
+  {key:'conflict',label:'Conflit'},
+  {key:'rupture',label:'Rupture / Coupure'},
+  {key:'distance',label:'Éloignement'},
+  {key:'fusion',label:'Fusion / Dépendance'},
+  {key:'transmission',label:'Transmission ORIA'}
+];
+
+function genoLoad(){
+  var cc=client();
+  genoNodes=[];genoEdges=[];genoNextId=1;genoSelected=null;genoConnecting=null;genoDrag=null;
+  if(cc&&cc.geno){
+    genoNodes=JSON.parse(JSON.stringify(cc.geno.nodes||[]));
+    genoEdges=JSON.parse(JSON.stringify(cc.geno.edges||[]));
+    genoNextId=cc.geno.nextId||1;
+  }
+  genoSetTool('select');
+  renderGeno();
+  var canvas=document.getElementById('geno-canvas');
+  if(canvas)canvas.addEventListener('mousedown',genoCanvasMd);
+}
+
+function genoSave(){
+  var cc=client();if(!cc)return;
+  cc.geno={nodes:JSON.parse(JSON.stringify(genoNodes)),edges:JSON.parse(JSON.stringify(genoEdges)),nextId:genoNextId};
+  saveState();
+}
+
+function genoNid(){return 'g'+(genoNextId++);}
+
+function genoSetTool(t){
+  genoTool=t;genoConnecting=null;
+  var rc=document.getElementById('geno-rc');if(rc)rc.style.display='none';
+  document.querySelectorAll('.geno-tool').forEach(function(b){b.classList.toggle('active',b.dataset.tool===t);});
+  var canvas=document.getElementById('geno-canvas');
+  if(canvas)canvas.style.cursor=t==='delete'?'crosshair':t!=='select'?'cell':'default';
+  if(t!=='select'){genoSelected=null;renderGenoInsp();}
+  renderGenoNodes();
+}
+
+function genoCanvasMd(e){
+  var tgt=e.target;
+  if(tgt.id!=='geno-canvas'&&tgt.id!=='geno-wrap')return;
+  var rc=document.getElementById('geno-rc');if(rc)rc.style.display='none';
+  var rect=document.getElementById('geno-canvas').getBoundingClientRect();
+  var x=e.clientX-rect.left,y=e.clientY-rect.top;
+  if(genoTool==='male'||genoTool==='female'||genoTool==='neutral'){
+    var n={id:genoNid(),type:genoTool,name:'',birth:'',death:'',x:x,y:y,color:'',deceased:false,proband:false};
+    genoNodes.push(n);genoSave();
+    genoSelected={type:'node',id:n.id};
+    renderGeno();
+    var ni=document.getElementById('ginsp-name');
+    if(ni)setTimeout(function(){ni.focus();ni.select();},60);
+  } else if(genoTool==='select'){
+    genoSelected=null;genoConnecting=null;renderGeno();
+  }
+}
+
+function genoNodeClick(id,e){
+  e.stopPropagation();
+  var rc=document.getElementById('geno-rc');if(rc)rc.style.display='none';
+  if(genoTool==='delete'){
+    genoNodes=genoNodes.filter(function(n){return n.id!==id;});
+    genoEdges=genoEdges.filter(function(ed){return ed.from!==id&&ed.to!==id;});
+    genoSelected=null;genoSave();renderGeno();return;
+  }
+  if(genoTool==='connect'){
+    if(!genoConnecting){genoConnecting=id;renderGenoNodes();}
+    else if(genoConnecting!==id){
+      var fromId=genoConnecting;genoConnecting=null;renderGenoNodes();
+      showGenoRc(fromId,id,e);
+    } else {genoConnecting=null;renderGenoNodes();}
+    return;
+  }
+  if(genoTool==='select'){genoSelected={type:'node',id:id};renderGeno();}
+}
+
+function genoNodeMd(id,e){
+  if(genoTool!=='select')return;
+  e.preventDefault();e.stopPropagation();
+  var n=genoNodes.find(function(nd){return nd.id===id;});if(!n)return;
+  genoDrag={id:id,sx:e.clientX,sy:e.clientY,nx:n.x,ny:n.y,moved:false};
+  document.addEventListener('mousemove',genoMm);
+  document.addEventListener('mouseup',genoMu);
+}
+
+function genoMm(e){
+  if(!genoDrag)return;
+  var dx=e.clientX-genoDrag.sx,dy=e.clientY-genoDrag.sy;
+  if(Math.abs(dx)+Math.abs(dy)>3)genoDrag.moved=true;
+  var n=genoNodes.find(function(nd){return nd.id===genoDrag.id;});if(!n)return;
+  n.x=Math.max(20,genoDrag.nx+dx);n.y=Math.max(20,genoDrag.ny+dy);
+  var el=document.querySelector('.geno-node[data-id="'+n.id+'"]');
+  if(el){el.style.left=n.x+'px';el.style.top=n.y+'px';}
+  renderGenoEdges();
+}
+
+function genoMu(){
+  if(genoDrag&&genoDrag.moved)genoSave();
+  genoDrag=null;
+  document.removeEventListener('mousemove',genoMm);
+  document.removeEventListener('mouseup',genoMu);
+}
+
+function genoAddProband(){
+  var cc=client();
+  var nm=cc?(cc.prenom+' '+(cc.nom||'')).trim():'Participant';
+  var wrap=document.getElementById('geno-wrap');
+  var cx=wrap?Math.round(wrap.offsetWidth/2):300,cy=wrap?Math.round(wrap.offsetHeight/2):200;
+  var n={id:genoNid(),type:'male',name:nm,birth:'',death:'',x:cx,y:cy,color:'',deceased:false,proband:true};
+  genoNodes.push(n);genoSave();
+  genoSelected={type:'node',id:n.id};renderGeno();
+}
+
+function clearGeno(){
+  if(!confirm('Effacer tout le génosociogramme ?'))return;
+  genoNodes=[];genoEdges=[];genoNextId=1;genoSelected=null;genoSave();renderGeno();
+}
+
+function renderGeno(){renderGenoNodes();renderGenoEdges();renderGenoInsp();}
+
+function renderGenoNodes(){
+  var canvas=document.getElementById('geno-canvas');if(!canvas)return;
+  canvas.querySelectorAll('.geno-node').forEach(function(n){n.remove();});
+  genoNodes.forEach(function(n){
+    var el=document.createElement('div');
+    var cls='geno-node '+n.type;
+    if(n.deceased)cls+=' deceased';
+    if(n.proband)cls+=' proband';
+    if(genoSelected&&genoSelected.type==='node'&&genoSelected.id===n.id)cls+=' selected';
+    if(genoConnecting===n.id)cls+=' connecting';
+    el.className=cls;
+    if(n.color)el.dataset.c=n.color;
+    el.style.left=n.x+'px';el.style.top=n.y+'px';
+    el.dataset.id=n.id;
+    var yr=n.birth?(n.birth+(n.death?'–'+n.death:'')):'';
+    el.innerHTML='<div class="geno-node-inner"><div class="geno-node-name">'+escHtml(n.name||'?')+'</div>'+(yr?'<div class="geno-node-year">'+escHtml(yr)+'</div>':'')+'</div>';
+    el.addEventListener('click',function(e){genoNodeClick(n.id,e);});
+    el.addEventListener('mousedown',function(e){genoNodeMd(n.id,e);});
+    canvas.appendChild(el);
+  });
+}
+
+function showGenoRc(fromId,toId,e){
+  var rc=document.getElementById('geno-rc');
+  rc.innerHTML='<div class="geno-rc-hd">Type de lien</div>';
+  GENO_RELS.forEach(function(r){
+    var d=document.createElement('div');
+    d.className='geno-ro';
+    d.innerHTML='<svg width="34" height="12" style="flex-shrink:0">'+genoRelSvg(r.key)+'</svg>'+r.label;
+    d.onclick=function(){genoAddEdge(fromId,toId,r.key);rc.style.display='none';};
+    rc.appendChild(d);
+  });
+  var cancel=document.createElement('div');
+  cancel.className='geno-ro';cancel.style.color='var(--muted)';cancel.textContent='Annuler';
+  cancel.onclick=function(){rc.style.display='none';};rc.appendChild(cancel);
+  var wrap=document.getElementById('geno-wrap');
+  var wr=wrap.getBoundingClientRect();
+  var left=Math.min(Math.max(0,e.clientX-wr.left+12),wr.width-185);
+  var top=Math.min(Math.max(0,e.clientY-wr.top),wr.height-260);
+  rc.style.left=left+'px';rc.style.top=top+'px';rc.style.display='block';
+}
+
+function genoRelSvg(key){
+  switch(key){
+    case 'union': return '<line x1="0" y1="3" x2="34" y2="3" stroke="#3C2415" stroke-width="2"/><line x1="0" y1="9" x2="34" y2="9" stroke="#3C2415" stroke-width="2"/>';
+    case 'sep': return '<line x1="0" y1="6" x2="34" y2="6" stroke="#8B5E30" stroke-width="2" stroke-dasharray="6 3"/>';
+    case 'conflict': return '<path d="M0,6 L6,1 L12,11 L18,1 L24,11 L30,6 L34,6" fill="none" stroke="#8B3A2A" stroke-width="2"/>';
+    case 'rupture': return '<line x1="0" y1="6" x2="34" y2="6" stroke="#6B4D2F" stroke-width="2" stroke-dasharray="3 5"/>';
+    case 'distance': return '<line x1="0" y1="6" x2="34" y2="6" stroke="#9A7860" stroke-width="1.5" stroke-dasharray="2 5"/>';
+    case 'fusion': return '<line x1="0" y1="6" x2="34" y2="6" stroke="#3C2415" stroke-width="6"/>';
+    case 'transmission': return '<line x1="0" y1="6" x2="28" y2="6" stroke="#C4A44A" stroke-width="2.5" stroke-dasharray="7 4"/><polygon points="28,3 34,6 28,9" fill="#C4A44A"/>';
+    default: return '<line x1="0" y1="6" x2="34" y2="6" stroke="#3C2415" stroke-width="2"/>';
+  }
+}
+
+function genoAddEdge(fromId,toId,rel){
+  var exists=genoEdges.some(function(e){return (e.from===fromId&&e.to===toId)||(e.from===toId&&e.to===fromId);});
+  if(!exists)genoEdges.push({id:genoNid(),from:fromId,to:toId,rel:rel});
+  genoSave();renderGeno();
+}
+
+function renderGenoEdges(){
+  var svg=document.getElementById('geno-svg');if(!svg)return;
+  var ns='http://www.w3.org/2000/svg';
+  Array.prototype.slice.call(svg.childNodes).forEach(function(ch){if(ch.nodeName!=='defs')svg.removeChild(ch);});
+  genoEdges.forEach(function(edge){
+    var fn=genoNodes.find(function(n){return n.id===edge.from;});
+    var tn=genoNodes.find(function(n){return n.id===edge.to;});
+    if(!fn||!tn)return;
+    genoDrawEdge(svg,ns,edge,fn.x,fn.y,tn.x,tn.y);
+  });
+}
+
+function genoDrawEdge(svg,ns,edge,x1,y1,x2,y2){
+  var rel=edge.rel;
+  if(rel==='conflict'){
+    var path=document.createElementNS(ns,'path');
+    path.setAttribute('d',genoZigzag(x1,y1,x2,y2));
+    path.setAttribute('fill','none');path.setAttribute('stroke','#8B3A2A');path.setAttribute('stroke-width','2.5');
+    svg.appendChild(path);
+  } else if(rel==='union'){
+    var dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy)||1;
+    var px=-dy/len*3.5,py=dx/len*3.5;
+    [1,-1].forEach(function(sign){
+      var ln=document.createElementNS(ns,'line');
+      ln.setAttribute('x1',x1+px*sign);ln.setAttribute('y1',y1+py*sign);
+      ln.setAttribute('x2',x2+px*sign);ln.setAttribute('y2',y2+py*sign);
+      ln.setAttribute('stroke','#3C2415');ln.setAttribute('stroke-width','2');
+      svg.appendChild(ln);
+    });
+  } else {
+    var el=document.createElementNS(ns,'line');
+    el.setAttribute('x1',x1);el.setAttribute('y1',y1);
+    el.setAttribute('x2',x2);el.setAttribute('y2',y2);
+    switch(rel){
+      case 'sep':el.setAttribute('stroke','#8B5E30');el.setAttribute('stroke-width','2');el.setAttribute('stroke-dasharray','8 4');break;
+      case 'rupture':el.setAttribute('stroke','#6B4D2F');el.setAttribute('stroke-width','2');el.setAttribute('stroke-dasharray','3 6');break;
+      case 'distance':el.setAttribute('stroke','#9A7860');el.setAttribute('stroke-width','1.5');el.setAttribute('stroke-dasharray','2 5');break;
+      case 'fusion':el.setAttribute('stroke','#3C2415');el.setAttribute('stroke-width','6');break;
+      case 'transmission':el.setAttribute('stroke','#C4A44A');el.setAttribute('stroke-width','2.5');el.setAttribute('stroke-dasharray','10 5');el.setAttribute('marker-end','url(#arrowGold)');break;
+      default:el.setAttribute('stroke','#3C2415');el.setAttribute('stroke-width','2');
+    }
+    svg.appendChild(el);
+    if(rel==='sep'){
+      var dx2=x2-x1,dy2=y2-y1,l2=Math.sqrt(dx2*dx2+dy2*dy2)||1;
+      var mx=(x1+x2)/2,my=(y1+y2)/2;
+      var nx=-dy2/l2*9,ny=dx2/l2*9;
+      [[-9,0],[9,0]].forEach(function(off){
+        var sl=document.createElementNS(ns,'line');
+        var cx2=mx+dx2/l2*off[0],cy2=my+dy2/l2*off[0];
+        sl.setAttribute('x1',cx2+nx);sl.setAttribute('y1',cy2+ny);
+        sl.setAttribute('x2',cx2-nx);sl.setAttribute('y2',cy2-ny);
+        sl.setAttribute('stroke','#8B3A2A');sl.setAttribute('stroke-width','2');
+        svg.appendChild(sl);
+      });
+    }
+  }
+  var mx=(x1+x2)/2,my=(y1+y2)/2;
+  var lbls={sep:'sép.',conflict:'conf.',rupture:'rupt.',distance:'élgn.',fusion:'fus.',transmission:'transm.'};
+  if(lbls[rel]){
+    var txt=document.createElementNS(ns,'text');
+    txt.setAttribute('x',mx);txt.setAttribute('y',my-8);txt.setAttribute('text-anchor','middle');
+    txt.setAttribute('font-size','8');txt.setAttribute('font-family','Georgia,serif');txt.setAttribute('fill','#9A7860');
+    txt.textContent=lbls[rel];svg.appendChild(txt);
+  }
+}
+
+function genoZigzag(x1,y1,x2,y2){
+  var dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy)||1;
+  var steps=Math.max(4,Math.floor(len/22));
+  var px=-dy/len,py=dx/len,amp=8;
+  var d='M '+x1+' '+y1;
+  for(var i=1;i<=steps;i++){
+    var t=i/(steps+1),x=x1+dx*t,y=y1+dy*t,off=(i%2===0?1:-1)*amp;
+    d+=' L '+(x+px*off)+' '+(y+py*off);
+  }
+  return d+' L '+x2+' '+y2;
+}
+
+function renderGenoInsp(){
+  var insp=document.getElementById('geno-insp');if(!insp)return;
+  if(!genoSelected){insp.style.display='none';return;}
+  insp.style.display='flex';
+  if(genoSelected.type==='node'){
+    var n=genoNodes.find(function(nd){return nd.id===genoSelected.id;});
+    if(!n){insp.style.display='none';return;}
+    var edges=genoEdges.filter(function(e){return e.from===n.id||e.to===n.id;});
+    var rlbl={filiation:'Filiation',union:'Union',sep:'Sép.',conflict:'Conflit',rupture:'Rupture',distance:'Élgn.',fusion:'Fusion',transmission:'Transm.'};
+    var sw=function(col,lbl,bg,bc){
+      return '<div class="geno-sw'+(n.color===col?' on':'')+'" style="background:'+bg+';border-color:'+bc+';" title="'+lbl+'" onclick="genoUpd(\''+n.id+'\',\'color\',\''+col+'\')"></div>';
+    };
+    insp.innerHTML='<div class="geno-insp-hd">Fiche membre</div>'
+      +'<div class="geno-if"><label class="geno-il">Nom</label>'
+      +'<input class="geno-ii" id="ginsp-name" value="'+escHtml(n.name||'')+'" placeholder="Prénom Nom" oninput="genoUpd(\''+n.id+'\',\'name\',this.value)"></div>'
+      +'<div class="geno-if" style="display:flex;gap:4px;">'
+      +'<div style="flex:1"><label class="geno-il">Naiss.</label><input class="geno-ii" value="'+escHtml(n.birth||'')+'" placeholder="1950" oninput="genoUpd(\''+n.id+'\',\'birth\',this.value)"></div>'
+      +'<div style="flex:1"><label class="geno-il">Déc.</label><input class="geno-ii" value="'+escHtml(n.death||'')+'" placeholder="1998" oninput="genoUpd(\''+n.id+'\',\'death\',this.value)"></div>'
+      +'</div>'
+      +'<div class="geno-if"><label class="geno-il">Forme</label>'
+      +'<select class="geno-ii" onchange="genoUpd(\''+n.id+'\',\'type\',this.value)">'
+      +'<option value="male"'+(n.type==='male'?' selected':'')+'>Homme ■</option>'
+      +'<option value="female"'+(n.type==='female'?' selected':'')+'>Femme ●</option>'
+      +'<option value="neutral"'+(n.type==='neutral'?' selected':'')+'>Non défini ◆</option>'
+      +'</select></div>'
+      +'<div class="geno-if"><label class="geno-il">Couleur</label>'
+      +'<div class="geno-swatches">'
+      +sw('','Défaut','#fff','#D4C5A0')
+      +sw('gold','Or','rgba(196,164,74,.2)','#C4A44A')
+      +sw('red','Tension','#ffeee8','#8B3A2A')
+      +sw('blue','Ressource','#eef0ff','#3a5a8b')
+      +sw('green','Ancrage','#eef5ee','#3a7a4a')
+      +'</div></div>'
+      +'<div class="geno-if"><label class="geno-il" style="display:flex;align-items:center;gap:5px;cursor:pointer;font-weight:normal;">'
+      +'<input type="checkbox"'+(n.deceased?' checked':'')+' onchange="genoUpd(\''+n.id+'\',\'deceased\',this.checked)"> Décédé(e)</label></div>'
+      +'<div class="geno-if"><label class="geno-il" style="display:flex;align-items:center;gap:5px;cursor:pointer;font-weight:normal;">'
+      +'<input type="checkbox"'+(n.proband?' checked':'')+' onchange="genoUpd(\''+n.id+'\',\'proband\',this.checked)"> Participant ORIA</label></div>'
+      +(edges.length?'<div class="geno-if"><label class="geno-il">Liens ('+edges.length+')</label>'
+        +'<div class="geno-edge-list">'
+        +edges.map(function(e){
+          var oid=e.from===n.id?e.to:e.from;
+          var other=genoNodes.find(function(nd){return nd.id===oid;});
+          return '<div class="geno-ei"><span>'+(rlbl[e.rel]||e.rel)+' — '+escHtml((other&&other.name)||'?')+'</span>'
+            +'<button class="geno-ei-del" onclick="genoDelEdge(\''+e.id+'\')">&#10005;</button></div>';
+        }).join('')
+        +'</div></div>':'')
+      +'<button class="btn-sm danger" style="width:100%;margin-top:6px;" onclick="genoDelNode(\''+n.id+'\')">Supprimer</button>';
+  }
+}
+
+function genoUpd(id,field,value){
+  var n=genoNodes.find(function(nd){return nd.id===id;});if(!n)return;
+  n[field]=value;genoSave();
+  renderGenoNodes();
+  if(field==='name'||field==='type')renderGenoInsp();
+}
+
+function genoDelNode(id){
+  genoNodes=genoNodes.filter(function(n){return n.id!==id;});
+  genoEdges=genoEdges.filter(function(e){return e.from!==id&&e.to!==id;});
+  genoSelected=null;genoSave();renderGeno();
+}
+
+function genoDelEdge(id){
+  genoEdges=genoEdges.filter(function(e){return e.id!==id;});
+  genoSave();renderGenoEdges();renderGenoInsp();
+}
+
+function printGeno(){
+  var wrap=document.getElementById('geno-wrap');
+  if(!wrap){showToast('Aucun génosociogramme.');return;}
+  var w=window.open('','_blank');
+  if(!w){showToast('Autorisez les popups pour imprimer.');return;}
+  var cc=client();
+  var title='Génosociogramme'+(cc?' — '+(cc.prenom+' '+(cc.nom||'')).trim():'');
+  var svgHtml=document.getElementById('geno-svg').outerHTML;
+  var nodesHtml=document.getElementById('geno-canvas').innerHTML;
+  var ww=wrap.offsetWidth,wh=wrap.offsetHeight;
+  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+title+'</title><style>'
+    +'body{font-family:Georgia,serif;background:#fff;margin:0;padding:20px;color:#3C2415;}'
+    +'h2{font-size:1.1rem;letter-spacing:.2em;color:#3C2415;font-weight:normal;margin-bottom:4px;text-transform:uppercase;}'
+    +'p{font-size:.75rem;color:#9A7860;margin-bottom:16px;}'
+    +'.wrap{position:relative;width:'+ww+'px;height:'+wh+'px;border:1px solid #D4C5A0;background:#FAF6EE;overflow:visible;}'
+    +'.geno-svg{position:absolute;top:0;left:0;width:100%;height:100%;overflow:visible;}'
+    +'.geno-canvas{position:absolute;top:0;left:0;width:100%;height:100%;}'
+    +'.geno-node{position:absolute;transform:translate(-50%,-50%);box-sizing:border-box;}'
+    +'.geno-node.male{width:66px;height:50px;border:2px solid #3C2415;background:#fff;}'
+    +'.geno-node.female{width:60px;height:60px;border:2px solid #3C2415;background:#fff;border-radius:50%;}'
+    +'.geno-node.neutral{width:54px;height:54px;border:2px solid #3C2415;background:#fff;transform:translate(-50%,-50%) rotate(45deg);}'
+    +'.geno-node.neutral .geno-node-inner{transform:rotate(-45deg);}'
+    +'.geno-node.proband{border:3px solid #C4A44A;background:rgba(196,164,74,.1);}'
+    +'.geno-node.deceased{opacity:.5;}'
+    +'[data-c="gold"]{background:rgba(196,164,74,.14)!important;border-color:#8B6B20!important;}'
+    +'[data-c="red"]{background:#fff5f3!important;border-color:#8B3A2A!important;}'
+    +'[data-c="blue"]{background:#eef0ff!important;border-color:#3a5a8b!important;}'
+    +'[data-c="green"]{background:#eef5ee!important;border-color:#3a7a4a!important;}'
+    +'.geno-node-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;padding:3px;box-sizing:border-box;}'
+    +'.geno-node-name{font-size:.68rem;color:#3C2415;text-align:center;line-height:1.2;word-break:break-word;}'
+    +'.geno-node-year{font-size:.58rem;color:#9A7860;margin-top:1px;}'
+    +'@media print{body{padding:8px;}.wrap{border:none;}}'
+    +'</style></head><body>'
+    +'<h2>'+title+'</h2>'
+    +'<p>Document généré le '+new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})+'</p>'
+    +'<div class="wrap"><div class="geno-canvas">'+nodesHtml+'</div>'+svgHtml+'</div>'
+    +'</body></html>');
+  w.document.close();
+  setTimeout(function(){w.print();},600);
+}
 </script>
 </body>
 </html>
