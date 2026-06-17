@@ -2469,6 +2469,7 @@ function showGenoRc(fromId,toId,e){
   var wr=cvw.getBoundingClientRect();
   rc.style.left=Math.min(Math.max(0,e.clientX-wr.left+10),wr.width-215)+'px';
   rc.style.top=Math.min(Math.max(0,e.clientY-wr.top-8),wr.height-300)+'px';
+  rc.onmousedown=function(ev){ev.stopPropagation();};
   rc.style.display='block';
 }
 
