@@ -529,24 +529,35 @@ textarea.field-input{resize:vertical;min-height:90px;line-height:1.6;}
 
         <!-- MANDALA -->
         <div class="tab-panel" id="panel-mandala">
-          <div class="section-title">Mandala Vivant du participant</div>
-          <div class="mandala-container">
-            <div class="mandala-svg-wrap">
-              <svg id="mandala-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"></svg>
-              <div class="mandala-actions">
+          <div class="section-title">Mandala Vivant</div>
+          <div class="mand-wrap">
+            <div class="mand-canvas-col">
+              <svg id="mandala-svg" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg"></svg>
+              <div class="mand-actions">
                 <button class="btn-sm" onclick="window.print()">Imprimer</button>
                 <button class="btn-sm" onclick="exportMandala()">Exporter PNG</button>
               </div>
             </div>
-            <div class="mandala-legend">
-              <div class="section-title">Légende des anneaux</div>
-              <div id="mandala-legend-list"></div>
-              <div style="margin-top:16px;padding:14px;background:var(--ivory-dd);border-radius:2px;font-size:.82rem;color:var(--muted);line-height:1.6;">
-                Chaque anneau s'illumine lorsque la phase est validée dans l'onglet Parcours. Le centre représente le Postulat Central.
+            <div class="mand-panel-col">
+              <div class="mand-progress-wrap">
+                <svg id="mand-progress-svg" width="110" height="110" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"></svg>
+                <div class="mand-progress-info">
+                  <span id="mand-pct">0%</span>
+                  <span>progression du parcours</span>
+                </div>
               </div>
-              <div class="field-group" style="margin-top:16px;">
+              <div>
+                <div class="mand-sub-title">Phases du parcours</div>
+                <div class="mand-phases-list" id="mand-phases-list"></div>
+              </div>
+              <div>
+                <div class="mand-sub-title">Voiles du parcours</div>
+                <div class="mand-voiles-grid" id="mand-voiles-grid"></div>
+              </div>
+              <div id="mand-arch-section" style="display:none;"></div>
+              <div class="field-group">
                 <label class="field-label">Intention du Mandala</label>
-                <textarea class="field-input" id="mandala-intention" rows="3" onchange="saveProfileField('mandalaIntention',this.value)" placeholder="L'intention posée par le participant au début du parcours..."></textarea>
+                <textarea class="field-input" id="mandala-intention" rows="3" onchange="saveProfileField('mandalaIntention',this.value)" placeholder="L’intention posée par le participant au début du parcours…"></textarea>
               </div>
             </div>
           </div>
@@ -1756,56 +1767,290 @@ function updatePhaseUI(){
 
 // ── MANDALA ───────────────────────────────────────────────────────
 function renderMandala(){
-  const c=client();const svg=document.getElementById('mandala-svg');
-  const validated=c?(c.validatedPhases||[]):[];
-  const cx=200,cy=200;let out='';
-  out+=`<circle cx="${cx}" cy="${cy}" r="198" fill="#FAF6EE" stroke="#E0D5C0" stroke-width="1"/>`;
-  // Spokes
-  for(let a=0;a<360;a+=22.5){
-    const r=a*Math.PI/180;
-    const x1=cx+14*Math.cos(r),y1=cy+14*Math.sin(r);
-    const x2=cx+182*Math.cos(r),y2=cy+182*Math.sin(r);
-    out+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#D4C5A0" stroke-width=".4" opacity=".6"/>`;
+  var cc=client();
+  var svg=document.getElementById('mandala-svg');
+  if(!svg)return;
+  var validated=cc?(cc.validatedPhases||[]):[];
+  var voilesActive=cc?(cc.voiles||[]):[];
+  var archP=cc?(cc.archPrincipal||''):'';
+  var archS=cc?(cc.archSecondaire||''):'';
+  var cx=300,cy=300;
+
+  var RINGS=[
+    {phase:0,   rOut:260,rIn:232,color:'#C4A44A',light:'#F0D870'},
+    {phase:1,   rOut:230,rIn:204,color:'#B8835A',light:'#D8A878'},
+    {phase:2,   rOut:202,rIn:177,color:'#A07040',light:'#C09060'},
+    {phase:2.5, rOut:175,rIn:151,color:'#8A7AA0',light:'#B09EC0'},
+    {phase:3,   rOut:149,rIn:125,color:'#8B5030',light:'#B07050'},
+    {phase:4,   rOut:123,rIn:100,color:'#C4A44A',light:'#E8C870'},
+    {phase:5,   rOut:98, rIn:76, color:'#D4AA50',light:'#F4CA70'},
+    {phase:6,   rOut:74, rIn:53, color:'#E0B840',light:'#FFD860'},
+    {phase:7,   rOut:51, rIn:32, color:'#E8C040',light:'#FFE870'}
+  ];
+
+  var VCOLS=['#8B3A2A','#4A5E7A','#7A3A60','#5A3A80','#8A3030','#385A70','#6A2A40','#4A3828','#5A5A30'];
+
+  function f(n){return(+n).toFixed(2);}
+  function polar(r,deg){var rad=(deg-90)*Math.PI/180;return[cx+r*Math.cos(rad),cy+r*Math.sin(rad)];}
+  function secD(r1,r2,a1,a2){
+    var p1=polar(r1,a1),p2=polar(r1,a2),p3=polar(r2,a2),p4=polar(r2,a1);
+    var lg=(a2-a1)>180?1:0;
+    return 'M'+f(p1[0])+','+f(p1[1])+' A'+r1+','+r1+' 0 '+lg+' 1 '+f(p2[0])+','+f(p2[1])+
+           ' L'+f(p3[0])+','+f(p3[1])+' A'+r2+','+r2+' 0 '+lg+' 0 '+f(p4[0])+','+f(p4[1])+'Z';
   }
-  // Rings outside-in
-  [...MANDALA_RINGS].reverse().forEach(ring=>{
-    if(ring.center){
-      const lit=validated.includes(7);
-      out+=`<circle cx="${cx}" cy="${cy}" r="${ring.r}" fill="${lit?ring.color:'#C4A44A'}" opacity="${lit?1:.25}"/>`;
-    } else {
-      const lit=validated.includes(ring.phase);
-      out+=`<circle cx="${cx}" cy="${cy}" r="${ring.r}" fill="${lit?ring.color:'none'}" fill-opacity="${lit?.3:0}" stroke="${lit?ring.color:'#D4C5A0'}" stroke-width="${lit?2:1}"/>`;
+  function donutD(r1,r2){
+    return 'M'+f(cx-r2)+','+f(cy)+
+           ' a'+r2+','+r2+' 0 1 0 '+f(r2*2)+',0 a'+r2+','+r2+' 0 1 0 '+f(-r2*2)+',0'+
+           ' M'+f(cx-r1)+','+f(cy)+
+           ' a'+r1+','+r1+' 0 1 0 '+f(r1*2)+',0 a'+r1+','+r1+' 0 1 0 '+f(-r1*2)+',0';
+  }
+
+  var s='';
+
+  // ── DEFS ─────────────────────────────────────────────────────────
+  s+='<defs>';
+
+  s+='<radialGradient id="mBg" cx="50%" cy="50%" r="50%">';
+  s+='<stop offset="0%" stop-color="#FFFBF2"/>';
+  s+='<stop offset="65%" stop-color="#FAF6EE"/>';
+  s+='<stop offset="100%" stop-color="#EEE4D0"/>';
+  s+='</radialGradient>';
+
+  s+='<radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">';
+  s+='<stop offset="0%" stop-color="#FFF8DC"/>';
+  s+='<stop offset="100%" stop-color="#C4A44A"/>';
+  s+='</radialGradient>';
+
+  s+='<linearGradient id="vGold" x1="0%" y1="0%" x2="100%" y2="100%">';
+  s+='<stop offset="0%" stop-color="#FFE060" stop-opacity="0.95"/>';
+  s+='<stop offset="100%" stop-color="#C4A44A" stop-opacity="0.95"/>';
+  s+='</linearGradient>';
+
+  s+='<filter id="mglow" x="-40%" y="-40%" width="180%" height="180%">';
+  s+='<feGaussianBlur in="SourceGraphic" stdDeviation="4" result="b"/>';
+  s+='<feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>';
+  s+='</filter>';
+
+  s+='<filter id="mglow2" x="-80%" y="-80%" width="260%" height="260%">';
+  s+='<feGaussianBlur in="SourceGraphic" stdDeviation="10" result="b"/>';
+  s+='<feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>';
+  s+='</filter>';
+
+  // Voile arc paths for textPath labels
+  VOILES.forEach(function(v,i){
+    var a1=i*40+3,a2=i*40+37;
+    var p1=polar(279,a1),p2=polar(279,a2);
+    s+='<path id="vlp'+i+'" d="M'+f(p1[0])+','+f(p1[1])+' A279,279 0 0 1 '+f(p2[0])+','+f(p2[1])+'" fill="none"/>';
+  });
+
+  s+='<style>';
+  s+='@keyframes mShimmer{0%,100%{opacity:.9}50%{opacity:.7}}';
+  s+='@keyframes mPulse{0%,100%{filter:url(#mglow)}50%{filter:url(#mglow2)}}';
+  s+='@keyframes mSpin{from{transform-origin:300px 300px;transform:rotate(0deg)}to{transform-origin:300px 300px;transform:rotate(360deg)}}';
+  s+='.mrl{animation:mShimmer 3s ease-in-out infinite}';
+  s+='.mrl2{animation:mShimmer 3.6s .8s ease-in-out infinite}';
+  s+='.mctr{animation:mPulse 2.8s ease-in-out infinite}';
+  s+='</style>';
+  s+='</defs>';
+
+  // ── BACKGROUND ───────────────────────────────────────────────────
+  s+='<circle cx="300" cy="300" r="299" fill="url(#mBg)"/>';
+
+  // Outer decorative border
+  s+='<circle cx="300" cy="300" r="297" fill="none" stroke="#C4A44A" stroke-width="1.5" opacity=".35"/>';
+  s+='<circle cx="300" cy="300" r="293" fill="none" stroke="#D4C5A0" stroke-width=".5" opacity=".4"/>';
+
+  // ── FINE RADIAL SPOKES ────────────────────────────────────────────
+  for(var a=0;a<360;a+=15){
+    var sp1=polar(33,a),sp2=polar(261,a);
+    s+='<line x1="'+f(sp1[0])+'" y1="'+f(sp1[1])+'" x2="'+f(sp2[0])+'" y2="'+f(sp2[1])+'" stroke="#C4A44A" stroke-width=".25" opacity=".25"/>';
+  }
+
+  // ── VOILE CORONA (r=265-292) ──────────────────────────────────────
+  VOILES.forEach(function(voile,i){
+    var a1=i*40,a2=a1+40;
+    var active=voilesActive.indexOf(voile)>=0;
+    // Main sector
+    s+='<path d="'+secD(292,266,a1+0.8,a2-0.8)+'" fill="'+(active?'url(#vGold)':VCOLS[i])+'" opacity="'+(active?'.9':'.42')+'"/>';
+    // Inner shimmer for active voile
+    if(active){
+      s+='<path d="'+secD(288,270,a1+1.5,a2-1.5)+'" fill="#FFE060" opacity=".15" class="mrl"/>';
     }
+    // Short label via textPath
+    var vShort=voile.replace('Voile de la ','').replace('Voile du ','').replace("Voile de l'",'').toUpperCase().substring(0,7);
+    s+='<text font-family="Georgia,serif" font-size="5.8" fill="'+(active?'#3C2415':'#F5EDD8')+'" opacity="'+(active?'.95':'.7')+'" letter-spacing=".05">';
+    s+='<textPath href="#vlp'+i+'" startOffset="50%" text-anchor="middle">'+vShort+'</textPath></text>';
   });
-  // Phase numbers
-  MANDALA_RINGS.filter(r=>!r.center&&r.r>20).forEach(ring=>{
-    const lit=validated.includes(ring.phase);
-    const textR=ring.r-10;
-    out+=`<text x="${cx}" y="${cy-textR+4}" text-anchor="middle" font-family="Georgia,serif" font-size="${ring.r>120?9:8}" fill="${lit?'#6B4D2F':'#9A7860'}" opacity="${lit?1:.6}">${ring.phase===2.5?'2·5':ring.phase}</text>`;
+
+  // Voile separator rings
+  s+='<circle cx="300" cy="300" r="292" fill="none" stroke="#C4A44A" stroke-width="1.2" opacity=".5"/>';
+  s+='<circle cx="300" cy="300" r="266" fill="none" stroke="#C4A44A" stroke-width="1" opacity=".45"/>';
+
+  // ── ORNAMENTAL DOT RING (r=262) ───────────────────────────────────
+  for(var di=0;di<36;di++){
+    var dp=polar(262,di*10);
+    var isDiamond=(di%3===0);
+    if(isDiamond){
+      // Small diamond (4-pointed star using two thin rhombuses)
+      var da=di*10;
+      var dT=polar(264.5,da),dB=polar(259.5,da),dL=polar(262,da-3.5),dR=polar(262,da+3.5);
+      s+='<polygon points="'+f(dT[0])+','+f(dT[1])+' '+f(dL[0])+','+f(dL[1])+' '+f(dB[0])+','+f(dB[1])+' '+f(dR[0])+','+f(dR[1])+'" fill="#C4A44A" opacity=".7"/>';
+    } else {
+      s+='<circle cx="'+f(dp[0])+'" cy="'+f(dp[1])+'" r="1.2" fill="#C4A44A" opacity=".45"/>';
+    }
+  }
+  s+='<circle cx="300" cy="300" r="259" fill="none" stroke="#D4C5A0" stroke-width=".5" opacity=".4"/>';
+
+  // ── PHASE RINGS (outside-in, draw bg first then lit rings) ────────
+  // Draw solid bg fill to r=259
+  s+='<circle cx="300" cy="300" r="259" fill="#FAF6EE" opacity=".6"/>';
+
+  // Draw each ring using donut paths
+  RINGS.slice().reverse().forEach(function(ring){
+    var lit=validated.indexOf(ring.phase)>=0;
+    // Glow halo behind lit ring
+    if(lit){
+      s+='<circle cx="300" cy="300" r="'+f((ring.rOut+ring.rIn)/2)+'" fill="none" stroke="'+ring.color+'" stroke-width="'+(ring.rOut-ring.rIn+8)+'" opacity=".1" filter="url(#mglow)"/>';
+    }
+    // Donut fill
+    s+='<path fill-rule="evenodd" d="'+donutD(ring.rIn,ring.rOut)+'" fill="'+(lit?ring.color:'none')+'" fill-opacity="'+(lit?'.2':'0')+'" class="'+(lit?'mrl':'')+'" stroke="'+(lit?ring.color:'#CEC0A8')+'" stroke-width="'+(lit?'1.8':'.7')+'" stroke-opacity="'+(lit?'.8':'.45')+'"/>';
+    // Inner bright ring for lit
+    if(lit){
+      s+='<circle cx="300" cy="300" r="'+f(ring.rOut-2)+'" fill="none" stroke="'+ring.light+'" stroke-width="2.5" opacity=".3" class="mrl2"/>';
+    }
+    // Phase number at top of ring (0°)
+    var midR=(ring.rOut+ring.rIn)/2;
+    var lp=polar(midR,0);
+    var phLabel=ring.phase===2.5?'2\xb75':String(ring.phase);
+    var fsize=(ring.rOut-ring.rIn)>22?10:8;
+    s+='<text x="'+f(lp[0])+'" y="'+f(lp[1]+fsize/2.5)+'" text-anchor="middle" font-family="Georgia,serif" font-size="'+fsize+'" fill="'+(lit?ring.color:'#B0A090')+'" opacity="'+(lit?'.9':'.5')+'">'+phLabel+'</text>';
+    // Phase number at bottom too (180°)
+    var bp=polar(midR,180);
+    s+='<text x="'+f(bp[0])+'" y="'+f(bp[1]+fsize/2.5)+'" text-anchor="middle" font-family="Georgia,serif" font-size="'+fsize+'" fill="'+(lit?ring.color:'#B0A090')+'" opacity="'+(lit?'.9':'.5')+'">'+phLabel+'</text>';
   });
+
+  // Inner ring boundary
+  s+='<circle cx="300" cy="300" r="32" fill="none" stroke="#D4C5A0" stroke-width=".8" opacity=".5"/>';
+
+  // ── LOTUS PETALS ──────────────────────────────────────────────────
+  var nPetals=Math.min(8,validated.length);
+  for(var pi=0;pi<8;pi++){
+    var pAngle=pi*45-22.5; // offset for elegance
+    var lit2=pi<nPetals;
+    // Petal: bezier from center to tip
+    var tip=polar(30,pAngle);
+    var cL=polar(22,pAngle-26);
+    var cR=polar(22,pAngle+26);
+    var pd='M'+cx+','+cy+' Q'+f(cL[0])+','+f(cL[1])+' '+f(tip[0])+','+f(tip[1])+' Q'+f(cR[0])+','+f(cR[1])+' '+cx+','+cy+'Z';
+    s+='<path d="'+pd+'" fill="'+(lit2?'#D4AA50':'none')+'" stroke="'+(lit2?'#A07020':'#CEC0A8')+'" stroke-width="0.8" opacity="'+(lit2?'.75':'.3')+'"'+(lit2?' class="mrl2"':'')+'/>';
+  }
+
+  // Small center circle decoration
+  s+='<circle cx="300" cy="300" r="6" fill="#FAF6EE" stroke="#D4C5A0" stroke-width=".7" opacity=".8"/>';
+
+  // ── CENTER DISC ───────────────────────────────────────────────────
+  var allDone=(validated.length===RINGS.length);
+  var discColor=allDone?'#C4A44A':'#3C2415';
+  var discOp=allDone?'.8':'.32';
+  s+='<circle cx="300" cy="300" r="19" fill="'+discColor+'" opacity="'+discOp+'"'+(allDone?' class="mctr"':'')+'/>';
+  s+='<circle cx="300" cy="300" r="19" fill="none" stroke="'+(allDone?'#FFE870':'#C4A44A')+'" stroke-width="1" opacity=".55"/>';
+
   // Center glyph
-  out+=`<text x="${cx}" y="${cy+4}" text-anchor="middle" font-family="Georgia,serif" font-size="9" fill="${validated.includes(7)?'#3C2415':'#9A7860'}" opacity=".8">✦</text>`;
-  svg.innerHTML=out;
+  if(archP){
+    var archShort=archP.replace(/^(Le |La |Les |L')/,'').substring(0,6);
+    s+='<text x="300" y="297" text-anchor="middle" font-family="Georgia,serif" font-size="5.5" fill="#FAF6EE" opacity=".85">'+archShort+'</text>';
+    s+='<text x="300" y="307" text-anchor="middle" font-family="Georgia,serif" font-size="9" fill="'+(allDone?'#FAF6EE':'#C4A44A')+'" opacity=".9">✶</text>';
+  } else {
+    s+='<text x="300" y="306" text-anchor="middle" font-family="Georgia,serif" font-size="13" fill="'+(allDone?'#FAF6EE':'#C4A44A')+'" opacity=".9">✶</text>';
+  }
 
-  const legend=document.getElementById('mandala-legend-list');
-  legend.innerHTML=MANDALA_RINGS.filter(r=>!r.center).map(ring=>{
-    const lit=validated.includes(ring.phase);
-    return `<div class="mandala-legend-item">
-      <div class="legend-dot" style="background:${lit?ring.color:'transparent'};border-color:${lit?ring.color:'var(--border)'};"></div>
-      <span style="color:${lit?'var(--brown)':'var(--muted)'};font-size:.85rem;">${ring.label}</span>
-      ${lit?'<span style="margin-left:auto;font-size:.7rem;color:var(--gold-d);">✓</span>':''}
-    </div>`;
-  }).join('');
+  // Outer 12-point star ring at r=295 (decorative tips)
+  for(var si=0;si<12;si++){
+    var sOuter=polar(299,si*30);
+    var sInner=polar(295,si*30+15);
+    var sPrev=polar(295,si*30-15);
+    s+='<polygon points="'+f(sOuter[0])+','+f(sOuter[1])+' '+f(sInner[0])+','+f(sInner[1])+' '+f(sPrev[0])+','+f(sPrev[1])+'" fill="#C4A44A" opacity=".3"/>';
+  }
 
-  document.getElementById('mandala-intention').value=c?(c.mandalaIntention||''):'';
+  svg.innerHTML=s;
+
+  // ── SIDE PANEL ────────────────────────────────────────────────────
+  var nV=validated.length,total=RINGS.length;
+  var pct=Math.round(nV/total*100);
+
+  // Progress ring SVG
+  var psvg=document.getElementById('mand-progress-svg');
+  if(psvg){
+    var radius=46,circ=2*Math.PI*radius;
+    var dash=(nV/total)*circ;
+    psvg.innerHTML=
+      '<circle cx="60" cy="60" r="46" fill="none" stroke="#E8DFC8" stroke-width="8"/>'+
+      '<circle cx="60" cy="60" r="46" fill="none" stroke="#C4A44A" stroke-width="8"'+
+      ' stroke-dasharray="'+dash.toFixed(1)+' '+circ.toFixed(1)+'"'+
+      ' stroke-linecap="round" transform="rotate(-90 60 60)"/>'+
+      '<circle cx="60" cy="60" r="36" fill="#FAF6EE"/>'+
+      '<text x="60" y="55" text-anchor="middle" font-family="Georgia,serif" font-size="19" fill="#3C2415">'+pct+'%</text>'+
+      '<text x="60" y="68" text-anchor="middle" font-family="system-ui,sans-serif" font-size="8.5" fill="#8A7060">'+nV+' / '+total+'</text>'+
+      '<text x="60" y="78" text-anchor="middle" font-family="system-ui,sans-serif" font-size="7.5" fill="#B0A090">phases</text>';
+  }
+
+  // Phase list
+  var plist=document.getElementById('mand-phases-list');
+  if(plist){
+    plist.innerHTML=RINGS.map(function(ring){
+      var lit=validated.indexOf(ring.phase)>=0;
+      var hist=cc&&cc.phaseHistory?cc.phaseHistory.find(function(h){return h.phase===ring.phase;}):null;
+      var ph=PHASES.find(function(p){return p.num===ring.phase;});
+      var pname=ph?ph.name:'';
+      var phLabel=ring.phase===2.5?'2\xb75':ring.phase;
+      return '<div class="mand-phase-row'+(lit?' lit':'')+'">'+
+        '<span class="mand-phase-dot" style="background:'+(lit?ring.color:'transparent')+';border-color:'+(lit?ring.color:'#CEC0A8')+';">'+(lit?'<span style="font-size:.5rem;color:#fff;">✓</span>':'')+'</span>'+
+        '<span class="mand-phase-num" style="color:'+(lit?ring.color:'#B0A090')+';">'+phLabel+'</span>'+
+        '<span class="mand-phase-name">'+pname+'</span>'+
+        (hist?'<span class="mand-phase-date">'+formatDate(hist.date)+'</span>':'')+
+      '</div>';
+    }).join('');
+  }
+
+  // Voiles grid
+  var vgrid=document.getElementById('mand-voiles-grid');
+  if(vgrid){
+    vgrid.innerHTML=VOILES.map(function(voile,i){
+      var active=voilesActive.indexOf(voile)>=0;
+      var vShort=voile.replace('Voile de la ','').replace('Voile du ','').replace("Voile de l'",'');
+      return '<div class="mand-voile-badge'+(active?' v-active':'')+'" title="'+voile+'"'+
+        (active?' style="border-color:'+VCOLS[i]+'20;background:'+VCOLS[i]+'18;"':'')+'>'+
+        '<span class="mand-voile-dot" style="background:'+(active?VCOLS[i]:'transparent')+';border-color:'+(active?VCOLS[i]:'#CEC0A8')+'"></span>'+
+        vShort+'</div>';
+    }).join('');
+  }
+
+  // Archetype badge
+  var aSection=document.getElementById('mand-arch-section');
+  if(aSection){
+    if(archP){
+      aSection.innerHTML='<div class="mand-sub-title">Arch\xe9type</div>'+
+        '<div class="mand-arch-badge">'+
+        '<span class="mand-arch-icon">✶</span>'+
+        '<div><div class="mand-arch-name">'+archP+'</div>'+(archS?'<div class="mand-arch-sec">+ '+archS+'</div>':'')+
+        '</div></div>';
+      aSection.style.display='';
+    } else {
+      aSection.style.display='none';
+    }
+  }
+
+  // Intention
+  var iEl=document.getElementById('mandala-intention');
+  if(iEl)iEl.value=cc?(cc.mandalaIntention||''):'';
 }
 
 function exportMandala(){
   const svg=document.getElementById('mandala-svg');
   const data=new XMLSerializer().serializeToString(svg);
-  const canvas=document.createElement('canvas');canvas.width=800;canvas.height=800;
+  const canvas=document.createElement('canvas');canvas.width=1200;canvas.height=1200;
   const ctx=canvas.getContext('2d');const img=new Image();
-  img.onload=()=>{ctx.fillStyle='#FAF6EE';ctx.fillRect(0,0,800,800);ctx.drawImage(img,0,0,800,800);const a=document.createElement('a');a.download='mandala-oria.png';a.href=canvas.toDataURL();a.click();};
+  img.onload=()=>{ctx.fillStyle='#FAF6EE';ctx.fillRect(0,0,800,800);ctx.drawImage(img,0,0,1200,1200);const a=document.createElement('a');a.download='mandala-oria.png';a.href=canvas.toDataURL();a.click();};
   img.src='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(data)));
 }
 
