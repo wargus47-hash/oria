@@ -2772,7 +2772,7 @@ function genoUpdNode(id,field,value){
   var n=genoNodes.find(function(nd){return nd.id===id;});if(!n)return;
   n[field]=value;genoSave();
   renderGenoNodes();
-  if(field==='type'||field==='name'||field==='color'||field==='deceased'||field==='proband')renderGenoInsp();
+  if(field==='type'||field==='color'||field==='deceased'||field==='proband')renderGenoInsp();
 }
 
 function genoUpdEdge(id,field,value){
